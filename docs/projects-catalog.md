@@ -216,15 +216,18 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ### 14. piswitch
 - **Path**: `D:\piswitch`
-- **Role**: Universal video mixer microservice and CLI decoupling control clients from specific switcher hardware.
+- **Role**: Universal video mixer microservice and CLI for Raspberry Pi (ATEM hardware switchers, software mixing, phone camera feeds, and ATEM Media Player/Pool).
 - **Layers**:
   - *Proposed*: Hardware connections
-  - *Refined*: Layer 1 (Hardware Switcher Driver) & Layer 2 (Software Mixer)
+  - *Refined*: Layer 1 (Hardware Switcher Driver, Media Pool & Software Mixer)
 - **Key Capabilities**:
-  - Standardized REST and SSE interface (`/api/v1/video-mixer/*`).
+  - Standardized REST and SSE interface (`/api/v1/video-mixer/*` and backward-compatible `/api/v1/atem/*`).
   - Controls Blackmagic ATEM SDI / Mini Extreme ISO via UDP `9910`.
+  - **ATEM Media Pool & Media Player Handling**:
+    - **6-Slot Circular Slide Buffer (Slots 1–6)**: Sliding window queue for `piprogram` slides with automated garbage collection (clears stale $N-2$ slot after progressing +2 steps).
+    - **18-Slot Graphics Pool (Slots 7–24)**: Dedicated slots for broadcast lower-thirds, speaker straps, scripture readings, and banners.
+    - Media Player source switching (`PUT .../media-players/:player/source` - 0ms instant cut).
   - Features local Pi Software Mixer fallback using GStreamer/MediaMTX for mobile phone cameras (WebRTC/SRT).
-  - Full backward-compatible `/api/v1/atem/*` endpoints for existing clients.
 
 ---
 
