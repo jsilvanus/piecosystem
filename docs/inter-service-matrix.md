@@ -14,6 +14,7 @@ This document defines the network topology, listening ports, communication proto
 | **3102** | UDP | `pigateway` | PiSound DSP telemetry ingestion | Binary/JSON UDP datagrams |
 | **3105** | HTTP | `pitube` | YouTube lifecycle & caption coordinator | REST API |
 | **3106** | HTTP | `piswitch` | Universal video mixer (ATEM/software) | REST API & SSE |
+| **3107** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3108** | HTTP | `pispace` | Spatial engine, 3D venue digital twin & solver | REST API & SSE (`/events`) |
 | **3200** | HTTP | `picontrol-mcp` | MCP Server for AI agents (`pi://`) | Streamable HTTP |
 | **3200 / 3201** | HTTP | `pilight` | Tally light controller API | REST API |
