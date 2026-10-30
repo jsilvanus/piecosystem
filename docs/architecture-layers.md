@@ -54,6 +54,7 @@ flowchart TD
 
     subgraph L3["LAYER 3: ORCHESTRATION & STATE PLANE"]
         RUNDOWN["pirundown<br/>(Service Rundowns, Cues, YAML v2)"]
+        SPACE["pispace<br/>(3D Digital Twin, Raycaster, Zone Solver)"]
         GATEWAY["pigateway<br/>(Central Device State & SSE Bus)"]
     end
 
@@ -61,6 +62,7 @@ flowchart TD
         CANVA["picanva<br/>(Canva Slide App)"]
         PGM["piprogram<br/>(Hymns, Slides, PPTX)"]
         COMPANION["picompanion<br/>(Virtual Displays / RTMP)"]
+        PERCEPTION["piperception<br/>(YOLOX / ONNX Bbox & Person Tracking)"]
         VOICE_DSP["pivoice<br/>(ALSA Capture, Silero VAD, PCM Fanout)"]
         MATRIX["pimatrix & piswitch<br/>(Compositor, Video Matrix, Multiview)"]
     end
@@ -134,12 +136,14 @@ flowchart TD
   - `piprogram`: Presentation content engine for slide distribution, PPTX conversion, hymn lyric formatting, and stage displays.
   - `picompanion`: Windows desktop companion utilizing virtual monitor drivers to push screen captures as RTMP signals into the matrix.
   - `pimatrix`: Video routing core, hardware/software compositing engine, WebRTC/RTMP stream receiver, PiP layouts, and HDMI display drivers.
+  - `piperception` (Upcoming): Dedicated computer vision microservice running YOLOX on ONNX Runtime to perform real-time person detection, multi-person tracking, and 2D bounding box extraction from camera frames.
   - `pivoice` (Signal Processing part): In-process Silero VAD neural voice activity detection, energy gating, acoustic spectral analysis, and clean PCM audio distribution.
 
 ### Layer 3: Orchestration, State & Event Plane (Workflow Plane)
-- **Mission**: Deterministic, reproducible run-of-show execution and real-time state synchronization across all systems.
+- **Mission**: Deterministic, reproducible run-of-show execution, spatial world modeling, and real-time state synchronization across all systems.
 - **Projects**:
   - `pirundown`: Automated service rundown engine executing YAML v2 cue sheets with `varfetch` dynamic parameter resolution.
+  - `pispace`: Spatial engine and geometric digital-twin service. Fuses FreeD camera tracking telemetry (`UDP 40000`) and 2D bounding boxes (from `piperception`) to calculate real-time 3D positions $(X, Y, Z)$ within sanctuary zones (`pulpit`, `lectern`, `altar`, `choir`), and provides inverse PTZ targeting solvers.
   - `pigateway` (Event Broker part): Low-latency Server-Sent Events (SSE) bus (`GET /api/v1/events`), maintaining authoritative cache of system and device states.
 
 ### Layer 4: Presentation & Egress Delivery (Consumer Edge)

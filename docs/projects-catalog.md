@@ -19,9 +19,11 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
 | [`pisound`](file:///d:/pisound) | Hardware connections | Layer 1: Southbound HW | BSS Soundweb London DSP audio router | Node 22+, Fastify, TS | `3300` (Soundweb: `1023`) |
+| [`pispace`](file:///d:/pispace) | Event orchestration | Layer 3: Spatial Context | 3D venue digital twin & FreeD raycaster | Node 22+, Fastify, TS | `3108` |
 | [`piswitch`](file:///d:/piswitch) | Hardware connections | Layer 1 & 2: HW & Mixer | Video switcher microservice (ATEM & soft) | Node 22+, Fastify, TS | `3106` (ATEM: `9910`) |
 | [`pitube`](file:///d:/pitube) | Consumer edge | Layer 4: Presentation/Egress | YouTube Live lifecycle & delayed captions | Node 22+, TS | `3105` |
 | [`pivoice`](file:///d:/pivoice) | Hardware connections / Media | Layer 1 & 2: HW Capture/DSP | ALSA audio capture, Silero VAD, fanout | Node 24, ONNX Runtime | REST API & UDP Telemetry |
+| [`piperception`](file:///d:/piperception) | Media creation | Layer 2: Video Perception | Real-time YOLOX/ONNX person detection & tracking | Node/Python, ONNX | Ingests video, outputs 2D bboxes |
 | [`piecosystem`](file:///d:/piecosystem) | Coordination | +1 Governance Plane | Architecture, roadmap & coordination | Node, Markdown | N/A |
 
 ---
@@ -177,7 +179,36 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 12. piswitch
+### 12. pispace
+- **Path**: `D:\pispace`
+- **Role**: Spatial engine, geometric digital-twin service, and raycaster for the sanctuary venue.
+- **Layers**:
+  - *Proposed*: Event orchestration
+  - *Refined*: Layer 3 (Spatial Context & World Model)
+- **Key Capabilities**:
+  - Venue Coordinate System $(X, Y, Z)$ centered at communion rail with defined zones (`pulpit`, `lectern`, `altar`, `communion_rail`, `choir`).
+  - Raycasting: combines FreeD camera tracking telemetry (`UDP 40000`) and 2D bounding boxes (from `piperception`) to calculate exact 3D venue positions.
+  - Inverse PTZ solver: calculates required pan, tilt, zoom angles to frame any target coordinate or named zone with requested shot types (`wide`, `medium`, `tight`, `close_up`).
+  - Emits real-time spatial events (`zone_enter`, `zone_exit`, `subject_moved`) via SSE.
+- **Protocols & Interfaces**: Fastify REST API and SSE on port `3108`.
+
+---
+
+### 13. piperception (Upcoming)
+- **Path**: `D:\piperception` (in transition from `lcyt-compute/src/perception`)
+- **Role**: Dedicated computer vision microservice providing real-time neural detection, tracking, and 2D bounding box extraction.
+- **Layers**:
+  - *Proposed*: Media creation / Video analysis
+  - *Refined*: Layer 2 (Media Pipeline & Computer Vision)
+- **Key Capabilities**:
+  - Real-time person detection using YOLOX on ONNX Runtime CPU/GPU.
+  - Multi-person tracking with persistent track IDs (ByteTrack/Sort).
+  - Normalised 2D bounding boxes (`[x, y, w, h]`), confidence scores, and crop framing.
+  - Feeds 2D detections into `pispace` (`POST /api/v1/perception`) for 3D world projection.
+
+---
+
+### 14. piswitch
 - **Path**: `D:\piswitch`
 - **Role**: Universal video mixer microservice and CLI decoupling control clients from specific switcher hardware.
 - **Layers**:
@@ -191,7 +222,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 13. pitube
+### 15. pitube
 - **Path**: `D:\pitube`
 - **Role**: YouTube broadcast lifecycle manager and synchronized live caption streamer.
 - **Layers**:
@@ -205,7 +236,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 14. pivoice
+### 16. pivoice
 - **Path**: `D:\pivoice`
 - **Role**: Headless USB microphone audio capture, VAD analysis, and multi-consumer fanout.
 - **Layers**:
@@ -221,7 +252,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 15. piecosystem (This Repository)
+### 17. piecosystem (This Repository)
 - **Path**: `D:\piecosystem`
 - **Role**: Centralized architecture repository, project planning, multi-repo status tracking, and developer coordination.
 - **Layers**:

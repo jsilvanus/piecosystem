@@ -18,6 +18,7 @@ graph TD
 
     subgraph L3["Layer 3: Orchestration & State"]
         RUNDOWN["pirundown (Cues & Automation)"]
+        SPACE["pispace (3D Digital Twin & Spatial Solver)"]
         GATEWAY["pigateway (Central State & Events)"]
     end
 
@@ -25,6 +26,7 @@ graph TD
         CANVA["picanva (Slides)"]
         PGM["piprogram (Hymns/Stage)"]
         COMPANION["picompanion (Virtual Displays)"]
+        PERCEPTION["piperception (YOLOX Person Tracking)"]
         VOICE["pivoice (Silero VAD & Audio)"]
         MATRIX["pimatrix & piswitch (Compositing & Switching)"]
     end
@@ -72,8 +74,8 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 | Plane / Layer | Key Responsibility | Active Projects |
 |---|---|---|
 | **Layer 1: Southbound Hardware Interfacing** | Physical device protocol drivers (VISCA, HiQnet, ATEM, Tally-Ma, ALSA) and stateful device brokers. | [`picam`](file:///d:/picam), [`piswitch`](file:///d:/piswitch), [`pisound`](file:///d:/pisound), [`pilight`](file:///d:/pilight), [`pivoice`](file:///d:/pivoice), [`pigateway`](file:///d:/pigateway) |
-| **Layer 2: Media Pipeline & Real-Time Composition** | Content authoring, slide staging, audio neural VAD/DSP, video compositing, and stream matrixing. | [`picanva`](file:///d:/picanva), [`piprogram`](file:///d:/piprogram), [`picompanion`](file:///d:/picompanion), [`pimatrix`](file:///d:/pimatrix), [`pivoice`](file:///d:/pivoice) |
-| **Layer 3: Orchestration, State & Workflow** | Deterministic service rundowns, YAML v2 cue sheets, dynamic variable fetching, and centralized SSE event distribution. | [`pirundown`](file:///d:/pirundown), [`pigateway`](file:///d:/pigateway) |
+| **Layer 2: Media Pipeline & Real-Time Composition** | Content authoring, slide staging, audio neural VAD/DSP, video perception, video compositing, and stream matrixing. | [`picanva`](file:///d:/picanva), [`piprogram`](file:///d:/piprogram), [`picompanion`](file:///d:/picompanion), [`pimatrix`](file:///d:/pimatrix), [`piperception`](file:///d:/piperception), [`pivoice`](file:///d:/pivoice) |
+| **Layer 3: Orchestration, State & Workflow** | Deterministic service rundowns, YAML v2 cue sheets, dynamic variable fetching, 3D venue digital twins, and centralized SSE event distribution. | [`pirundown`](file:///d:/pirundown), [`pispace`](file:///d:/pispace), [`pigateway`](file:///d:/pigateway) |
 | **Layer 4: Presentation & Egress Delivery (Consumer Edge)** | External broadcasting (YouTube Live), timed closed caption streaming, low-latency web radio, sanctuary projectors, and confidence monitors. | [`pitube`](file:///d:/pitube), [`web-radio-relay`](file:///d:/web-radio-relay), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`pimatrix`](file:///d:/pimatrix) (HDMI), [`piprogram`](file:///d:/piprogram) (Stage) |
 | **+1 Cross-Cutting Control & Agentic Plane** | Unified human operator UI/CLI, Model Context Protocol (MCP) tooling for AI agents (`pi://` resources), and ecosystem governance. | [`picontrol`](file:///d:/picontrol), [`picontrol-mcp`](file:///d:/picontrol-mcp), [`piecosystem`](file:///d:/piecosystem) |
 
@@ -96,9 +98,11 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 | [`piprogram`](file:///d:/piprogram) | Hymns, slides, PPTX pipeline & stage confidence monitor | Node 24, Fastify, TS | Fastify Configurable |
 | [`pirundown`](file:///d:/pirundown) | Service rundown cue engine (Rundown v2 YAML, varfetch) | Node 22+, Fastify, TS | `3400` |
 | [`pisound`](file:///d:/pisound) | Sound & microphone controller for BSS Soundweb BLU-100 | Node 22+, Fastify, TS | `3300`, Soundweb `1023` |
+| [`pispace`](file:///d:/pispace) | 3D venue digital twin, FreeD raycasting & spatial PTZ solver | Node 22+, Fastify, TS | `3108` |
 | [`piswitch`](file:///d:/piswitch) | Universal video mixer service (ATEM & software switcher) | Node 22+, Fastify, TS | `3106`, ATEM UDP `9910` |
 | [`pitube`](file:///d:/pitube) | YouTube Live lifecycle manager & timed live caption sender | Node 22+, TS | `3105` |
 | [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3101` |
+| [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node/Python, ONNX | Video in / 2D BBoxes out |
 | [`piecosystem`](file:///d:/piecosystem) | Ecosystem governance, architecture docs & dev coordination | Node, Markdown | N/A |
 
 👉 **Complete details on each project**: [docs/projects-catalog.md](docs/projects-catalog.md)

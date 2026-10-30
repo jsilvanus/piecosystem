@@ -24,9 +24,11 @@ const PI_PROJECTS = [
   'piprogram',
   'pirundown',
   'pisound',
+  'pispace',
   'piswitch',
   'pitube',
   'pivoice',
+  'piperception',
   'piecosystem'
 ];
 
