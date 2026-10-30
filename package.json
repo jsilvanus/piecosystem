@@ -1,0 +1,12 @@
+{
+  "name": "piecosystem",
+  "version": "1.0.0",
+  "description": "System architecture, cross-project planning, and developer coordination for the Raspberry Pi production ecosystem",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "status": "node scripts/ecosystem-status.mjs",
+    "status:ps": "powershell -ExecutionPolicy Bypass -File scripts/ecosystem-status.ps1"
+  },
+  "devDependencies": {}
+}
