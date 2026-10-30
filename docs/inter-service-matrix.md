@@ -49,6 +49,8 @@ graph LR
     PIRUNDOWN -->|HTTP Actions| PISWITCH["piswitch (3106)"]
     PIRUNDOWN -->|HTTP Actions| PIPROGRAM["piprogram"]
 
+    PIPROGRAM -->|Slide Advance & Still Upload| PISWITCH
+
     PIGATEWAY -->|SSE Events| PILIGHT["pilight (3200)"]
     PIGATEWAY -->|SSE Events| PITUBE["pitube (3105)"]
     PIGATEWAY -->|HTTP Commands| PICAM["picam (3300)"]

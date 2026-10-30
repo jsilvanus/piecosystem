@@ -122,9 +122,9 @@ flowchart TD
 ### Layer 1: Southbound Hardware & Physical Interfacing
 - **Mission**: Isolate vendor-specific hardware protocols behind clean microservices with REST/SSE interfaces, and manage physical AV routing infrastructure.
 - **Projects**:
-  - `pimatrix`: Video routing crossbar and display sink controller. Routes video streams to physical HDMI outputs (DRM/KMS), manages source effects (crop, rotation, fade-to-black), and manages slide key pages (`compose1` HDMI key, `compose2` ATEM media still).
+  - `pimatrix`: Video routing crossbar and display sink controller. Routes video streams to physical HDMI outputs (DRM/KMS), manages source effects (crop, rotation, fade-to-black), and manages slide key pages (`compose1` HDMI key; `compose2` ATEM media still is deprecated in favor of `piswitch`'s dedicated media pool).
   - `picam`: Direct binary VISCA-over-IP (UDP 52381) and HTTP CGI for PTZ cameras (pan/tilt speeds, optical zoom, presets, AVer SmartFrame, defocus privacy blur).
-  - `piswitch`: Video switcher driver for Blackmagic ATEM switchers (UDP 9910) and local software fallback switchers.
+  - `piswitch`: Video switcher driver for Blackmagic ATEM switchers (UDP 9910) and local software fallback switchers. Includes `MediaPoolManager` with 6-slot circular slide buffer (slots 1..6) and 18-slot graphics pool (slots 7..24), automated $(N-2)$ slide cleanup, and Media Player source routing.
   - `pisound`: Harman London Direct Inject protocol (TCP 1023) to control BSS Soundweb London BLU-100 DSP (handheld mics, madonnas, sanctuary wired mics, auto-mixer vs SQ-5 presets).
   - `pilight`: Multi-segment wireless tally controller for Tally-Ma lights via HTTP cues and UDP 21324 binary packets.
   - `pivoice` (Hardware Ingest part): Direct ALSA USB microphone capture (Hama mic), continuous/scheduled auto-probing.

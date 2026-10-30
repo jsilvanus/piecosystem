@@ -138,8 +138,8 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - **Hardware Display Driver**: Directly drives the Pi's physical HDMI outputs (DRM/KMS) for sanctuary projectors and confidence monitors.
   - **Multiview**: Generates responsive multi-channel monitoring multiviews for mobile and desktop browser operators.
   - **Slide Key Composites**: 
-    - `compose1`: HDMI key page rendering a slide box (left/right, scale 0.6–1.0, chroma/luma keying).
-    - `compose2`: Uploads media stills to the ATEM switcher media pool for downstream keying (DSK).
+    - `compose1`: Active HDMI key page rendering a slide box (left/right, scale 0.6–1.0, chroma/luma keying).
+    - `compose2` (Deprecated): Legacy ATEM media-pool output. ATEM media pool and media player still management has migrated to `piswitch`'s dedicated `MediaPoolManager`.
   *(Note: It does not generate lower thirds or generic broadcast PiPs; DSK keying is handled on the ATEM switcher or in presentation software).*
 
 ---
@@ -155,6 +155,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - PPTX conversion pipeline for sermon slide decks.
   - Generates web-based Stage Page confidence monitors for pastors, cantors, and musicians.
   - Canva asset ingestion and staging.
+  - **`piswitch` Media Pool Integration**: Client (`PiSwitchClient`) and automated slide sync that pre-renders PNG stills, uploads to `piswitch`'s circular buffer slots, and advances ATEM Media Player 1 on slide progression (`POST .../sync-piswitch`).
 
 ---
 
