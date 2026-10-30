@@ -34,6 +34,7 @@ const PI_PROJECTS = [
   'piperception',
   'pidirector',
   'piagent',
+  'piembed',
   'piui',
   'piecosystem',
   // Adjacent & Infrastructure

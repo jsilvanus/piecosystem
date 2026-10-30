@@ -15,6 +15,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`piui`](file:///d:/piui) | UI Component Library | +1 Presentation Plane | Shared atomic & molecular UI components library (`@piecosystem/piui`) | Node 22+, TypeScript, Tailwind | Library / NPM |
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | Event orchestration | +1 Control Plane | MCP Server for AI agents (`pi://`) | Node 24, Fastify, TS | `3200` |
 | [`piagent`](file:///d:/piagent) | Agent Infrastructure | +1 Agentic Plane | Agent runtime & bus (LangGraph, Vercel AI SDK, MCP bridge, preemption) | Node 24, Fastify, TS | `3120` |
+| [`piembed`](file:///d:/piembed) | Event orchestration / AI | Layer 3: Semantic Vector Engine | Vector embedding & semantic cue matching service (Ollama + Hugging Face ONNX) | Node 22+, Fastify, TS | `3125` |
 | [`pigateway`](file:///d:/pigateway) | Hardware connections | Layer 1 & 3: HW & State | Central device broker & SSE bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`, `40000`; TCP: `6600`, `6601`) |
 | [`piencoder`](file:///d:/piencoder) | Hardware connections | Layer 1: Southbound HW | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | Node 22+, Fastify, TS | `3109` |
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |

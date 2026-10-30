@@ -19,6 +19,7 @@ This document defines the network topology, listening ports, communication proto
 | **3109** | HTTP | `piencoder` | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | REST API & SSE (`/events`) |
 | **3110** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
 | **3120** | HTTP | `piagent` | Centralized Agent Infrastructure Plane (LangGraph, AI SDK, MCP) | REST API & SSE (`/api/v1/agent/events`) |
+| **3125** | HTTP | `piembed` | Vector embedding & semantic cue matching engine (Ollama + Hugging Face ONNX) | REST API |
 | **3200** | HTTP | `picontrol-mcp` | MCP Server for AI agents (`pi://`) | Streamable HTTP |
 | **3200 / 3201** | HTTP | `pilight` | Tally light controller API | REST API |
 | **3300** | HTTP | `picam` | PTZ camera service API | REST API |

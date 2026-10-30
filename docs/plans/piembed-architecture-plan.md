@@ -286,20 +286,20 @@ D:\piembed\
 
 ## Recommended Execution Stages
 
-- [ ] **Stage 1: Repository Scaffolding & Math Core**
+- [x] **Stage 1: Repository Scaffolding & Math Core**
   - Initialize `D:\piembed`, configure Fastify, TypeScript, and write SIMD/dimension-agnostic vector math (`Float32Array` cosine similarity).
-- [ ] **Stage 2: Remote Ollama & In-Process Transformers Providers**
+- [x] **Stage 2: Remote Ollama & In-Process Transformers Providers**
   - Implement `OllamaEmbeddingProvider` targeting adjacent machine.
   - Implement `InProcessTransformersProvider` with `@huggingface/transformers`.
   - Implement `EmbeddingOrchestrator` with circuit breaker and automatic fallback.
-- [ ] **Stage 3: Cue Preflight & Matching Engine**
+- [x] **Stage 3: Cue Preflight & Matching Engine**
   - Implement in-memory `CueStore`.
   - Wire `/api/v1/cues/preflight` and `/api/v1/cues/match`.
   - Wire `/api/v1/models/load` and `/api/v1/models/download`.
-- [ ] **Stage 4: Unit & Integration Testing**
+- [x] **Stage 4: Unit & Integration Testing**
   - Test varying dimensions (384, 768, 1024).
   - Simulate remote Ollama timeout and verify 0-lag fallback to in-process.
-- [ ] **Stage 5: `pirundown` & `pigateway` Integration**
+- [x] **Stage 5: `pirundown` & `pigateway` Integration**
   - Wire preflight call in `pirundown/src/engine/rundown-engine.ts`.
   - Wire cue evaluation in `pirundown/src/cues/cue-matcher.ts`.
   - Update `pigateway` and `piecosystem` documentation.
