@@ -33,6 +33,7 @@ const PI_PROJECTS = [
   'piperception',
   'pidirector',
   'piagent',
+  'piui',
   'piecosystem',
   // Adjacent & Infrastructure
   'liturgos-auditor',

@@ -12,6 +12,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`picanva`](file:///d:/picanva) | Media creation | Layer 2: Media Pipeline | Canva App plugin for liturgical slides | TS, Canva SDK, React | Canva Sandbox |
 | [`picompanion`](file:///d:/picompanion) | Media creation | Layer 2: Media Pipeline | Windows virtual monitor & RTMP sender | C#, .NET, IddCx Driver | RTMP out |
 | [`picontrol`](file:///d:/picontrol) | Event orchestration | +1 Control Plane | Operator Web UI housing & CLI | Node 22+, React, Vite | `3000` (UI dev: `5173`) |
+| [`piui`](file:///d:/piui) | UI Component Library | +1 Presentation Plane | Shared atomic & molecular UI components library (`@piecosystem/piui`) | Node 22+, TypeScript, Tailwind | Library / NPM |
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | Event orchestration | +1 Control Plane | MCP Server for AI agents (`pi://`) | Node 24, Fastify, TS | `3200` |
 | [`piagent`](file:///d:/piagent) | Agent Infrastructure | +1 Agentic Plane | Agent runtime & bus (LangGraph, Vercel AI SDK, MCP bridge, preemption) | Node 24, Fastify, TS | `3120` |
 | [`pigateway`](file:///d:/pigateway) | Hardware connections | Layer 1 & 3: HW & State | Central device broker & SSE bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`, `40000`; TCP: `6600`, `6601`) |
@@ -393,6 +394,20 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Out-of-band hard preemption ($<5\text{ms}$) via `AbortController` and `pigateway` SSE bus.
   - Architectural spec: [piagent-architecture-plan.md](piagent-architecture-plan.md).
 - **Protocols & Interfaces**: Fastify REST & SSE on port `3120`.
+
+---
+
+### 26. piui
+- **Path**: `D:\piui`
+- **Repository**: [https://github.com/jsilvanus/piui](https://github.com/jsilvanus/piui)
+- **Role**: Shared atomic and molecular UI component primitives for the Pi broadcast ecosystem.
+- **Layers**: +1 Presentation & Operator Plane
+- **Key Capabilities**:
+  - Framework-agnostic TypeScript component emitters generating Tailwind CSS markup for fast SSR and client reactivity.
+  - Atoms: badges, buttons, cards, meters, sliders, status dots, speaker badges, agent status badges, model badges, and priority pills.
+  - Molecules: ATEM bus selector, PTZ pads/preset cards, audio faders, caption feeds, rundown item cards, tally facet widgets, agent cards, chat bubbles, and tool invocation cards.
+- **Protocols & Interfaces**: ESM Package `@piecosystem/piui`.
+
 
 
 
