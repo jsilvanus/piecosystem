@@ -15,7 +15,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | Event orchestration | +1 Control Plane | MCP Server for AI agents (`pi://`) | Node 24, Fastify, TS | `3200` |
 | [`pigateway`](file:///d:/pigateway) | Hardware connections | Layer 1 & 3: HW & State | Central device broker & SSE bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`, `40000`; TCP: `6600`, `6601`) |
 | [`pilight`](file:///d:/pilight) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3200` / `3201` (UDP: `21324`) |
-| [`pimatrix`](file:///d:/pimatrix) | Media creation | Layer 2: Media Pipeline | Video routing, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
+| [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
 | [`pisound`](file:///d:/pisound) | Hardware connections | Layer 1: Southbound HW | BSS Soundweb London DSP audio router | Node 22+, Fastify, TS | `3300` (Soundweb: `1023`) |
@@ -24,6 +24,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pitube`](file:///d:/pitube) | Consumer edge | Layer 4: Presentation/Egress | YouTube Live lifecycle & delayed captions | Node 22+, TS | `3105` |
 | [`pivoice`](file:///d:/pivoice) | Hardware connections / Media | Layer 1 & 2: HW Capture/DSP | ALSA audio capture, Silero VAD, fanout | Node 24, ONNX Runtime | REST API & UDP Telemetry |
 | [`piperception`](file:///d:/piperception) | Media creation | Layer 2: Video Perception | Real-time YOLOX/ONNX person detection & tracking | Node/Python, ONNX | Ingests video, outputs 2D bboxes |
+| [`liturgos-auditor`](file:///d:/liturgos-auditor) | Media creation | Layer 2: Speech-to-Text | Real-time speech transcription (Whisper STT) | Python / Faster-Whisper | Ingests PCM, outputs text tokens |
 | [`piecosystem`](file:///d:/piecosystem) | Coordination | +1 Governance Plane | Architecture, roadmap & coordination | Node, Markdown | N/A |
 
 ---
@@ -127,14 +128,15 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ### 8. pimatrix
 - **Path**: `D:\pimatrix`
-- **Role**: High-performance video matrix switching, compositing, and multi-display control plane.
+- **Role**: High-performance video matrix router, hardware display driver, and live video compositor.
 - **Layers**:
-  - *Proposed*: Media creation
-  - *Refined*: Layer 2 (Real-Time Media Pipeline & Composition)
+  - *Proposed*: Hardware connections (Matrix router & display sink infrastructure)
+  - *Refined*: Layer 1 (Video Matrix Infrastructure & Hardware Display Sink) / Layer 2 (Live Compositing Pipeline)
 - **Key Capabilities**:
+  - Acts as the core video matrix/crossbar routing video between physical inputs, software sources, and physical display sinks.
   - Ingests multiple video streams (RTSP cameras, WebRTC feeds, RTMP desktop signals).
-  - Software and hardware-accelerated video compositing (PiP, lower thirds, slide overlays).
-  - Drives physical HDMI hardware outputs for sanctuary projectors and live stream program outputs.
+  - Drives physical HDMI hardware display ports (DRM/KMS) for sanctuary projectors and confidence displays.
+  - Hardware-accelerated video compositing engine (PiP, lower thirds, slide overlays).
 
 ---
 
