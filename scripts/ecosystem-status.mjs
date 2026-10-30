@@ -19,6 +19,7 @@ const PI_PROJECTS = [
   'picontrol',
   'picontrol-mcp',
   'pigateway',
+  'piencoder',
   'pigraphics',
   'pilight',
   'pimatrix',

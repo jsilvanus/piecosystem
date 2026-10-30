@@ -16,6 +16,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | Event orchestration | +1 Control Plane | MCP Server for AI agents (`pi://`) | Node 24, Fastify, TS | `3200` |
 | [`piagent`](file:///d:/piagent) | Agent Infrastructure | +1 Agentic Plane | Agent runtime & bus (LangGraph, Vercel AI SDK, MCP bridge, preemption) | Node 24, Fastify, TS | `3120` |
 | [`pigateway`](file:///d:/pigateway) | Hardware connections | Layer 1 & 3: HW & State | Central device broker & SSE bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`, `40000`; TCP: `6600`, `6601`) |
+| [`piencoder`](file:///d:/piencoder) | Hardware connections | Layer 1: Southbound HW | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | Node 22+, Fastify, TS | `3109` |
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |
 | [`pilight`](file:///d:/pilight) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3200` / `3201` (UDP: `21324`) |
 | [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
@@ -44,7 +45,9 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - *Refined*: Layer 1 (Southbound Hardware Interfacing)
 - **Key Capabilities**:
   - Direct binary VISCA packet encoding/decoding over UDP (`52381`) for pan/tilt velocity drive, zoom, focus, and power.
-  - Hardware presets management (`0–254`) with thumbnail attachments.
+  - Enriched hardware presets management (`0–254`) storing both feed thumbnails and FreeD optical ground truth (`pan`, `tilt`, `zoom`, `focus`), persisted to `data/presets.json` and `data/thumbnails/`.
+  - Automatic FreeD capture on preset save by querying `pigateway` (`GET /api/v1/cameras/:id/freed`).
+  - Real-time settling & motion tracking (`CameraSettlingTracker`): ingests FreeD telemetry, tracks multi-frame velocity, and emits `action: "preset:settled"` onto the event bus when travel physically halts.
   - AVer SmartFrame auto-framing toggle and FreeD tracking target configuration.
   - Defocus near-limit blur privacy toggle.
 - **Protocols & Interfaces**: Fastify REST API (`3300`), VISCA UDP (`52381`), HTTP CGI (`80`).
@@ -115,6 +118,21 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Authoritative Server-Sent Events bus (`GET /api/v1/events`).
   - Telemetry ingest for PiVoice UDP (`3101`) and PiSound UDP (`3102`).
   - **Rule**: Small, fast, boring Fastify daemon; never touches or buffers video/audio payload bytes.
+
+---
+
+### 6.5. piencoder
+- **Path**: `D:\piencoder`
+- **Role**: Multi-unit hardware streaming encoder controller microservice (Matrox Monarch HDX).
+- **Layers**:
+  - *Proposed*: Hardware connections
+  - *Refined*: Layer 1 (Southbound Hardware Interfacing)
+- **Key Capabilities**:
+  - Controls and monitors multiple physical hardware streaming encoder appliances (`/api/v1/encoder/:number`).
+  - Dual-channel stream and record orchestration (`encoder1`, `encoder2`, or `both`).
+  - Serialized busy retry queueing handling Monarch firmware `RETRY` responses.
+  - Video and audio lock status queries, bitrate configuration, and RTMP destination management.
+- **Protocols & Interfaces**: Fastify REST API (`3109`), SSE stream (`/events`), HTTP/HTTPS device control.
 
 ---
 

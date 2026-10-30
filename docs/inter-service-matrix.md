@@ -16,6 +16,7 @@ This document defines the network topology, listening ports, communication proto
 | **3106** | HTTP | `piswitch` | Universal video mixer (ATEM/software) | REST API & SSE |
 | **3107** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3108** | HTTP | `pispace` | Spatial engine, 3D venue digital twin & solver | REST API & SSE (`/events`) |
+| **3109** | HTTP | `piencoder` | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | REST API & SSE (`/events`) |
 | **3110** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
 | **3120** | HTTP | `piagent` | Centralized Agent Infrastructure Plane (LangGraph, AI SDK, MCP) | REST API & SSE (`/api/v1/agent/events`) |
 | **3200** | HTTP | `picontrol-mcp` | MCP Server for AI agents (`pi://`) | Streamable HTTP |
@@ -72,6 +73,9 @@ graph LR
     PIGATEWAY -->|HTTP Commands| PICAM["picam (3300)"]
     PIGATEWAY -->|HTTP Commands| PISOUND["pisound (3300)"]
     PIGATEWAY -->|HTTP Commands| PISWITCH
+
+    PICAM -->|FreeD Telemetry Query / Ingest| PIGATEWAY
+    CAMS["PTZ Cameras"] -->|FreeD UDP 40000| PIGATEWAY
 
     PITUBE -->|Heartbeat Status| PIGATEWAY
     PIVOICE["pivoice"] -->|Telemetry UDP 3101| PIGATEWAY
