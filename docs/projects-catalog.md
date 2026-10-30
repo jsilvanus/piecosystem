@@ -19,6 +19,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
+| [`pirundown-designer`](file:///d:/pirundown-designer) | Event orchestration / Authoring | +1 Control Plane & Staging | Visual authoring & cue-sheet designer for Rundown v2 YAML | Node 22+, React, Vite, Fastify | `3410` |
 | [`pisound`](file:///d:/pisound) | Hardware connections | Layer 1: Southbound HW | BSS Soundweb London DSP audio router | Node 22+, Fastify, TS | `3300` (Soundweb: `1023`) |
 | [`pispace`](file:///d:/pispace) | Event orchestration | Layer 3: Spatial Context | 3D venue digital twin & FreeD raycaster | Node 22+, Fastify, TS | `3108` |
 | [`piswitch`](file:///d:/piswitch) | Hardware connections | Layer 1 & 2: HW & Mixer | Video switcher microservice (ATEM & soft) | Node 22+, Fastify, TS | `3106` (ATEM: `9910`) |
@@ -273,3 +274,23 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Architectural source of truth and layer definition.
   - Cross-repo status tools (`scripts/ecosystem-status.mjs`).
   - Shared API contract schemas, port registries, and deployment roadmaps.
+
+---
+
+### 18. pirundown-designer
+- **Path**: `D:\pirundown-designer`
+- **Role**: Visual authoring and cue-sheet designer application for Rundown v2 YAML serving Riihimäen Keskuskirkko.
+- **Layers**:
+  - *Proposed*: Event orchestration / Authoring
+  - *Refined*: +1 Control Plane & Content Staging
+- **Key Capabilities**:
+  - Visual liturgical section grouping (*Johdanto*, *Sana*, *Rukous*, *Ehtoollinen*, *Päätös*) and cue item builder.
+  - Multi-Speaker / Priest Registry enforcing the role-only invariant (*if name is missing, lower-thirds only display the role*).
+  - Cue / trigger configurator with fuzzy-match threshold slider (0.80 default) and sound event triggers.
+  - Action palette (`cam`, `switch`, `graphic`, `pipgm`, `tally`, `alternate`, `var`).
+  - Lectionary & Kirkkovuosi (varfetch) connector integration.
+  - Bi-directional live synchronization with syntax-highlighted YAML editor and real-time Zod schema & variable interpolation validation.
+  - Built-in Finnish Lutheran template library (*Messu*, *Sanajumalanpalvelus*).
+  - Direct HTTP push egress: `POST http://localhost:3400/api/v1/rundown/load`.
+- **Protocols & Interfaces**: Fastify REST API & Web UI (`3410`), CLI `pirundown-designer`.
+

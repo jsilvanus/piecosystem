@@ -24,6 +24,7 @@ const PI_PROJECTS = [
   'pimatrix',
   'piprogram',
   'pirundown',
+  'pirundown-designer',
   'pisound',
   'pispace',
   'piswitch',

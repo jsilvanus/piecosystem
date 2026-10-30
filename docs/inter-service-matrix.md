@@ -22,6 +22,7 @@ This document defines the network topology, listening ports, communication proto
 | **3300** | HTTP | `picam` | PTZ camera service API | REST API |
 | **3300 / 3301** | HTTP | `pisound` | Sound & microphone service API | REST API |
 | **3400** | HTTP | `pirundown` | Service rundown engine API | REST API & SSE |
+| **3410** | HTTP | `pirundown-designer` | Visual authoring & cue-sheet designer for Rundown v2 YAML | Web UI & REST API |
 | **6501 / 6600** | TCP | `pigateway` | AMX NetLinx master communication | Raw TCP socket |
 | **6601** | TCP | `pigateway` / `pimatrix` | Forwarded video AMX command line | Raw TCP socket |
 | **8080 / 8081** | HTTP | `pimatrix` | Video routing & compositor API | REST API & WebSocket |
@@ -45,6 +46,8 @@ graph LR
     PICONTROL["picontrol (3000)"] -->|HTTP / SSE| PIGATEWAY
     PICONTROL -->|HTTP| PIRUNDOWN
     PICONTROL -->|HTTP| PIMATRIX
+
+    DESIGNER["pirundown-designer (3410)"] -->|HTTP POST /api/v1/rundown/load| PIRUNDOWN
 
     PIRUNDOWN -->|HTTP Actions| PIGATEWAY
     PIRUNDOWN -->|HTTP Actions| PIMATRIX
