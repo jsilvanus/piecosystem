@@ -128,15 +128,19 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ### 8. pimatrix
 - **Path**: `D:\pimatrix`
-- **Role**: High-performance video matrix router, hardware display driver, and live video compositor.
+- **Role**: Raspberry Pi video routing matrix, effects processor, and hardware display controller.
 - **Layers**:
-  - *Proposed*: Hardware connections (Matrix router & display sink infrastructure)
-  - *Refined*: Layer 1 (Video Matrix Infrastructure & Hardware Display Sink) / Layer 2 (Live Compositing Pipeline)
+  - *Proposed*: Hardware connections (Video matrix crossbar & display sink infrastructure)
+  - *Refined*: Layer 1 (Video Routing Infrastructure & Hardware Display Sink)
 - **Key Capabilities**:
-  - Acts as the core video matrix/crossbar routing video between physical inputs, software sources, and physical display sinks.
-  - Ingests multiple video streams (RTSP cameras, WebRTC feeds, RTMP desktop signals).
-  - Drives physical HDMI hardware display ports (DRM/KMS) for sanctuary projectors and confidence displays.
-  - Hardware-accelerated video compositing engine (PiP, lower thirds, slide overlays).
+  - **Video Matrix Crossbar**: Routes video sources (`cam1`–`cam3`, `hama`, `rtmp1`/`rtmp2`, `PiPGM1`–`PiPGM3`) to display outputs (`hdmi0`, `hdmi1`, `multiview`).
+  - **Source Effects**: Applies real-time crop, rotation, and fade-to-black slates per source via MediaMTX relays.
+  - **Hardware Display Driver**: Directly drives the Pi's physical HDMI outputs (DRM/KMS) for sanctuary projectors and confidence monitors.
+  - **Multiview**: Generates responsive multi-channel monitoring multiviews for mobile and desktop browser operators.
+  - **Slide Key Composites**: 
+    - `compose1`: HDMI key page rendering a slide box (left/right, scale 0.6–1.0, chroma/luma keying).
+    - `compose2`: Uploads media stills to the ATEM switcher media pool for downstream keying (DSK).
+  *(Note: It does not generate lower thirds or generic broadcast PiPs; DSK keying is handled on the ATEM switcher or in presentation software).*
 
 ---
 

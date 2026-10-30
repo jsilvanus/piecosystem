@@ -122,7 +122,7 @@ flowchart TD
 ### Layer 1: Southbound Hardware & Physical Interfacing
 - **Mission**: Isolate vendor-specific hardware protocols behind clean microservices with REST/SSE interfaces, and manage physical AV routing infrastructure.
 - **Projects**:
-  - `pimatrix` (Video Matrix Infrastructure & Display Sink): The primary video crossbar router, interfacing with physical HDMI display ports (DRM/KMS), camera hardware capture (V4L2/CSI), and driving physical sanctuary projection feeds.
+  - `pimatrix`: Video routing crossbar and display sink controller. Routes video streams to physical HDMI outputs (DRM/KMS), manages source effects (crop, rotation, fade-to-black), and manages slide key pages (`compose1` HDMI key, `compose2` ATEM media still).
   - `picam`: Direct binary VISCA-over-IP (UDP 52381) and HTTP CGI for PTZ cameras (pan/tilt speeds, optical zoom, presets, AVer SmartFrame, defocus privacy blur).
   - `piswitch`: Video switcher driver for Blackmagic ATEM switchers (UDP 9910) and local software fallback switchers.
   - `pisound`: Harman London Direct Inject protocol (TCP 1023) to control BSS Soundweb London BLU-100 DSP (handheld mics, madonnas, sanctuary wired mics, auto-mixer vs SQ-5 presets).
@@ -138,7 +138,6 @@ flowchart TD
   - `picompanion`: Windows desktop companion utilizing virtual monitor drivers to push screen captures as RTMP signals into the matrix.
   - `liturgos-auditor`: Speech-to-Text (STT) transcription engine converting spoken audio into real-time text tokens, timestamps, and caption feeds.
   - `piperception` (Upcoming): Dedicated computer vision microservice running YOLOX on ONNX Runtime to perform real-time person detection, multi-person tracking, and 2D bounding box extraction from camera frames.
-  - `pimatrix` (Compositing Engine part): Real-time video compositing, PiP layouts, and graphic overlays.
   - `pivoice` (Signal Processing part): In-process Silero VAD neural voice activity detection, energy gating, acoustic spectral analysis, and clean PCM audio distribution.
 
 ### Layer 3: Orchestration, State & Event Plane (Workflow Plane)
