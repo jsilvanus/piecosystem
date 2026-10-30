@@ -48,12 +48,14 @@ To preserve the simplicity of the proposed model while respecting broadcast engi
 flowchart TD
     subgraph CP["CROSS-CUTTING CONTROL & AGENTIC PLANE"]
         MCP["picontrol-mcp<br/>(AI Agents / pi:// Resources)"]
+        AGENT["piagent<br/>(Agent Plane: LangGraph, AI SDK, Preemption)"]
         UI["picontrol<br/>(Operator UI & CLI)"]
         GOV["piecosystem<br/>(Coordination, Contracts & CI/CD)"]
     end
 
     subgraph L3["LAYER 3: ORCHESTRATION & STATE PLANE"]
-        RUNDOWN["pirundown<br/>(Service Rundowns, Cues, YAML v2)"]
+        RUNDOWN["pirundown & pirundown-designer<br/>(Service Rundowns, Cues, YAML v2)"]
+        DIRECTOR["pidirector<br/>(Local AI Stream Director / Ollama)"]
         SPACE["pispace<br/>(3D Digital Twin, Raycaster, Zone Solver)"]
         GATEWAY["pigateway<br/>(Central Device State & SSE Bus)"]
     end
@@ -61,10 +63,12 @@ flowchart TD
     subgraph L2["LAYER 2: MEDIA PIPELINE & REAL-TIME COMPOSITION"]
         CANVA["picanva<br/>(Canva Slide App)"]
         PGM["piprogram<br/>(Hymns, Slides, PPTX)"]
+        GRAPHICS["pigraphics<br/>(HTML5/CSS Lower-Thirds & Overlays)"]
         COMPANION["picompanion<br/>(Virtual Displays / RTMP)"]
         PERCEPTION["piperception<br/>(YOLOX / ONNX Bbox & Person Tracking)"]
         VOICE_DSP["pivoice<br/>(ALSA Capture, Silero VAD, PCM Fanout)"]
         MATRIX["pimatrix & piswitch<br/>(Compositor, Video Matrix, Multiview)"]
+        MEDIAMTX["mediamtx & fffleet<br/>(RTSP/RTMP/WebRTC Core & Transcoding)"]
     end
 
     subgraph L1["LAYER 1: SOUTHBOUND HARDWARE & PHYSICAL INTERFACING"]
@@ -135,15 +139,20 @@ flowchart TD
 - **Projects**:
   - `picanva`: Canva App plugin for liturgical slides, worship lyrics, and real-time presentation control.
   - `piprogram`: Presentation content engine for slide distribution, PPTX conversion, hymn lyric formatting, and stage displays.
+  - `pigraphics`: Broadcast graphics engine rendering HTML5/CSS animated lower thirds, speaker tags, liturgy badges, bug/clock overlays, and alpha-keyed outputs.
   - `picompanion`: Windows desktop companion utilizing virtual monitor drivers to push screen captures as RTMP signals into the matrix.
+  - `mediamtx`: Ultra-low-latency RTSP, RTMP, WebRTC, and HLS media router / relay server.
+  - `fffleet`: Distributed FFmpeg transcode & stream orchestration cluster (leader + workers) for parallel stream encoding.
   - `liturgos-auditor`: Speech-to-Text (STT) transcription engine converting spoken audio into real-time text tokens, timestamps, and caption feeds.
-  - `piperception` (Upcoming): Dedicated computer vision microservice running YOLOX on ONNX Runtime to perform real-time person detection, multi-person tracking, and 2D bounding box extraction from camera frames.
+  - `piperception`: Dedicated computer vision microservice running YOLOX on ONNX Runtime to perform real-time person detection, multi-person tracking, and 2D bounding box extraction from camera frames.
   - `pivoice` (Signal Processing part): In-process Silero VAD neural voice activity detection, energy gating, acoustic spectral analysis, and clean PCM audio distribution.
 
 ### Layer 3: Orchestration, State & Event Plane (Workflow Plane)
 - **Mission**: Deterministic, reproducible run-of-show execution, spatial world modeling, and real-time state synchronization across all systems.
 - **Projects**:
   - `pirundown`: Automated service rundown engine executing YAML v2 cue sheets with `varfetch` dynamic parameter resolution.
+  - `pirundown-designer`: Visual web interface for authoring, validating, schema-checking, and live-previewing YAML v2 cue sheets.
+  - `pidirector`: Autonomous and advisory local AI stream director coordinating cameras, ATEM cuts, and rundown pacing via Ollama LLMs and MCP role-based permissions.
   - `pispace`: Spatial engine and geometric digital-twin service. Fuses FreeD camera tracking telemetry (`UDP 40000`) and 2D bounding boxes (from `piperception`) to calculate real-time 3D positions $(X, Y, Z)$ within sanctuary zones (`pulpit`, `lectern`, `altar`, `choir`), and provides inverse PTZ targeting solvers.
   - `pigateway` (Event Broker part): Low-latency Server-Sent Events (SSE) bus (`GET /api/v1/events`), maintaining authoritative cache of system and device states.
 

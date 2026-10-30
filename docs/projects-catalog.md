@@ -13,6 +13,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`picompanion`](file:///d:/picompanion) | Media creation | Layer 2: Media Pipeline | Windows virtual monitor & RTMP sender | C#, .NET, IddCx Driver | RTMP out |
 | [`picontrol`](file:///d:/picontrol) | Event orchestration | +1 Control Plane | Operator Web UI housing & CLI | Node 22+, React, Vite | `3000` (UI dev: `5173`) |
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | Event orchestration | +1 Control Plane | MCP Server for AI agents (`pi://`) | Node 24, Fastify, TS | `3200` |
+| [`piagent`](file:///d:/piagent) | Agent Infrastructure | +1 Agentic Plane | Agent runtime & bus (LangGraph, Vercel AI SDK, MCP bridge, preemption) | Node 24, Fastify, TS | `3120` |
 | [`pigateway`](file:///d:/pigateway) | Hardware connections | Layer 1 & 3: HW & State | Central device broker & SSE bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`, `40000`; TCP: `6600`, `6601`) |
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |
 | [`pilight`](file:///d:/pilight) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3200` / `3201` (UDP: `21324`) |
@@ -20,6 +21,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
 | [`pirundown-designer`](file:///d:/pirundown-designer) | Event orchestration / Authoring | +1 Control Plane & Staging | Visual authoring & cue-sheet designer for Rundown v2 YAML | Node 22+, React, Vite, Fastify | `3410` |
+| [`pidirector`](file:///d:/pidirector) | Event orchestration / Directing | Layer 3 & +1 AI Director | Local AI stream director & co-pilot (Ollama, MCP auth, Rundown v2) | Node 24, Fastify, TS, Ollama | `3450` |
 | [`pisound`](file:///d:/pisound) | Hardware connections | Layer 1: Southbound HW | BSS Soundweb London DSP audio router | Node 22+, Fastify, TS | `3300` (Soundweb: `1023`) |
 | [`pispace`](file:///d:/pispace) | Event orchestration | Layer 3: Spatial Context | 3D venue digital twin & FreeD raycaster | Node 22+, Fastify, TS | `3108` |
 | [`piswitch`](file:///d:/piswitch) | Hardware connections | Layer 1 & 2: HW & Mixer | Video switcher microservice (ATEM & soft) | Node 22+, Fastify, TS | `3106` (ATEM: `9910`) |
@@ -203,17 +205,19 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 13. piperception (Upcoming)
-- **Path**: `D:\piperception` (in transition from `lcyt-compute/src/perception`)
+### 13. piperception
+- **Path**: `D:\piperception`
 - **Role**: Dedicated computer vision microservice providing real-time neural detection, tracking, and 2D bounding box extraction.
 - **Layers**:
   - *Proposed*: Media creation / Video analysis
   - *Refined*: Layer 2 (Media Pipeline & Computer Vision)
 - **Key Capabilities**:
   - Real-time person detection using YOLOX on ONNX Runtime CPU/GPU.
-  - Multi-person tracking with persistent track IDs (ByteTrack/Sort).
-  - Normalised 2D bounding boxes (`[x, y, w, h]`), confidence scores, and crop framing.
-  - Feeds 2D detections into `pispace` (`POST /api/v1/perception`) for 3D world projection.
+  - Multi-person tracking with persistent track IDs (ByteTrack with two-stage association).
+  - Normalized 2D bounding boxes (`[x, y, w, h]`), confidence scores, and crop framing.
+  - Feeds 2D detections into `pispace` (`POST /api/v1/spatial/tracks`) for 3D world projection and camera ray intersection.
+  - Standalone Fastify server, Web UI monitor, and CLI `piperception`.
+- **Protocols & Interfaces**: Fastify REST API & SSE on port `3110`.
 
 ---
 
@@ -293,4 +297,102 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Built-in Finnish Lutheran template library (*Messu*, *Sanajumalanpalvelus*).
   - Direct HTTP push egress: `POST http://localhost:3400/api/v1/rundown/load`.
 - **Protocols & Interfaces**: Fastify REST API & Web UI (`3410`), CLI `pirundown-designer`.
+
+---
+
+## Adjacent Media & Infrastructure Projects
+
+### 19. liturgos-auditor
+- **Path**: `D:\liturgos-auditor`
+- **Role**: Self-hosted speech-to-text (STT) inference service (default language Finnish) for transcribing live worship streams and sermons, with custom acoustic model tuning.
+- **Layers**: Refined Layer 2 (Media Pipeline & STT) & Layer 4 (Egress Text)
+- **Key Capabilities**:
+  - FastAPI service wrapping `faster-whisper` (CTranslate2) with GPU/CPU execution.
+  - Two-priority inference queue: synchronous live chunked transcription (`/inference`, `/v1/audio/transcriptions`) prioritized ahead of background batch sermon jobs (`/v1/jobs`).
+  - Pull transcription: connects directly to live `rtsp://` or `srt://` streams and emits Server-Sent Events (`/v1/live`).
+  - Model registry CLI (`auditor-stt`) for crowd-sourced voice dataset training, LoRA fine-tuning, and model promotion.
+- **Protocols & Interfaces**: FastAPI REST & SSE on port `8090`.
+
+---
+
+### 20. web-radio-relay
+- **Path**: `D:\web-radio-relay`
+- **Role**: Web radio audio relay: live HLS stream stripping, server-enforced listener delay, and synchronized live captions for parish web listeners.
+- **Layers**: Refined Layer 4 (Presentation & Consumer Egress)
+- **Key Capabilities**:
+  - Pulls audio input (local RTMP or RTSP from MediaMTX), strips video via FFmpeg (`-vn`), generates HLS audio stream.
+  - Automatically archives each broadcast as a timestamped MP3.
+  - Delayed HLS playlist generator with configurable listener delay (e.g. matching church PA delay).
+  - Synchronized caption buffer delivering timed closed captions aligned with listener delay.
+  - Embeddable vanilla-JS web player widget (`web-radio-relay.js`).
+- **Protocols & Interfaces**: Nginx HLS on port `8080`, Node.js API on port `3000`, RTMP ingest on port `1935`.
+
+---
+
+### 21. fffleet
+- **Path**: `D:\fffleet`
+- **Role**: Fast Forward Fleet: distributed FFmpeg job queue, worker daemon pool, and orchestrator running renders and transcoding across church machines and cloud nodes.
+- **Layers**: Refined Layer 2 (Asynchronous Media Processing & Fleet Transcoding)
+- **Key Capabilities**:
+  - Unified client library (`fffleet`) with single job contract (`kind: batch | stream`).
+  - Local runner fallback (`local`) or cluster orchestrator (`fffleet-orchestrator`).
+  - Autoscaling worker pools (process workers, Docker containers, Hetzner Cloud instances).
+  - Hardware probing and capability matching (e.g. S3 staging, `ffprobe`, `yt-dlp` download jobs).
+  - Real-time job event streaming via Server-Sent Events.
+- **Protocols & Interfaces**: HTTP job API and dashboard (`/ui/`) on port `5000`, worker endpoints on ports `5101+`.
+
+---
+
+### 22. mediamtx
+- **Configuration**: `D:\deploy-media\config\mediamtx.yml`
+- **Role**: Real-time zero-latency media routing proxy, handling camera ingest, RTMP relay, and multi-protocol fanout.
+- **Layers**: Southbound & Media Data Plane
+- **Key Capabilities**:
+  - Zero-latency bridging between RTSP, RTMP, WebRTC (Whip/Whep), and HLS.
+  - Ingests HDMI capture dongles (Hama via FFmpeg) and IP camera feeds.
+  - Fans out live video to `pimatrix` compositing, `piperception` detection, and `web-radio-relay`.
+- **Protocols & Interfaces**: RTSP (`8554`), RTMP (`1935`), WebRTC (`8889`), HLS (`8888`).
+
+---
+
+### 23. deploy-media
+- **Path**: `D:\deploy-media`
+- **Role**: Unified Docker Compose production and development deployment orchestration for church media services.
+- **Layers**: +1 Governance & Deployment Automation
+- **Key Capabilities**:
+  - Declarative stack combining `mediamtx`, `auditor-stt` (CPU or NVIDIA CUDA GPU), `fffleet-orchestrator`, `fffleet-worker-ytdlp`, and S3 storage (`versitygw`).
+  - Overlays: `compose.local.yml` (localhost dev), `compose.gpu.yml` (CUDA acceleration), `compose.traefik.yml` (TLS & reverse proxy).
+  - CLI `./deploy` for updates, status, logs, and container lifecycle.
+
+---
+
+### 24. pidirector
+- **Path**: `D:\pidirector`
+- **Role**: Local AI broadcast director and intelligent co-pilot for church live streams using local LLMs (Ollama) and role-based MCP execution.
+- **Layers**: Refined Layer 3 (Orchestration & Workflow) & +1 Agentic Control Plane
+- **Key Capabilities**:
+  - Multi-sensor event synthesis ingesting VAD/audio (`pivoice`), Finnish transcripts (`liturgos-auditor`), YOLOX detections (`piperception`), and 3D stage zones (`pispace`).
+  - Local LLM inference via Ollama (`llama3.2:3b`, `qwen2.5:7b-instruct`) with structured JSON schema outputs.
+  - Guided by Rundown v2 AI instructions (global church broadcast policies + per-section/item cues).
+  - Authenticated least-privilege MCP client connecting to `picontrol-mcp` under dedicated `director` role.
+  - Autonomous director mode (live camera presets and ATEM cuts) or Advisory co-pilot mode for human operators.
+  - Architectural spec: [pidirector-architecture-plan.md](pidirector-architecture-plan.md).
+- **Protocols & Interfaces**: Fastify REST & SSE on port `3450`.
+
+---
+
+### 25. piagent
+- **Path**: `D:\piagent`
+- **Role**: Centralized Agent Infrastructure Plane providing LangGraph.js multi-agent state machines, Vercel AI SDK Generative UI streaming, Ollama priority scheduling, and AbortController live interruption.
+- **Layers**: +1 Agentic Control Plane
+- **Key Capabilities**:
+  - Bridges Ollama inference with `picontrol-mcp` tool execution with user/service role-based token forwarding.
+  - SSE Generative UI wire streaming consumed by React `useChat` in `picontrol`.
+  - Priority scheduler and VRAM arbiter prioritizing real-time `pidirector` calls over conversational UI queries.
+  - Inter-agent message router and mailbox manager (Agent-as-a-Tool and asynchronous intent blackboard).
+  - Out-of-band hard preemption ($<5\text{ms}$) via `AbortController` and `pigateway` SSE bus.
+  - Architectural spec: [piagent-architecture-plan.md](piagent-architecture-plan.md).
+- **Protocols & Interfaces**: Fastify REST & SSE on port `3120`.
+
+
 

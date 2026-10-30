@@ -31,7 +31,15 @@ const PI_PROJECTS = [
   'pitube',
   'pivoice',
   'piperception',
-  'piecosystem'
+  'pidirector',
+  'piagent',
+  'piecosystem',
+  // Adjacent & Infrastructure
+  'liturgos-auditor',
+  'web-radio-relay',
+  'fffleet',
+  'live-captions-yt',
+  'deploy-media'
 ];
 
 console.log('\n======================================================');

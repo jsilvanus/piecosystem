@@ -17,17 +17,28 @@ This document defines the network topology, listening ports, communication proto
 | **3107** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3108** | HTTP | `pispace` | Spatial engine, 3D venue digital twin & solver | REST API & SSE (`/events`) |
 | **3110** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
+| **3120** | HTTP | `piagent` | Centralized Agent Infrastructure Plane (LangGraph, AI SDK, MCP) | REST API & SSE (`/api/v1/agent/events`) |
 | **3200** | HTTP | `picontrol-mcp` | MCP Server for AI agents (`pi://`) | Streamable HTTP |
 | **3200 / 3201** | HTTP | `pilight` | Tally light controller API | REST API |
 | **3300** | HTTP | `picam` | PTZ camera service API | REST API |
 | **3300 / 3301** | HTTP | `pisound` | Sound & microphone service API | REST API |
 | **3400** | HTTP | `pirundown` | Service rundown engine API | REST API & SSE |
 | **3410** | HTTP | `pirundown-designer` | Visual authoring & cue-sheet designer for Rundown v2 YAML | Web UI & REST API |
+| **3450** | HTTP | `pidirector` | Local AI Stream Director engine | REST API & SSE (`/api/v1/director/stream`) |
+| **11434** | HTTP | `ollama` | Local LLM inference server (Llama 3.2, Qwen 2.5) | HTTP REST API |
+| **1023** | TCP | BSS Soundweb BLU-100 | Harman London Direct Inject | TCP binary protocol |
+| **1935** | TCP/RTMP | `mediamtx` / `web-radio-relay` | RTMP video and audio ingestion | Streaming media |
+| **5000** | HTTP | `fffleet-orchestrator` | Fleet job queue API & Web Dashboard (`/ui/`) | REST API & Web UI |
+| **5101+** | HTTP | `fffleet-worker` | Worker process & daemon job execution | REST API |
 | **6501 / 6600** | TCP | `pigateway` | AMX NetLinx master communication | Raw TCP socket |
 | **6601** | TCP | `pigateway` / `pimatrix` | Forwarded video AMX command line | Raw TCP socket |
+| **8080** | HTTP | `web-radio-relay` | HLS audio streaming & archive MP3 files | HTTP file server |
 | **8080 / 8081** | HTTP | `pimatrix` | Video routing & compositor API | REST API & WebSocket |
+| **8090** | HTTP | `liturgos-auditor` | Speech-to-text inference API & live SSE | REST API & SSE (`/v1/live`) |
+| **8554** | TCP/RTSP | `mediamtx` | RTSP live camera streaming crossbar | Streaming media |
+| **8888** | HTTP | `mediamtx` | HLS video output | HTTP video |
+| **8889** | HTTP/WebRTC | `mediamtx` | Low-latency WebRTC (Whip/Whep) stream | WebRTC media |
 | **9910** | UDP | ATEM Switcher | Blackmagic ATEM hardware protocol | UDP binary packets |
-| **1023** | TCP | BSS Soundweb BLU-100 | Harman London Direct Inject | TCP binary protocol |
 | **21324** | UDP | Tally-Ma Lights | 29-byte multi-segment LED protocol | UDP binary broadcast |
 | **40000** | UDP | `pigateway` | FreeD camera tracking telemetry | UDP binary datagrams |
 | **52381** | UDP | PTZ Cameras | Sony / AVer VISCA-over-IP | UDP binary packets |
