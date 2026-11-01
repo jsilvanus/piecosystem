@@ -1,0 +1,89 @@
+# Operator PC stack (Windows + Docker Desktop, WSL2 backend; also fine on Linux).
+#   - auditor-stt   liturgos-auditor speech-to-text (CPU by default, GPU with compose.gpu.yml)
+#   - fleet-worker  LCYT "fat" fffleet worker: ffmpeg + DSK (type:dsk) + perception (type:perception)
+#   - ollama        local LLM server, reachable only from this compose network and from localhost
+# The fffleet orchestrator runs on the Pi (kirkonpi, wired 192.168.1.78:5000), not here.
+#
+#   cp .env.example .env   # fill in tokens and this PC's LAN address
+#   docker compose up -d
+#   docker compose -f compose.yml -f compose.gpu.yml up -d     # NVIDIA GPU
+#   docker compose exec ollama ollama pull llama3.1:8b
+# Nothing here has been run on the real machines yet.
+name: operator-pc
+
+services:
+  auditor-stt:
+    image: ghcr.io/jsilvanus/liturgos-auditor-stt:${AUDITOR_VERSION:-latest}
+    ports:
+      - "${AUDITOR_STT_HOST_PORT:-8090}:8090"
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+    environment:
+      AUDITOR_STT_MODEL: ${AUDITOR_STT_MODEL:-large-v3-turbo}
+      AUDITOR_STT_MODEL_DIR: /models
+      AUDITOR_STT_DEVICE: ${AUDITOR_STT_DEVICE:-cpu}
+      AUDITOR_STT_DEFAULT_LANGUAGE: ${AUDITOR_STT_DEFAULT_LANGUAGE:-fi}
+      AUDITOR_STT_DATA_DIR: /data
+      AUDITOR_STT_API_KEY: ${AUDITOR_STT_API_KEY:-}
+      AUDITOR_STT_REGISTRY_DIR: /models/registry
+      AUDITOR_STT_MAX_QUEUE: ${AUDITOR_STT_MAX_QUEUE:-8}
+    volumes:
+      - auditor-stt-models:/models
+      - auditor-stt-data:/data
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    restart: unless-stopped
+
+  fleet-worker:
+    image: ghcr.io/jsilvanus/lcyt-fleet-worker:${LCYT_FLEET_WORKER_VERSION:-latest}
+    ports:
+      - "${FFFLEET_WORKER_PORT:-5100}:5100"
+    environment:
+      PORT: "5100"
+      FFFLEET_WORKER_ID: ${FFFLEET_WORKER_ID:-operator-pc}
+      # The orchestrator calls the worker back on this address: the PC's LAN address, not a container name.
+      FFFLEET_ADVERTISE_URL: ${FFFLEET_ADVERTISE_URL:?set FFFLEET_ADVERTISE_URL, e.g. http://192.168.1.50:5100}
+      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://192.168.1.78:5000}
+      FFFLEET_WORKER_TOKEN: ${FFFLEET_WORKER_TOKEN:?set FFFLEET_WORKER_TOKEN}
+      FFFLEET_SLOTS: ${FFFLEET_SLOTS:-default=2,stream=1}
+      # Tags for job routing. Jobs choose workers by worker id (workerPreference) and by `requires`, so keep
+      # `host:` and `tier:` here; the priority order itself (assisting 1, operator 2, pi 3) is set by the
+      # orchestrator side. FFFLEET_PRIORITY is passed through for the job-priority work and is ignored until
+      # fffleet reads it.
+      FFFLEET_CAPABILITIES: ${FFFLEET_CAPABILITIES:-host:operator-pc,tier:2}
+      FFFLEET_PRIORITY: ${FFFLEET_PRIORITY:-2}
+      # Reachability probes: a worker that cannot see these drops out of scheduling by itself.
+      FFFLEET_PROBE: ${FFFLEET_PROBE:-ollama=ollama:11434,auditor=auditor-stt:8090}
+      # lcyt-fleet-worker already sets FFFLEET_EXECUTORS (perception + dsk) and the Chromium path.
+      OLLAMA_URL: http://ollama:11434
+      AUDITOR_STT_URL: http://auditor-stt:8090
+      AUDITOR_STT_API_KEY: ${AUDITOR_STT_API_KEY:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      FFFLEET_S3_ENDPOINT: ${FFFLEET_S3_ENDPOINT:-}
+      FFFLEET_S3_PATH_STYLE: ${FFFLEET_S3_PATH_STYLE:-}
+    # Chromium needs more shared memory than Docker's 64 MB default.
+    shm_size: "1gb"
+    depends_on:
+      - ollama
+      - auditor-stt
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:${OLLAMA_VERSION:-latest}
+    volumes:
+      - ollama-data:/root/.ollama
+    # Ollama has no auth: reachable from this PC only. Other containers use http://ollama:11434.
+    ports:
+      - "127.0.0.1:${OLLAMA_HOST_PORT:-11434}:11434"
+    restart: unless-stopped
+
+volumes:
+  auditor-stt-models:
+  auditor-stt-data:
+  ollama-data:
