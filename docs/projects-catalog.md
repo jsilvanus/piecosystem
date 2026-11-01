@@ -20,6 +20,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`piencoder`](file:///d:/piencoder) | Hardware connections | Layer 1: Southbound HW | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | Node 22+, Fastify, TS | `3109` |
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |
 | [`pilight`](file:///d:/pilight) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3200` / `3201` (UDP: `21324`) |
+| [`pipoe`](file:///d:/pipoe) | Hardware connections | Layer 1: Southbound HW | PoE switch controller (PLANET GS-4210-16P2S, SNMP): port status, PoE on/off/cycle | Node 22+, Fastify, TS | `3302` (SNMP: `161`) |
 | [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
@@ -427,6 +428,19 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Molecules: ATEM bus selector, PTZ pads/preset cards, audio faders, caption feeds, rundown item cards, tally facet widgets, agent cards, chat bubbles, and tool invocation cards.
 - **Protocols & Interfaces**: ESM Package `@piecosystem/piui`.
 
+---
 
-
-
+### 27. pipoe
+- **Path**: `D:\pipoe`
+- **Repository**: [https://github.com/jsilvanus/pipoe](https://github.com/jsilvanus/pipoe)
+- **Role**: Small controller for the rack's PoE switch (PLANET GS-4210-16P2S). Reads which ports are active and what they draw, switches PoE on or off per port, and cycles a port (power-cycle a frozen camera, for example).
+- **Layers**:
+  - *Proposed*: Hardware connections
+  - *Refined*: Layer 1 (Southbound Hardware Interfacing)
+- **Key Capabilities**:
+  - Per-port PoE state, link and power (watts, if the switch reports it) plus switch totals (`GET /api/v1/poe`).
+  - PoE on/off with read-back verification, and `cycle` (off, wait 1-60 s, on). Only ports named in `PIPOE_PORT_NAMES` can be switched; one operation per port at a time.
+  - SNMP v2c driver on the standard PoE MIB (RFC 3621); simulation mode by default; optional bearer token.
+  - No polling, watchdog or automatic cycling: callers (for example picam's freeze handling) decide when to cycle.
+- **Protocols & Interfaces**: Fastify REST on port `3302` (`/openapi.json`), CLI `pipoe`, SNMP UDP `161` to the switch (factory address `192.168.0.100`, moving to `192.168.1.2`).
+- **Status**: never run against the real switch; SNMP is off on the switch until it is enabled in its web UI. See the pipoe README for the read-only probes.

@@ -24,12 +24,14 @@ This document defines the network topology, listening ports, communication proto
 | **3200 / 3201** | HTTP | `pilight` | Tally light controller API | REST API |
 | **3300** | HTTP | `picam` | PTZ camera service API | REST API |
 | **3300 / 3301** | HTTP | `pisound` | Sound & microphone service API | REST API |
+| **3302** | HTTP | `pipoe` | PoE switch controller (PLANET switch via SNMP) | REST API |
 | **3400** | HTTP | `pirundown` | Service rundown engine API | REST API & SSE |
 | **3410** | HTTP | `pirundown-designer` | Visual authoring & cue-sheet designer for Rundown v2 YAML | Web UI & REST API |
 | **3450** | HTTP | `pidirector` | Local AI Stream Director engine | REST API & SSE (`/api/v1/director/stream`) |
 | **11434** | HTTP | `ollama` | Local LLM inference server (Llama 3.2, Qwen 2.5) | HTTP REST API |
 | **1023** | TCP | BSS Soundweb BLU-100 | Harman London Direct Inject | TCP binary protocol |
 | **1935** | TCP/RTMP | `mediamtx` / `web-radio-relay` | RTMP video and audio ingestion | Streaming media |
+| **161** | UDP | PLANET GS-4210-16P2S | SNMP v2c, polled on demand by `pipoe` | SNMP |
 | **5000** | HTTP | `fffleet-orchestrator` | Fleet job queue API & Web Dashboard (`/ui/`) | REST API & Web UI |
 | **5101+** | HTTP | `fffleet-worker` | Worker process & daemon job execution | REST API |
 | **6501 / 6600** | TCP | `pigateway` | AMX NetLinx master communication | Raw TCP socket |
