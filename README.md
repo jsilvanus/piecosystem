@@ -145,3 +145,79 @@ Output preview:
 │ 14      │ 'piecosystem'   │ '1.0.0' │ 'main'   │ 'Clean'│
 └─────────┴─────────────────┴─────────┴──────────┴────────┘
 ```
+
+---
+
+## 6. Ecosystem Catalog and Health Check
+
+`ecosystem.yaml` is the generated catalog of running services: name, port, health endpoint, version, dependencies, git origin. It is built from two inputs and is **not committed** (it records the local git origins of one machine). Node 22+ and pnpm 11 (`packageManager` pins it) are required.
+
+```bash
+pnpm install
+pnpm sync                          # write ecosystem.yaml
+pnpm sync --check               # exit 1 if ecosystem.yaml is stale (run where the sibling repos exist)
+pnpm health                        # probe every service once (table)
+pnpm health --json              # the same as JSON
+pnpm health --fail-on-unhealthy # exit 1 when a service is DEGRADED or OFFLINE
+pnpm test
+```
+
+Inputs:
+
+- **The `pi` block** in a sibling repository's `package.json` (the repository declares itself).
+- **`ecosystem.manual.yaml`** in this repository, for services that cannot carry a `pi` block: Python services, a directory without `package.json`, or a non-HTTP system. It has the same keys as the `pi` block plus `dir` (default: the service name), `runtime` (`node`, `python`, `other`) and `versionFile` (a `package.json` or `pyproject.toml` inside `dir` that supplies the version).
+
+Both are read from the ecosystem root: `PI_ROOT`, or the parent directory of this repository.
+
+### The pi block
+
+```json
+{
+  "pi": {
+    "service": "picam",
+    "displayName": "picam",
+    "layer": "Layer 1: Southbound HW",
+    "kind": "service",
+    "port": 3300,
+    "ports": { "visca": 52381 },
+    "healthEndpoint": "/health",
+    "envPortVar": "PICAM_PORT",
+    "healthAuthEnv": "PICAM_API_KEY",
+    "hostOverride": "kirkonpi.local"
+  }
+}
+```
+
+| Key | Required | Meaning |
+|---|---|---|
+| `service` | yes | Lowercase name, unique across the ecosystem. |
+| `displayName` | no | Human name (default: `service`). |
+| `layer` | no | Free text, e.g. the layer of the architecture. |
+| `kind` | no | `service` (default), `library` or `control`. A library or a service without a port is reported STATIC. |
+| `port` | with `healthEndpoint` | HTTP port, integer 1 to 65535. Duplicates fail the sync (see below). |
+| `ports` | no | Other named ports, e.g. `{ "visca": 52381 }`. Not checked for duplicates, not probed. |
+| `healthEndpoint` | with `port` | Path starting with `/`, probed with GET. |
+| `envPortVar` | no | Environment variable the service reads for its port. When that variable is set where the check runs, its value replaces `port`. |
+| `healthAuthEnv` | no | Environment variable holding an API key. When set, it is sent in the `X-Api-Key` header. |
+| `hostOverride` | no | Host the service runs on when it is not the probed host (`PI_HOST`). Also separates ports: two services may share a port when their `hostOverride` values differ. |
+
+Unknown keys are errors, so a misspelt key cannot silently disappear. A `pi` block and a manual entry for the same service: the `pi` block wins and the sync prints a warning (delete the manual entry). Two `pi` blocks with the same service name are an error.
+
+### What the sync checks and writes
+
+- **Duplicate HTTP ports fail the sync** and list the services that share the port. Fix the port, set `hostOverride` when the services run on different hosts, or pass `--allow-duplicates` to accept the duplicates with a warning.
+- The output has **no timestamp**: the file changes only when an input changes. `--check` compares content (CRLF line endings are ignored).
+- Each service records its git origin (credentials removed), version, `packageManager`, `engines`, and the versions of `fastify`, `typescript`, `tsx` and `zod` when they are declared.
+
+### Health states
+
+| State | Meaning |
+|---|---|
+| `ONLINE` | GET answered 2xx. |
+| `DEGRADED` | GET answered with another status, redirects included (not followed). |
+| `OFFLINE` | No answer within 1500 ms, or the connection failed (`ECONNREFUSED` etc.). |
+| `STATIC` | No `port` or no `healthEndpoint`: not probed. |
+
+The health check also prints each repository's git branch, the number of dirty files, and whether it uses pnpm (`pnpm-lock.yaml`), npm (`package-lock.json`), both or neither. The only network traffic is one GET per service; nothing is written.
+
+Tests: `test/generate-ecosystem.test.mjs` (fixture workspaces, duplicates, stale check, credential stripping) and `test/ecosystem-health.test.mjs` (a local HTTP server for each state). Neither touches a real service or a real sibling repository.
