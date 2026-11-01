@@ -26,7 +26,7 @@ graph TD
         OLLAMA["Ollama (:11434)<br/>(Llama 3.2, Qwen 2.5, Mistral)"]
     end
 
-    subgraph AGENT_PLANE["piagent (:3120) — Agent Infrastructure Plane"]
+    subgraph AGENT_PLANE["piagent (:3301) — Agent Infrastructure Plane"]
         SCHEDULER["Priority Scheduler & VRAM Arbiter"]
         GRAPH["LangGraph.js State Graph & Checkpointer"]
         ROUTER["Inter-Agent Message Bus & Mailbox Manager"]
@@ -35,14 +35,14 @@ graph TD
     end
 
     subgraph CONSUMERS["Domain Consumers"]
-        DIRECTOR["pidirector (:3450)<br/>(Live Stream Director)"]
+        DIRECTOR["pidirector (:3401)<br/>(Live Stream Director)"]
         CONTROL["picontrol (:3000)<br/>(Operator UI & Generative UI)"]
-        DESIGNER["pirundown-designer (:3410)<br/>(Rundown v2 Assistant)"]
+        DESIGNER["pirundown-designer (:3610)<br/>(Rundown v2 Assistant)"]
     end
 
     subgraph SOUTHBOUND["Execution & Event Bus"]
-        MCP["picontrol-mcp (:3200)<br/>(RBAC Tools & pi:// Resources)"]
-        GATEWAY["pigateway (:3100)<br/>(SSE Real-Time Event Bus)"]
+        MCP["picontrol-mcp (:3600)<br/>(RBAC Tools & pi:// Resources)"]
+        GATEWAY["pigateway (:3000)<br/>(SSE Real-Time Event Bus)"]
     end
 
     CONSUMERS -->|Direct / Chat Requests| AGENT_PLANE

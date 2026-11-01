@@ -1,0 +1,46 @@
+# Hand-written catalog entries for services that cannot carry a "pi" block in their
+# package.json (Python services, services without package.json, non-HTTP services).
+# Read by scripts/generate-ecosystem.mjs; the schema is the pi block schema of README.md
+# plus: dir (default: service), kind (service | library | control), runtime (node | python | other),
+# versionFile (package.json or pyproject.toml inside dir).
+services:
+  - service: liturgos-auditor
+    displayName: liturgos-auditor
+    dir: liturgos-auditor
+    layer: Layer 2 - Speech-to-Text
+    runtime: python
+    versionFile: python-packages/liturgos-auditor-stt/pyproject.toml
+    port: 8090
+    healthEndpoint: /health
+    envPortVar: AUDITOR_STT_PORT
+    healthAuthEnv: AUDITOR_STT_API_KEY
+
+  - service: web-radio-relay
+    displayName: web-radio-relay
+    dir: web-radio-relay
+    layer: Layer 4 - Consumer Edge
+    port: 8080
+    healthEndpoint: /api/health
+
+  - service: keskuskirkko
+    displayName: keskuskirkko (AMX NetLinx)
+    dir: keskuskirkko
+    layer: Layer 1 - Southbound HW
+    kind: control
+    runtime: other
+
+  - service: fffleet-orchestrator
+    displayName: fffleet orchestrator
+    dir: fffleet
+    versionFile: packages/fffleet-orchestrator/package.json
+    layer: Compute (shared)
+    port: 5000
+    healthEndpoint: /v1/health
+
+  - service: pitube
+    displayName: pitube
+    dir: pitube
+    layer: Layer 4 - Consumer Edge
+    port: 3105
+    healthEndpoint: /health
+    envPortVar: PITUBE_PORT

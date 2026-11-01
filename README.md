@@ -87,24 +87,24 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 
 | Project | Role & Description | Tech Stack | Port(s) |
 |---|---|---|---|
-| [`picam`](file:///d:/picam) | VISCA-over-IP & CGI PTZ camera controller & preset manager | Node 24, Fastify, TS | `3300`, VISCA `52381` |
+| [`picam`](file:///d:/picam) | VISCA-over-IP & CGI PTZ camera controller & preset manager | Node 24, Fastify, TS | `3102`, VISCA `52381` |
 | [`picanva`](file:///d:/picanva) | Canva App plugin for liturgical slides & presentation control | TS, Canva SDK, React | Canva Sandbox |
 | [`picompanion`](file:///d:/picompanion) | Windows virtual monitor driver & RTMP desktop sender | C#, .NET, IddCx | RTMP Out |
-| [`picontrol`](file:///d:/picontrol) | Operator UI console & unified CLI housing | React, Vite, Node 22+ | `3000` (Dev: `5173`) |
-| [`picontrol-mcp`](file:///d:/picontrol-mcp) | MCP Server exposing `pi://` resources to AI agents | Node 24, Fastify, TS | `3200` |
-| [`pigateway`](file:///d:/pigateway) | Central device broker, AMX NetLinx driver & SSE event bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`) |
-| [`pigraphics`](file:///d:/pigraphics) | Broadcast graphics engine, CSS animations & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |
-| [`pilight`](file:///d:/pilight) | Wireless multi-segment tally light controller (Tally-Ma) | Node 22+, Fastify, TS | `3200`/`3201`, UDP `21324` |
-| [`pipoe`](file:///d:/pipoe) | PoE switch controller: port status, PoE on/off/cycle (PLANET GS-4210-16P2S, SNMP) | Node 22+, Fastify, TS | `3302`, SNMP `161` |
+| [`picontrol`](file:///d:/picontrol) | Operator UI console & unified CLI housing | React, Vite, Node 22+ | `5173` (dev) |
+| [`picontrol-mcp`](file:///d:/picontrol-mcp) | MCP Server exposing `pi://` resources to AI agents | Node 24, Fastify, TS | `3600` |
+| [`pigateway`](file:///d:/pigateway) | Central device broker, AMX NetLinx driver & SSE event bus | Node 24, Fastify, TS | `3000` (UDP: `3101`, `3102`) |
+| [`pigraphics`](file:///d:/pigraphics) | Broadcast graphics engine, CSS animations & Fill/Key streaming | Node 22+, Fastify, TS | `3201` |
+| [`pilight`](file:///d:/pilight) | Wireless multi-segment tally light controller (Tally-Ma) | Node 22+, Fastify, TS | `3107`, UDP `21324` |
+| [`pipoe`](file:///d:/pipoe) | PoE switch controller: port status, PoE on/off/cycle (PLANET GS-4210-16P2S, SNMP) | Node 22+, Fastify, TS | `3108`, SNMP `161` |
 | [`pimatrix`](file:///d:/pimatrix) | Video routing, software compositing & display output plane | Node 24, GStreamer, C++ | `8080`, `8081` |
 | [`piprogram`](file:///d:/piprogram) | Hymns, slides, PPTX pipeline & stage confidence monitor | Node 24, Fastify, TS | Fastify Configurable |
 | [`pirundown`](file:///d:/pirundown) | Service rundown cue engine (Rundown v2 YAML, varfetch) | Node 22+, Fastify, TS | `3400` |
-| [`pisound`](file:///d:/pisound) | Sound & microphone controller for BSS Soundweb BLU-100 | Node 22+, Fastify, TS | `3300`, Soundweb `1023` |
-| [`pispace`](file:///d:/pispace) | 3D venue digital twin, FreeD raycasting & spatial PTZ solver | Node 22+, Fastify, TS | `3108` |
-| [`piswitch`](file:///d:/piswitch) | Universal video mixer service (ATEM & software switcher) | Node 22+, Fastify, TS | `3106`, ATEM UDP `9910` |
-| [`pitube`](file:///d:/pitube) | YouTube Live lifecycle manager & timed live caption sender | Node 22+, TS | `3105` |
-| [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3101` |
-| [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node 22+, Fastify, TS | `3110` |
+| [`pisound`](file:///d:/pisound) | Sound & microphone controller for BSS Soundweb BLU-100 | Node 22+, Fastify, TS | `3105`, Soundweb `1023` |
+| [`pispace`](file:///d:/pispace) | 3D venue digital twin, FreeD raycasting & spatial PTZ solver | Node 22+, Fastify, TS | `3203` |
+| [`piswitch`](file:///d:/piswitch) | Universal video mixer service (ATEM & software switcher) | Node 22+, Fastify, TS | `3103`, ATEM UDP `9910` |
+| [`pitube`](file:///d:/pitube) | YouTube Live lifecycle manager & timed live caption sender | Node 22+, TS | `3500` |
+| [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3106` |
+| [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node 22+, Fastify, TS | `3202` |
 | [`piecosystem`](file:///d:/piecosystem) | Ecosystem governance, architecture docs & dev coordination | Node, Markdown | N/A |
 
 👉 **Complete details on each project**: [docs/projects-catalog.md](docs/projects-catalog.md)
@@ -145,3 +145,79 @@ Output preview:
 │ 14      │ 'piecosystem'   │ '1.0.0' │ 'main'   │ 'Clean'│
 └─────────┴─────────────────┴─────────┴──────────┴────────┘
 ```
+
+---
+
+## 6. Ecosystem Catalog and Health Check
+
+`ecosystem.yaml` is the generated catalog of running services: name, port, health endpoint, version, dependencies, git origin. It is built from two inputs and is **not committed** (it records the local git origins of one machine). Node 22+ and pnpm 11 (`packageManager` pins it) are required.
+
+```bash
+pnpm install
+pnpm sync                          # write ecosystem.yaml
+pnpm sync --check               # exit 1 if ecosystem.yaml is stale (run where the sibling repos exist)
+pnpm health                        # probe every service once (table)
+pnpm health --json              # the same as JSON
+pnpm health --fail-on-unhealthy # exit 1 when a service is DEGRADED or OFFLINE
+pnpm test
+```
+
+Inputs:
+
+- **The `pi` block** in a sibling repository's `package.json` (the repository declares itself).
+- **`ecosystem.manual.yaml`** in this repository, for services that cannot carry a `pi` block: Python services, a directory without `package.json`, or a non-HTTP system. It has the same keys as the `pi` block plus `dir` (default: the service name), `runtime` (`node`, `python`, `other`) and `versionFile` (a `package.json` or `pyproject.toml` inside `dir` that supplies the version).
+
+Both are read from the ecosystem root: `PI_ROOT`, or the parent directory of this repository.
+
+### The pi block
+
+```json
+{
+  "pi": {
+    "service": "picam",
+    "displayName": "picam",
+    "layer": "Layer 1: Southbound HW",
+    "kind": "service",
+    "port": 3300,
+    "ports": { "visca": 52381 },
+    "healthEndpoint": "/health",
+    "envPortVar": "PICAM_PORT",
+    "healthAuthEnv": "PICAM_API_KEY",
+    "hostOverride": "kirkonpi.local"
+  }
+}
+```
+
+| Key | Required | Meaning |
+|---|---|---|
+| `service` | yes | Lowercase name, unique across the ecosystem. |
+| `displayName` | no | Human name (default: `service`). |
+| `layer` | no | Free text, e.g. the layer of the architecture. |
+| `kind` | no | `service` (default), `library` or `control`. A library or a service without a port is reported STATIC. |
+| `port` | with `healthEndpoint` | HTTP port, integer 1 to 65535. Duplicates fail the sync (see below). |
+| `ports` | no | Other named ports, e.g. `{ "visca": 52381 }`. Not checked for duplicates, not probed. |
+| `healthEndpoint` | with `port` | Path starting with `/`, probed with GET. |
+| `envPortVar` | no | Environment variable the service reads for its port. When that variable is set where the check runs, its value replaces `port`. |
+| `healthAuthEnv` | no | Environment variable holding an API key. When set, it is sent in the `X-Api-Key` header. |
+| `hostOverride` | no | Host the service runs on when it is not the probed host (`PI_HOST`). Also separates ports: two services may share a port when their `hostOverride` values differ. |
+
+Unknown keys are errors, so a misspelt key cannot silently disappear. A `pi` block and a manual entry for the same service: the `pi` block wins and the sync prints a warning (delete the manual entry). Two `pi` blocks with the same service name are an error.
+
+### What the sync checks and writes
+
+- **Duplicate HTTP ports fail the sync** and list the services that share the port. Fix the port, set `hostOverride` when the services run on different hosts, or pass `--allow-duplicates` to accept the duplicates with a warning.
+- The output has **no timestamp**: the file changes only when an input changes. `--check` compares content (CRLF line endings are ignored).
+- Each service records its git origin (credentials removed), version, `packageManager`, `engines`, and the versions of `fastify`, `typescript`, `tsx` and `zod` when they are declared.
+
+### Health states
+
+| State | Meaning |
+|---|---|
+| `ONLINE` | GET answered 2xx. |
+| `DEGRADED` | GET answered with another status, redirects included (not followed). |
+| `OFFLINE` | No answer within 1500 ms, or the connection failed (`ECONNREFUSED` etc.). |
+| `STATIC` | No `port` or no `healthEndpoint`: not probed. |
+
+The health check also prints each repository's git branch, the number of dirty files, and whether it uses pnpm (`pnpm-lock.yaml`), npm (`package-lock.json`), both or neither. The only network traffic is one GET per service; nothing is written.
+
+Tests: `test/generate-ecosystem.test.mjs` (fixture workspaces, duplicates, stale check, credential stripping) and `test/ecosystem-health.test.mjs` (a local HTTP server for each state). Neither touches a real service or a real sibling repository.

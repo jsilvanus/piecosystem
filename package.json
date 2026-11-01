@@ -4,9 +4,18 @@
   "description": "System architecture, cross-project planning, and developer coordination for the Raspberry Pi production ecosystem",
   "private": true,
   "type": "module",
-  "scripts": {
-    "status": "node scripts/ecosystem-status.mjs",
-    "status:ps": "powershell -ExecutionPolicy Bypass -File scripts/ecosystem-status.ps1"
+  "packageManager": "pnpm@11.23.0",
+  "engines": {
+    "node": ">=22"
   },
-  "devDependencies": {}
+  "scripts": {
+    "sync": "node scripts/generate-ecosystem.mjs",
+    "health": "node scripts/ecosystem-health.mjs",
+    "status": "node scripts/ecosystem-status.mjs",
+    "status:ps": "powershell -ExecutionPolicy Bypass -File scripts/ecosystem-status.ps1",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "devDependencies": {
+    "yaml": "^2.9.1"
+  }
 }
