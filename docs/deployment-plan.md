@@ -23,27 +23,27 @@ flowchart TD
     end
 
     subgraph NODE_PI_GATEWAY["Primary Gateway Pi (Raspberry Pi 5 / 8GB)"]
-        GW["pigateway (Port 3100)"]
-        MCP["picontrol-mcp (Port 3200)"]
+        GW["pigateway (Port 3000)"]
+        MCP["picontrol-mcp (Port 3600)"]
         UI["picontrol (Port 3000)"]
         RUNDOWN["pirundown (Port 3400)"]
-        DESIGNER["pirundown-designer (Port 3410)"]
+        DESIGNER["pirundown-designer (Port 3610)"]
     end
 
     subgraph NODE_PI_VIDEO["Video Compositor Pi (Raspberry Pi 5 / 8GB)"]
         MATRIX["pimatrix (Port 8080)<br/>(HDMI KMS Keying)"]
-        PISWITCH["piswitch (Port 3106)<br/>(ATEM UDP 9910 & Media Pool)"]
-        GRAPHICS["pigraphics (Port 3107)<br/>(HTML5 / CSS Keying)"]
-        SPACE["pispace (Port 3108)<br/>(3D Sanctuary Twin)"]
-        PERCEPTION["piperception (Port 3110)<br/>(YOLOX Person Tracker)"]
+        PISWITCH["piswitch (Port 3103)<br/>(ATEM UDP 9910 & Media Pool)"]
+        GRAPHICS["pigraphics (Port 3201)<br/>(HTML5 / CSS Keying)"]
+        SPACE["pispace (Port 3203)<br/>(3D Sanctuary Twin)"]
+        PERCEPTION["piperception (Port 3202)<br/>(YOLOX Person Tracker)"]
     end
 
     subgraph NODE_PI_AUDIO["Audio & Device Pi (Raspberry Pi 4 / 4GB)"]
-        VOICE["pivoice (Port 3101 UDP / REST)<br/>(ALSA Mic Capture & Silero VAD)"]
-        SOUND["pisound (Port 3300 / TCP 1023)<br/>(BSS BLU-100 DSP Controller)"]
-        CAM["picam (Port 3300 / UDP 52381)<br/>(VISCA-over-IP Controller)"]
-        LIGHT["pilight (Port 3200 / UDP 21324)<br/>(Tally-Ma Wireless Controller)"]
-        TUBE["pitube (Port 3105)<br/>(YouTube Lifecycle & Captions)"]
+        VOICE["pivoice (Port 3106 UDP / REST)<br/>(ALSA Mic Capture & Silero VAD)"]
+        SOUND["pisound (Port 3105 / TCP 1023)<br/>(BSS BLU-100 DSP Controller)"]
+        CAM["picam (Port 3102 / UDP 52381)<br/>(VISCA-over-IP Controller)"]
+        LIGHT["pilight (Port 3107 / UDP 21324)<br/>(Tally-Ma Wireless Controller)"]
+        TUBE["pitube (Port 3500)<br/>(YouTube Lifecycle & Captions)"]
     end
 
     subgraph CLOUD_EDGE["Edge / Cloud VM (Hetzner / VPS)"]
@@ -73,21 +73,21 @@ flowchart TD
 | **Workstation** | `fffleet-orchestrator` | `5000` | Docker (ghcr.io/jsilvanus/fffleet) | Included in `deploy-media` |
 | **Workstation** | `fffleet-worker` | Dynamic | Docker | Included in `deploy-media` |
 | **Workstation** | `picompanion` | Dynamic | .NET 9 WPF Service | `PiMatrixCompanion.exe` |
-| **Gateway Pi** | `pigateway` | `3100`, UDP `3101`, `3102` | Node 24 (Fastify) | `systemctl start pigateway` |
-| **Gateway Pi** | `picontrol-mcp` | `3200` | Node 24 (TypeScript) | `systemctl start picontrol-mcp` |
-| **Gateway Pi** | `picontrol` | `3000` (Dev: `5173`) | Node 22+ (React/Vite) | `systemctl start picontrol` |
+| **Gateway Pi** | `pigateway` | `3000`, UDP `3101`, `3102` | Node 24 (Fastify) | `systemctl start pigateway` |
+| **Gateway Pi** | `picontrol-mcp` | `3600` | Node 24 (TypeScript) | `systemctl start picontrol-mcp` |
+| **Gateway Pi** | `picontrol` | `5173` (dev) | Node 22+ (React/Vite) | `systemctl start picontrol` |
 | **Gateway Pi** | `pirundown` | `3400` | Node 22+ (Fastify) | `systemctl start pirundown` |
-| **Gateway Pi** | `pirundown-designer` | `3410` | Node 22+ (Fastify/React) | `systemctl start pirundown-designer` |
+| **Gateway Pi** | `pirundown-designer` | `3610` | Node 22+ (Fastify/React) | `systemctl start pirundown-designer` |
 | **Video Pi** | `pimatrix` | `8080`, `8081` | Node 24 + GStreamer | `systemctl start pimatrix` |
-| **Video Pi** | `piswitch` | `3106`, ATEM `9910` | Node 22+ (Fastify) | `systemctl start piswitch` |
-| **Video Pi** | `pigraphics` | `3107` | Node 22+ (Fastify) | `systemctl start pigraphics` |
-| **Video Pi** | `pispace` | `3108` | Node 22+ (Fastify) | `systemctl start pispace` |
-| **Video Pi** | `piperception` | `3110` | Node 22+ (ONNX Runtime) | `systemctl start piperception` |
-| **Audio Pi** | `pivoice` | `3101` UDP / REST | Node 24 (ALSA + Silero) | `systemctl start pivoice` |
-| **Audio Pi** | `pisound` | `3300`, Soundweb `1023` | Node 22+ (Fastify) | `systemctl start pisound` |
-| **Audio Pi** | `picam` | `3300`, VISCA `52381` | Node 24 (Fastify) | `systemctl start picam` |
-| **Audio Pi** | `pilight` | `3200`, UDP `21324` | Node 22+ (Fastify) | `systemctl start pilight` |
-| **Audio Pi** | `pitube` | `3105` | Node 22+ (Fastify) | `systemctl start pitube` |
+| **Video Pi** | `piswitch` | `3103`, ATEM `9910` | Node 22+ (Fastify) | `systemctl start piswitch` |
+| **Video Pi** | `pigraphics` | `3201` | Node 22+ (Fastify) | `systemctl start pigraphics` |
+| **Video Pi** | `pispace` | `3203` | Node 22+ (Fastify) | `systemctl start pispace` |
+| **Video Pi** | `piperception` | `3202` | Node 22+ (ONNX Runtime) | `systemctl start piperception` |
+| **Audio Pi** | `pivoice` | `3106` UDP / REST | Node 24 (ALSA + Silero) | `systemctl start pivoice` |
+| **Audio Pi** | `pisound` | `3105`, Soundweb `1023` | Node 22+ (Fastify) | `systemctl start pisound` |
+| **Audio Pi** | `picam` | `3102`, VISCA `52381` | Node 24 (Fastify) | `systemctl start picam` |
+| **Audio Pi** | `pilight` | `3107`, UDP `21324` | Node 22+ (Fastify) | `systemctl start pilight` |
+| **Audio Pi** | `pitube` | `3500` | Node 22+ (Fastify) | `systemctl start pitube` |
 | **Cloud VM** | `web-radio-relay` | `8080`, `1935`, `3000` | Docker (Nginx + Node) | `docker compose up -d` |
 
 ---
