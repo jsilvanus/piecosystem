@@ -87,24 +87,24 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 
 | Project | Role & Description | Tech Stack | Port(s) |
 |---|---|---|---|
-| [`picam`](file:///d:/picam) | VISCA-over-IP & CGI PTZ camera controller & preset manager | Node 24, Fastify, TS | `3300`, VISCA `52381` |
+| [`picam`](file:///d:/picam) | VISCA-over-IP & CGI PTZ camera controller & preset manager | Node 24, Fastify, TS | `3102`, VISCA `52381` |
 | [`picanva`](file:///d:/picanva) | Canva App plugin for liturgical slides & presentation control | TS, Canva SDK, React | Canva Sandbox |
 | [`picompanion`](file:///d:/picompanion) | Windows virtual monitor driver & RTMP desktop sender | C#, .NET, IddCx | RTMP Out |
-| [`picontrol`](file:///d:/picontrol) | Operator UI console & unified CLI housing | React, Vite, Node 22+ | `3000` (Dev: `5173`) |
-| [`picontrol-mcp`](file:///d:/picontrol-mcp) | MCP Server exposing `pi://` resources to AI agents | Node 24, Fastify, TS | `3200` |
-| [`pigateway`](file:///d:/pigateway) | Central device broker, AMX NetLinx driver & SSE event bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`) |
-| [`pigraphics`](file:///d:/pigraphics) | Broadcast graphics engine, CSS animations & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |
-| [`pilight`](file:///d:/pilight) | Wireless multi-segment tally light controller (Tally-Ma) | Node 22+, Fastify, TS | `3200`/`3201`, UDP `21324` |
-| [`pipoe`](file:///d:/pipoe) | PoE switch controller: port status, PoE on/off/cycle (PLANET GS-4210-16P2S, SNMP) | Node 22+, Fastify, TS | `3302`, SNMP `161` |
+| [`picontrol`](file:///d:/picontrol) | Operator UI console & unified CLI housing | React, Vite, Node 22+ | `5173` (dev) |
+| [`picontrol-mcp`](file:///d:/picontrol-mcp) | MCP Server exposing `pi://` resources to AI agents | Node 24, Fastify, TS | `3600` |
+| [`pigateway`](file:///d:/pigateway) | Central device broker, AMX NetLinx driver & SSE event bus | Node 24, Fastify, TS | `3000` (UDP: `3101`, `3102`) |
+| [`pigraphics`](file:///d:/pigraphics) | Broadcast graphics engine, CSS animations & Fill/Key streaming | Node 22+, Fastify, TS | `3201` |
+| [`pilight`](file:///d:/pilight) | Wireless multi-segment tally light controller (Tally-Ma) | Node 22+, Fastify, TS | `3107`, UDP `21324` |
+| [`pipoe`](file:///d:/pipoe) | PoE switch controller: port status, PoE on/off/cycle (PLANET GS-4210-16P2S, SNMP) | Node 22+, Fastify, TS | `3108`, SNMP `161` |
 | [`pimatrix`](file:///d:/pimatrix) | Video routing, software compositing & display output plane | Node 24, GStreamer, C++ | `8080`, `8081` |
 | [`piprogram`](file:///d:/piprogram) | Hymns, slides, PPTX pipeline & stage confidence monitor | Node 24, Fastify, TS | Fastify Configurable |
 | [`pirundown`](file:///d:/pirundown) | Service rundown cue engine (Rundown v2 YAML, varfetch) | Node 22+, Fastify, TS | `3400` |
-| [`pisound`](file:///d:/pisound) | Sound & microphone controller for BSS Soundweb BLU-100 | Node 22+, Fastify, TS | `3300`, Soundweb `1023` |
-| [`pispace`](file:///d:/pispace) | 3D venue digital twin, FreeD raycasting & spatial PTZ solver | Node 22+, Fastify, TS | `3108` |
-| [`piswitch`](file:///d:/piswitch) | Universal video mixer service (ATEM & software switcher) | Node 22+, Fastify, TS | `3106`, ATEM UDP `9910` |
-| [`pitube`](file:///d:/pitube) | YouTube Live lifecycle manager & timed live caption sender | Node 22+, TS | `3105` |
-| [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3101` |
-| [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node 22+, Fastify, TS | `3110` |
+| [`pisound`](file:///d:/pisound) | Sound & microphone controller for BSS Soundweb BLU-100 | Node 22+, Fastify, TS | `3105`, Soundweb `1023` |
+| [`pispace`](file:///d:/pispace) | 3D venue digital twin, FreeD raycasting & spatial PTZ solver | Node 22+, Fastify, TS | `3203` |
+| [`piswitch`](file:///d:/piswitch) | Universal video mixer service (ATEM & software switcher) | Node 22+, Fastify, TS | `3103`, ATEM UDP `9910` |
+| [`pitube`](file:///d:/pitube) | YouTube Live lifecycle manager & timed live caption sender | Node 22+, TS | `3500` |
+| [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3106` |
+| [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node 22+, Fastify, TS | `3202` |
 | [`piecosystem`](file:///d:/piecosystem) | Ecosystem governance, architecture docs & dev coordination | Node, Markdown | N/A |
 
 👉 **Complete details on each project**: [docs/projects-catalog.md](docs/projects-catalog.md)
