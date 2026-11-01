@@ -73,7 +73,7 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 
 | Plane / Layer | Key Responsibility | Active Projects |
 |---|---|---|
-| **Layer 1: Southbound Hardware Interfacing** | Physical device protocol drivers (VISCA, HiQnet, ATEM, Tally-Ma, ALSA), video matrix crossbars & hardware display sinks. | [`pimatrix`](file:///d:/pimatrix), [`picam`](file:///d:/picam), [`piswitch`](file:///d:/piswitch), [`pisound`](file:///d:/pisound), [`pilight`](file:///d:/pilight), [`pivoice`](file:///d:/pivoice), [`pigateway`](file:///d:/pigateway) |
+| **Layer 1: Southbound Hardware Interfacing** | Physical device protocol drivers (VISCA, HiQnet, ATEM, Tally-Ma, ALSA), video matrix crossbars & hardware display sinks. | [`pimatrix`](file:///d:/pimatrix), [`picam`](file:///d:/picam), [`piswitch`](file:///d:/piswitch), [`pisound`](file:///d:/pisound), [`pilight`](file:///d:/pilight), [`pivoice`](file:///d:/pivoice), [`pigateway`](file:///d:/pigateway), [`pipoe`](file:///d:/pipoe) |
 | **Layer 2: Media Pipeline & Real-Time Composition** | Content authoring, slide staging, graphics generation, Speech-to-Text transcription, audio VAD/DSP, video perception, and compositing. | [`picanva`](file:///d:/picanva), [`piprogram`](file:///d:/piprogram), [`pigraphics`](file:///d:/pigraphics), [`picompanion`](file:///d:/picompanion), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`piperception`](file:///d:/piperception), [`pivoice`](file:///d:/pivoice) |
 | **Layer 3: Orchestration, State & Workflow** | Deterministic service rundowns, YAML v2 cue sheets, dynamic variable fetching, 3D venue digital twins, and centralized SSE event distribution. | [`pirundown`](file:///d:/pirundown), [`pispace`](file:///d:/pispace), [`pigateway`](file:///d:/pigateway) |
 | **Layer 4: Presentation & Egress Delivery (Consumer Edge)** | External broadcasting (YouTube Live), timed closed caption streaming, low-latency web radio, sanctuary projectors, and confidence monitors. | [`pitube`](file:///d:/pitube), [`web-radio-relay`](file:///d:/web-radio-relay), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`pimatrix`](file:///d:/pimatrix) (HDMI), [`piprogram`](file:///d:/piprogram) (Stage) |
@@ -95,6 +95,7 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 | [`pigateway`](file:///d:/pigateway) | Central device broker, AMX NetLinx driver & SSE event bus | Node 24, Fastify, TS | `3100` (UDP: `3101`, `3102`) |
 | [`pigraphics`](file:///d:/pigraphics) | Broadcast graphics engine, CSS animations & Fill/Key streaming | Node 22+, Fastify, TS | `3107` |
 | [`pilight`](file:///d:/pilight) | Wireless multi-segment tally light controller (Tally-Ma) | Node 22+, Fastify, TS | `3200`/`3201`, UDP `21324` |
+| [`pipoe`](file:///d:/pipoe) | PoE switch controller: port status, PoE on/off/cycle (PLANET GS-4210-16P2S, SNMP) | Node 22+, Fastify, TS | `3302`, SNMP `161` |
 | [`pimatrix`](file:///d:/pimatrix) | Video routing, software compositing & display output plane | Node 24, GStreamer, C++ | `8080`, `8081` |
 | [`piprogram`](file:///d:/piprogram) | Hymns, slides, PPTX pipeline & stage confidence monitor | Node 24, Fastify, TS | Fastify Configurable |
 | [`pirundown`](file:///d:/pirundown) | Service rundown cue engine (Rundown v2 YAML, varfetch) | Node 22+, Fastify, TS | `3400` |
