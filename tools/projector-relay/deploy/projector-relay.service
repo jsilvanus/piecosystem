@@ -1,0 +1,11 @@
+[Unit]
+Description=Temporary projector page (PIN protected)
+After=network-online.target
+
+[Service]
+EnvironmentFile=%h/apps/projector-relay.env
+ExecStart=%h/.local/bin/node %h/apps/piecosystem/tools/projector-relay/server.mjs
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
