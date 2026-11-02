@@ -15,7 +15,6 @@ const rootDir = resolve(__dirname, '..', '..');
 const PI_PROJECTS = [
   'picam',
   'picanva',
-  'picompanion',
   'picontrol',
   'picontrol-mcp',
   'pigateway',
@@ -42,7 +41,9 @@ const PI_PROJECTS = [
   'web-radio-relay',
   'fffleet',
   'live-captions-yt',
-  'deploy-media'
+  'deploy-media',
+  // Seam: not a Pi service, meets the ecosystem at an interface
+  'virtual-screen-streamer'
 ];
 
 console.log('\n======================================================');
