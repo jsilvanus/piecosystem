@@ -16,3 +16,5 @@ Images: `ghcr.io/jsilvanus/lcyt-fleet-worker` (from live-captions-yt, replaces s
 
 Validate without starting anything: `docker compose --env-file .env.example config`. Not yet run on the real PCs; the GPU overlays and the
 published image tags are unverified.
+
+**Fat worker image.** `docker/fat-worker/` builds `ghcr.io/jsilvanus/pieco-fleet-worker`: the published LCYT fat worker plus yt-dlp with fffleet's `download` executor and a virtual PulseAudio sound card (`pieco`) for capturing a browser's sound. It is built by hand: GitHub, Actions, "Fat worker image", Run workflow (inputs: base tag, image tag, push or build only). The stacks above still use `lcyt-fleet-worker` until you switch their `image:` line. The executor that streams a page with sound is not in the image yet. Not built or run anywhere yet.
