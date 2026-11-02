@@ -1,7 +1,8 @@
 # NVIDIA overlay for the assisting PC. Windows Docker Desktop: WSL2 backend + current NVIDIA driver.
 # Linux: NVIDIA Container Toolkit. Check with: docker run --rm --gpus all ubuntu nvidia-smi
 # The stock worker image's ffmpeg is a CPU build; the GPU is used by perception (onnxruntime) only if the
-# image ships a CUDA provider. Expect NVENC encoding to need a different worker image.
+# image ships a CUDA provider. NVENC encoding needs the GPU fat worker image,
+# ghcr.io/jsilvanus/pieco-fleet-worker-gpu (built by .github/workflows/fat-worker.yml; set `image:` to it).
 services:
   fleet-worker:
     deploy:
