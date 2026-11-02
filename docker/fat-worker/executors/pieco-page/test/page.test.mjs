@@ -45,7 +45,7 @@ test('encode args: audio captures the sink monitor and publishes aac; rtmp uses 
   const args = buildEncodeArgs(readPlan(spec({ audio: true, output: { url: 'rtmp://host/app/key' } }), { PIECO_SINK: 'pieco' }));
   const text = args.join(' ');
   assert.ok(text.includes('-f pulse -i pieco.monitor'));
-  assert.ok(text.includes('-map 0:v -map 1:a'));
+  assert.ok(text.includes('-map 0:v') && text.includes('-map 1:a'));
   assert.ok(text.includes('-c:a aac'));
   assert.ok(text.includes('-f flv rtmp://host/app/key'));
 });
@@ -121,4 +121,28 @@ test('the encoder is x264 by default, nvenc on request, and anything else is ref
   const text = buildEncodeArgs(readPlan(spec({ encoder: 'nvenc' }), {})).join(' ');
   assert.ok(text.includes('-c:v h264_nvenc') && !text.includes('libx264'));
   assert.ok(buildEncodeArgs(readPlan(spec(), {})).join(' ').includes('-f image2pipe -c:v mjpeg'));
+});
+
+test('background turns on keying: png frames over an exact flat colour', () => {
+  const plan = readPlan(spec({ background: '#00B140', width: 640, height: 360, fps: 25 }), {});
+  assert.equal(plan.frames, 'png');
+  const text = buildEncodeArgs(plan).join(' ');
+  assert.ok(text.includes('-f lavfi -i color=c=0x00B140:s=640x360:r=25'));
+  assert.ok(text.includes('-f image2pipe -c:v png -i pipe:0'));
+  assert.ok(text.includes('overlay=shortest=1'));
+  assert.ok(text.includes('-map [v]'));
+});
+
+test('with keying and audio the sound is the third input', () => {
+  const text = buildEncodeArgs(readPlan(spec({ background: '#00B140', audio: true }), {})).join(' ');
+  assert.ok(text.includes('-f pulse -i pieco.monitor'));
+  assert.ok(text.includes('-map 2:a'));
+});
+
+test('frames can be forced and bad colours are refused', () => {
+  assert.equal(readPlan(spec({ background: '#112233', frames: 'jpeg' }), {}).frames, 'jpeg');
+  assert.equal(readPlan(spec({ frames: 'png' }), {}).frames, 'png');
+  assert.throws(() => readPlan(spec({ frames: 'gif' }), {}), /frames/);
+  assert.throws(() => readPlan(spec({ background: 'green' }), {}), /hex colour/);
+  assert.throws(() => readPlan(spec({ background: '#0f0' }), {}), /hex colour/);
 });
