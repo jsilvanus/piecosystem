@@ -7,7 +7,7 @@ services:
   - service: liturgos-auditor
     displayName: liturgos-auditor
     dir: liturgos-auditor
-    layer: Layer 2 - Speech-to-Text
+    layer: Seam
     runtime: python
     versionFile: python-packages/liturgos-auditor-stt/pyproject.toml
     port: 8090
@@ -18,14 +18,14 @@ services:
   - service: web-radio-relay
     displayName: web-radio-relay
     dir: web-radio-relay
-    layer: Layer 4 - Consumer Edge
+    layer: Seam
     port: 8080
     healthEndpoint: /api/health
 
   - service: keskuskirkko
     displayName: keskuskirkko (AMX NetLinx)
     dir: keskuskirkko
-    layer: Layer 1 - Southbound HW
+    layer: Seam
     kind: control
     runtime: other
 
@@ -33,7 +33,7 @@ services:
     displayName: fffleet orchestrator
     dir: fffleet
     versionFile: packages/fffleet-orchestrator/package.json
-    layer: Compute (shared)
+    layer: Seam
     port: 5000
     healthEndpoint: /v1/health
 
@@ -44,3 +44,10 @@ services:
     port: 3105
     healthEndpoint: /health
     envPortVar: PITUBE_PORT
+
+  - service: virtual-screen-streamer
+    displayName: virtual-screen-streamer (formerly picompanion)
+    dir: virtual-screen-streamer
+    layer: Seam
+    kind: control
+    runtime: other
