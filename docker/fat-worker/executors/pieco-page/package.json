@@ -1,0 +1,17 @@
+{
+  "name": "pieco-page",
+  "version": "0.1.0",
+  "description": "fffleet executor: stream any web page (picture and optionally its sound) to an RTSP or RTMP server such as MediaMTX",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./fffleet-executor": "./src/fffleet-executor.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

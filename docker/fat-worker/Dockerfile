@@ -4,8 +4,9 @@
 # `perception` executor) plus what the Pi ecosystem adds on top:
 #   - yt-dlp and fffleet's built-in `download` executor (type:download, used by Saarnavideo),
 #   - PulseAudio with a virtual sound card ("pieco"), so a browser that plays sound can be captured next to the
-#     picture. This is the base for the live route (Chromium page -> ffmpeg -> MediaMTX). The executor that
-#     does the capture is not in this image yet.
+#     picture,
+#   - the `pieco-page` executor (type:page, executors/pieco-page): open any web page in Chromium and publish it, with
+#     its sound if asked, to any RTSP or RTMP server such as MediaMTX. This is the live route.
 #
 # Built by .github/workflows/fat-worker.yml (manual dispatch) as ghcr.io/<owner>/pieco-fleet-worker.
 # Local build:  docker build -f docker/fat-worker/Dockerfile -t pieco-fleet-worker docker/fat-worker
@@ -23,10 +24,18 @@ RUN apt-get update \
 COPY docker-entrypoint.sh /usr/local/bin/pieco-entrypoint
 RUN chmod 0755 /usr/local/bin/pieco-entrypoint
 
+# The page executor goes next to the base image's executors, so it finds playwright-core in /opt/lcyt/node_modules,
+# and is linked into /app/node_modules because the worker imports executors from /app (ESM ignores NODE_PATH).
+COPY executors/pieco-page/ /opt/lcyt/node_modules/pieco-page/
+RUN ln -s /opt/lcyt/node_modules/pieco-page /app/node_modules/pieco-page \
+  && cd /app/packages/fffleet-worker/bin \
+  && node --input-type=module -e "import.meta.resolve('pieco-page/fffleet-executor');" \
+  && cd /opt/lcyt/node_modules/pieco-page && node --input-type=module -e "await import('playwright-core')"
+
 # Keep the base image's executors and add fffleet's generic download executor (present in fffleet 2.4 and later).
 # Fail the build, not the container, when the download executor is missing from the base image.
 RUN test -f /app/packages/fffleet-worker/src/executors/download.js
-ENV FFFLEET_EXECUTORS=${FFFLEET_EXECUTORS},/app/packages/fffleet-worker/src/executors/download.js \
+ENV FFFLEET_EXECUTORS=${FFFLEET_EXECUTORS},/app/packages/fffleet-worker/src/executors/download.js,pieco-page/fffleet-executor \
     PIECO_AUDIO=1 \
     PIECO_SINK=pieco \
     XDG_RUNTIME_DIR=/tmp/pieco-runtime
