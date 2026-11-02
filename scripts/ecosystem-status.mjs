@@ -14,7 +14,7 @@ const rootDir = resolve(__dirname, '..', '..');
 
 const PI_PROJECTS = [
   'picam',
-  'picanva',
+  'canva-pieco-app',
   'picontrol',
   'picontrol-mcp',
   'pigateway',

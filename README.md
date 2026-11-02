@@ -23,7 +23,6 @@ graph TD
     end
 
     subgraph L2["Layer 2: Media Pipeline & Composition"]
-        CANVA["picanva (Slides)"]
         PGM["piprogram (Hymns/Stage)"]
         PERCEPTION["piperception (YOLOX Person Tracking)"]
         VOICE["pivoice (Silero VAD & Audio)"]
@@ -73,7 +72,7 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 | Plane / Layer | Key Responsibility | Active Projects |
 |---|---|---|
 | **Layer 1: Southbound Hardware Interfacing** | Physical device protocol drivers (VISCA, HiQnet, ATEM, Tally-Ma, ALSA), video matrix crossbars & hardware display sinks. | [`pimatrix`](file:///d:/pimatrix), [`picam`](file:///d:/picam), [`piswitch`](file:///d:/piswitch), [`pisound`](file:///d:/pisound), [`pitally`](file:///d:/pitally), [`pivoice`](file:///d:/pivoice), [`pigateway`](file:///d:/pigateway), [`pipoe`](file:///d:/pipoe) |
-| **Layer 2: Media Pipeline & Real-Time Composition** | Content authoring, slide staging, graphics generation, Speech-to-Text transcription, audio VAD/DSP, video perception, and compositing. | [`picanva`](file:///d:/picanva), [`piprogram`](file:///d:/piprogram), [`pigraphics`](file:///d:/pigraphics), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`piperception`](file:///d:/piperception), [`pivoice`](file:///d:/pivoice) |
+| **Layer 2: Media Pipeline & Real-Time Composition** | Content authoring, slide staging, graphics generation, Speech-to-Text transcription, audio VAD/DSP, video perception, and compositing. | [`piprogram`](file:///d:/piprogram), [`pigraphics`](file:///d:/pigraphics), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`piperception`](file:///d:/piperception), [`pivoice`](file:///d:/pivoice) |
 | **Layer 3: Orchestration, State & Workflow** | Deterministic service rundowns, YAML v2 cue sheets, dynamic variable fetching, 3D venue digital twins, and centralized SSE event distribution. | [`pirundown`](file:///d:/pirundown), [`pispace`](file:///d:/pispace), [`pigateway`](file:///d:/pigateway) |
 | **Layer 4: Presentation & Egress Delivery (Consumer Edge)** | External broadcasting (YouTube Live), timed closed caption streaming, low-latency web radio, sanctuary projectors, and confidence monitors. | [`pitube`](file:///d:/pitube), [`web-radio-relay`](file:///d:/web-radio-relay), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`pimatrix`](file:///d:/pimatrix) (HDMI), [`piprogram`](file:///d:/piprogram) (Stage) |
 | **+1 Cross-Cutting Control & Agentic Plane** | Unified human operator UI/CLI, Model Context Protocol (MCP) tooling for AI agents (`pi://` resources), and ecosystem governance. | [`picontrol`](file:///d:/picontrol), [`picontrol-mcp`](file:///d:/picontrol-mcp), [`piecosystem`](file:///d:/piecosystem) |
@@ -89,6 +88,7 @@ A **seam** project is not a `pi*` service and not part of the Pi layers. It runs
 | `web-radio-relay` | Church VPS | Radio stream from `pivoice` over the reverse-ssh tunnel |
 | `fffleet` | Orchestrator and workers | Job API for renders and transcodes |
 | `keskuskirkko` | AMX NX master | TCP protocol with `pimatrix` / `pigateway` |
+| `canva-pieco-app` (formerly `picanva`) | Canva (browser iframe) | HTTPS `/api/v1/canva/*` routes on `pigateway` |
 | `saarnavideo` | Server / operator PC | Post-stream editing: takes finished recordings and publishes videos |
 
 `live-captions-yt` (LCYT) is a **reference** for features and behaviour, not a seam project and not part of the Pi layers.
@@ -102,7 +102,7 @@ A **seam** project is not a `pi*` service and not part of the Pi layers. It runs
 | Project | Role & Description | Tech Stack | Port(s) |
 |---|---|---|---|
 | [`picam`](file:///d:/picam) | VISCA-over-IP & CGI PTZ camera controller & preset manager | Node 24, Fastify, TS | `3102`, VISCA `52381` |
-| [`picanva`](file:///d:/picanva) | Canva App plugin for liturgical slides & presentation control | TS, Canva SDK, React | Canva Sandbox |
+| [`canva-pieco-app`](file:///d:/canva-pieco-app) (seam) | Canva App plugin for liturgical slides & presentation control (formerly `picanva`; runs inside Canva, not a Pi service) | TS, Canva SDK, React | Canva Sandbox |
 | [`virtual-screen-streamer`](file:///d:/virtual-screen-streamer) (seam) | Windows virtual monitor driver & RTMP desktop sender (runs on the operator PC, not a Pi service; formerly `picompanion`) | C#, .NET, IddCx | RTMP Out |
 | [`picontrol`](file:///d:/picontrol) | Operator UI console & unified CLI housing | React, Vite, Node 22+ | `5173` (dev) |
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | MCP Server exposing `pi://` resources to AI agents | Node 24, Fastify, TS | `3600` |
@@ -154,7 +154,7 @@ Output preview:
 │ (index) │ Project         │ Version │ Branch   │ Status │
 ├─────────┼─────────────────┼─────────┼──────────┼────────┤
 │ 0       │ 'picam'         │ '0.1.0' │ 'main'   │ 'Clean'│
-│ 1       │ 'picanva'       │ '1.0.0' │ 'main'   │ 'Clean'│
+│ 1       │ 'canva-pieco-app' │ '1.0.0' │ 'main'   │ 'Clean'│
 │ ...     │ ...             │ ...     │ ...      │ ...    │
 │ 14      │ 'piecosystem'   │ '1.0.0' │ 'main'   │ 'Clean'│
 └─────────┴─────────────────┴─────────┴──────────┴────────┘
