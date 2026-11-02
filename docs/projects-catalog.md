@@ -19,7 +19,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pigateway`](file:///d:/pigateway) | Hardware connections | Layer 1 & 3: HW & State | Central device broker & SSE bus | Node 24, Fastify, TS | `3000` (UDP: `3101`, `3102`, `40000`; TCP: `6600`, `6601`) |
 | [`piencoder`](file:///d:/piencoder) | Hardware connections | Layer 1: Southbound HW | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | Node 22+, Fastify, TS | `3104` |
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3201` |
-| [`pilight`](file:///d:/pilight) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3107` (UDP: `21324`) |
+| [`pitally`](file:///d:/pitally) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3107` (UDP: `21324`) |
 | [`pipoe`](file:///d:/pipoe) | Hardware connections | Layer 1: Southbound HW | PoE switch controller (PLANET GS-4210-16P2S, SNMP): port status, PoE on/off/cycle | Node 22+, Fastify, TS | `3108` (SNMP: `161`) |
 | [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
@@ -138,8 +138,8 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 7. pilight
-- **Path**: `D:\pilight`
+### 7. pitally
+- **Path**: `D:\pitally`
 - **Role**: Tally light controller service and CLI for Tally-Ma wireless tally units.
 - **Layers**:
   - *Proposed*: Hardware connections

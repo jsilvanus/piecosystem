@@ -38,7 +38,7 @@ graph TD
         PISWITCH["piswitch / ATEM<br/>(Video Cuts & DSK)"]
         PICAM["picam / PTZ<br/>(VISCA Presets & Framing)"]
         GRAPHICS["pigraphics / piprogram<br/>(Lower Thirds & Slides)"]
-        TALLY["pilight<br/>(Talent & Camera Cues)"]
+        TALLY["pitally<br/>(Talent & Camera Cues)"]
     end
 
     VOICE -->|SSE / UDP| DIRECTOR

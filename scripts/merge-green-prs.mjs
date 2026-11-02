@@ -16,7 +16,7 @@ import { execFileSync } from 'node:child_process';
 
 const OWNER = 'jsilvanus';
 const DEFAULT_REPOS = [
-  'pigateway', 'pimatrix', 'picam', 'piswitch', 'piencoder', 'pisound', 'pivoice', 'pilight',
+  'pigateway', 'pimatrix', 'picam', 'piswitch', 'piencoder', 'pisound', 'pivoice', 'pitally',
   'pipoe', 'piprogram', 'pigraphics', 'piperception', 'pispace', 'piembed', 'piagent',
   'pirundown', 'pidirector', 'picomposer', 'pitube', 'picontrol-mcp', 'picomposer-mcp',
   'pirundown-designer', 'picontrol', 'piui', 'picanva', 'piecosystem',

@@ -18,7 +18,7 @@ sequenceDiagram
     participant Camera as picam
     participant Program as piprogram
     participant Matrix as pimatrix
-    participant Tally as pilight
+    participant Tally as pitally
     participant Display as Sanctuary Projector
 
     Operator->>Rundown: Next Cue ("Opening Hymn")
@@ -39,7 +39,7 @@ sequenceDiagram
 3. **Hardware Repositioning (Layer 1)**: `picam` sends VISCA UDP packets to reposition Camera 2 to preset 2.
 4. **Switch Execution (Layer 1 & 2)**: `piswitch` triggers an ATEM cut to Camera 2.
 5. **State Broadcast (Layer 3)**: `pigateway` detects the PGM change and broadcasts an SSE event.
-6. **Tally Indication (Layer 1)**: `pilight` catches the event and sets the physical tally light on Camera 2 to RED.
+6. **Tally Indication (Layer 1)**: `pitally` catches the event and sets the physical tally light on Camera 2 to RED.
 7. **Egress (Layer 4)**: The live HDMI feed to the sanctuary projector and YouTube RTMP encoder switches seamlessly.
 
 ---
