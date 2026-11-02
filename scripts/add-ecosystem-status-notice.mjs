@@ -9,7 +9,7 @@ const REPOS = [
   'picontrol-mcp',
   'pigateway',
   'pigraphics',
-  'pilight',
+  'pitally',
   'pimatrix',
   'piprogram',
   'pirundown',

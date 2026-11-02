@@ -21,7 +21,7 @@ const PI_PROJECTS = [
   'pigateway',
   'piencoder',
   'pigraphics',
-  'pilight',
+  'pitally',
   'pimatrix',
   'piprogram',
   'pirundown',

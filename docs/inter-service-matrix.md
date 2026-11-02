@@ -18,7 +18,7 @@ This document defines the network topology, listening ports, communication proto
 | **3103** | HTTP | `piswitch` | Universal video mixer (ATEM/software) | REST API & SSE |
 | **3104** | HTTP | `piencoder` | Multi-unit hardware streaming encoder controller (Matrox Monarch HDX) | REST API & SSE (`/events`) |
 | **3105** | HTTP | `pisound` | Sound & microphone service API | REST API |
-| **3107** | HTTP | `pilight` | Tally light controller API | REST API |
+| **3107** | HTTP | `pitally` | Tally light controller API | REST API |
 | **3108** | HTTP | `pipoe` | PoE switch controller (PLANET switch via SNMP) | REST API |
 | **3201** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3202** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
@@ -71,7 +71,7 @@ graph LR
 
     PIPROGRAM -->|Slide Advance & Still Upload| PISWITCH
 
-    PIGATEWAY -->|SSE Events| PILIGHT["pilight (3200)"]
+    PIGATEWAY -->|SSE Events| PITALLY["pitally (3200)"]
     PIGATEWAY -->|SSE Events| PITUBE["pitube (3105)"]
     PIGATEWAY -->|HTTP Commands| PICAM["picam (3300)"]
     PIGATEWAY -->|HTTP Commands| PISOUND["pisound (3300)"]
@@ -87,7 +87,7 @@ graph LR
     PICAM -->|VISCA UDP 52381| CAMS["PTZ Cameras"]
     PISOUND -->|London TCP 1023| BSS["BSS BLU-100 DSP"]
     PISWITCH -->|UDP 9910| ATEM["ATEM Switcher"]
-    PILIGHT -->|UDP 21324 & HTTP| TALLIES["Tally-Ma Lights"]
+    PITALLY -->|UDP 21324 & HTTP| TALLIES["Tally-Ma Lights"]
 ```
 
 ---
