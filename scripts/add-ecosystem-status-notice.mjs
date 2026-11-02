@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 const REPOS = [
   'picam',
-  'picanva',
+  'canva-pieco-app',
   'picontrol',
   'picontrol-mcp',
   'pigateway',

@@ -25,7 +25,7 @@ In production broadcast and AV-over-IP systems, standard practice requires addre
    - If "Hardware connections" conflates device control (VISCA, Tally UDP) with raw video/audio capture (HDMI, USB ALSA), architectural boundaries blur.
 
 2. **"Media Creation" vs. "Real-Time Media Processing & Composition"**:
-   - *Media Creation & Staging*: Designing slides in Canva (`picanva`), formatting service hymns (`piprogram`), or generating virtual monitors on the operator PC (`virtual-screen-streamer`, a seam project outside the Pi layers).
+   - *Media Creation & Staging*: Designing slides in Canva (`canva-pieco-app`), formatting service hymns (`piprogram`), or generating virtual monitors on the operator PC (`virtual-screen-streamer`, a seam project outside the Pi layers).
    - *Live Media Processing & Matrixing*: Compositing video layers, switching camera feeds, PiP overlays, and hardware display outputs (`pimatrix`, `piswitch`).
 
 3. **Defining the "Consumer Edge"**:
@@ -61,7 +61,7 @@ flowchart TD
     end
 
     subgraph L2["LAYER 2: MEDIA PIPELINE & REAL-TIME COMPOSITION"]
-        CANVA["picanva<br/>(Canva Slide App)"]
+        CANVA["canva-pieco-app<br/>(Canva Slide App, seam)"]
         PGM["piprogram<br/>(Hymns, Slides, PPTX)"]
         GRAPHICS["pigraphics<br/>(HTML5/CSS Lower-Thirds & Overlays)"]
         PERCEPTION["piperception<br/>(YOLOX / ONNX Bbox & Person Tracking)"]
@@ -136,7 +136,7 @@ flowchart TD
 ### Layer 2: Media Pipeline & Real-Time Composition (Data Plane)
 - **Mission**: Ingest, process, composite, generate, and transform audio, video, and textual media signals. Heavy media payloads stay strictly in this plane.
 - **Projects**:
-  - `picanva`: Canva App plugin for liturgical slides, worship lyrics, and real-time presentation control.
+  - `canva-pieco-app` (seam, formerly `picanva`): Canva App plugin for liturgical slides, worship lyrics, and real-time presentation control.
   - `piprogram`: Presentation content engine for slide distribution, PPTX conversion, hymn lyric formatting, and stage displays.
   - `pigraphics`: Broadcast graphics engine rendering HTML5/CSS animated lower thirds, speaker tags, liturgy badges, bug/clock overlays, and alpha-keyed outputs.
   - `mediamtx`: Ultra-low-latency RTSP, RTMP, WebRTC, and HLS media router / relay server.
