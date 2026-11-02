@@ -19,7 +19,7 @@ flowchart TD
             FLEET_WORK["fffleet-worker<br/>(FFmpeg Transcoding)"]
             VERSITY["versitygw / S3<br/>(Local Media Staging:9000)"]
         end
-        COMPANION["picompanion<br/>(Virtual Displays / IddCx)"]
+        COMPANION["virtual-screen-streamer<br/>(seam: Virtual Displays / IddCx)"]
     end
 
     subgraph NODE_PI_GATEWAY["Primary Gateway Pi (Raspberry Pi 5 / 8GB)"]
@@ -72,7 +72,7 @@ flowchart TD
 | **Workstation** | `liturgos-auditor` | `8090` | Docker (CUDA GPU) | `compose.gpu.yml` via `deploy-media` |
 | **Workstation** | `fffleet-orchestrator` | `5000` | Docker (ghcr.io/jsilvanus/fffleet) | Included in `deploy-media` |
 | **Workstation** | `fffleet-worker` | Dynamic | Docker | Included in `deploy-media` |
-| **Workstation** | `picompanion` | Dynamic | .NET 9 WPF Service | `PiMatrixCompanion.exe` |
+| **Workstation** | `virtual-screen-streamer` (seam) | Dynamic | .NET 9 WPF Service | `PiMatrixCompanion.exe` |
 | **Gateway Pi** | `pigateway` | `3000`, UDP `3101`, `3102` | Node 24 (Fastify) | `systemctl start pigateway` |
 | **Gateway Pi** | `picontrol-mcp` | `3600` | Node 24 (TypeScript) | `systemctl start picontrol-mcp` |
 | **Gateway Pi** | `picontrol` | `5173` (dev) | Node 22+ (React/Vite) | `systemctl start picontrol` |

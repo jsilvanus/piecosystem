@@ -111,7 +111,7 @@ graph LR
 
 ### B. Media (Data) Plane Protocols (Isolated)
 - **RTSP / SRT / WebRTC**: Ingesting raw IP camera feeds into `pimatrix`.
-- **RTMP**: Screen casting from Windows presenter PC (`picompanion`) to `pimatrix`.
+- **RTMP**: Screen casting from Windows presenter PC (`virtual-screen-streamer`, a seam project) to `pimatrix`.
 - **Raw PCM Audio (16 kHz mono S16LE)**: Streamed directly from `pivoice` to `liturgos-auditor`.
 - **HLS / Icecast**: Outbound parish radio streaming from `web-radio-relay`.
 - **CEA-608 / HTTP POST**: Outbound timed live closed captions from `pitube` to YouTube Live ingestion servers.
