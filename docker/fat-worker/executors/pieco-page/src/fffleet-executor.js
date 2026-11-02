@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
  * "Web page to stream" as an fffleet job type (`type: "page"`), for
  * `FFFLEET_EXECUTORS=pieco-page/fffleet-executor` on an fffleet worker. The spec carries the plan in `spec.page`:
  *
- *   { url, output: { url }, width?, height?, fps?, audio?, background?, userAgent? }
+ *   { url, output: { url }, width?, height?, fps?, audio?, encoder?, background?, userAgent? }
  *
  * The worker opens `url` (any http or https page it can reach) in its own headless Chromium, screenshots it at `fps`
  * and pipes the frames into a local ffmpeg that publishes to `output.url` (rtsp:// for MediaMTX, or rtmp(s)://).
@@ -12,7 +12,10 @@ import { spawn } from 'node:child_process';
  * with the picture; without it Chromium is muted and the stream has no audio track. The page keeps itself up to date,
  * so no state travels with the job. The job runs until it is cancelled; a crashed Chromium or ffmpeg fails it.
  *
- * Environment: PIECO_SINK (default "pieco", set up by the image's entrypoint), PIECO_AUDIO=0 (no PulseAudio on this
+ * `encoder` is "x264" (CPU, default) or "nvenc" (NVIDIA GPU, h264_nvenc; needs an ffmpeg with NVENC and a GPU
+ * passed to the container). Frames travel as JPEG (much cheaper than PNG), which is fine because they are re-encoded.
+ *
+ * Environment: PIECO_PAGE_ENCODER (default encoder), PIECO_SINK (default "pieco", set up by the image's entrypoint), PIECO_AUDIO=0 (no PulseAudio on this
  * worker), PIECO_PAGE_ALLOW_HOSTS (comma-separated host names; when set, both the page and the output must be on one),
  * PLAYWRIGHT_DSK_CHROMIUM or CHROMIUM_PATH (browser binary), FFMPEG_PATH.
  *
@@ -21,14 +24,17 @@ import { spawn } from 'node:child_process';
 
 const DEFAULT_FPS = 10;
 
-export function buildEncodeArgs({ fps, audio, sink, output }) {
+export function buildEncodeArgs({ fps, audio, sink, output, encoder = 'x264' }) {
   const args = ['-hide_banner', '-nostdin', '-loglevel', 'warning', '-y',
-    '-use_wallclock_as_timestamps', '1', '-f', 'image2pipe', '-c:v', 'png', '-i', 'pipe:0'];
+    '-use_wallclock_as_timestamps', '1', '-f', 'image2pipe', '-c:v', 'mjpeg', '-i', 'pipe:0'];
   if (audio) args.push('-use_wallclock_as_timestamps', '1', '-f', 'pulse', '-i', `${sink}.monitor`);
   args.push('-map', '0:v');
   if (audio) args.push('-map', '1:a');
   args.push('-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p',
-    '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency', '-r', String(fps), '-g', String(fps * 2));
+    ...(encoder === 'nvenc'
+      ? ['-c:v', 'h264_nvenc', '-preset', 'p1', '-tune', 'ull', '-b:v', '4M', '-bf', '0']
+      : ['-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency']),
+    '-r', String(fps), '-g', String(fps * 2));
   if (audio) args.push('-c:a', 'aac', '-b:a', '128k', '-ar', '48000', '-ac', '2', '-af', 'aresample=async=1000');
   else args.push('-an');
   if (/^rtsps?:/i.test(output.url)) args.push('-f', 'rtsp', '-rtsp_transport', 'tcp', output.url);
@@ -56,6 +62,8 @@ export function readPlan(spec, env = process.env) {
       if (!allow.includes(hostOf(url))) throw new Error(`the ${what} host is not in PIECO_PAGE_ALLOW_HOSTS`);
     }
   }
+  const encoder = String(plan.encoder ?? env.PIECO_PAGE_ENCODER ?? 'x264');
+  if (encoder !== 'x264' && encoder !== 'nvenc') throw new Error('encoder must be x264 or nvenc');
   const audio = plan.audio === true;
   if (audio && env.PIECO_AUDIO === '0') throw new Error('audio was asked for but this worker has no virtual sound card (PIECO_AUDIO=0)');
   const sink = String(env.PIECO_SINK || 'pieco');
@@ -71,6 +79,7 @@ export function readPlan(spec, env = process.env) {
     height: dimension(plan.height, 1080),
     fps: Math.min(30, Math.max(1, Math.round(Number(plan.fps) || DEFAULT_FPS))),
     audio,
+    encoder,
     sink,
     background: typeof plan.background === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(plan.background) ? plan.background : null,
     userAgent: typeof plan.userAgent === 'string' ? plan.userAgent.slice(0, 300) : null
@@ -114,7 +123,7 @@ export async function runPage(spec, rt, deps = {}) {
     exited.then(e => { ended = e; });
     while (!rt.signal.aborted && !ended) {
       const t0 = Date.now();
-      const frame = await page.screenshot({ type: 'png' });
+      const frame = await page.screenshot({ type: 'jpeg', quality: 90 });
       if (rt.signal.aborted || ended) break;
       if (!ffmpeg.stdin.write(frame)) await Promise.race([new Promise(r => ffmpeg.stdin.once('drain', r)), exited]);
       const wait = interval - (Date.now() - t0);
