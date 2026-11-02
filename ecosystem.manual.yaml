@@ -51,3 +51,10 @@ services:
     layer: Seam
     kind: control
     runtime: other
+
+  - service: saarnavideo
+    displayName: saarnavideo (post-stream editing)
+    dir: saarnavideo
+    layer: Seam
+    kind: control
+    runtime: node
