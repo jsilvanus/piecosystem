@@ -159,6 +159,9 @@ pnpm sync --check               # exit 1 if ecosystem.yaml is stale (run where t
 pnpm health                        # probe every service once (table)
 pnpm health --json              # the same as JSON
 pnpm health --fail-on-unhealthy # exit 1 when a service is DEGRADED or OFFLINE
+pnpm deps                          # shared dependencies across the pi* repos: declared vs locked, with mismatches
+pnpm deps --installed --root /home/pi/apps   # on the Pi: also compare node_modules
+pnpm deps --json                   # the same as JSON (`--all`, `--package <name>`, `--npm-root <dir>`, `--fail-on-mismatch`)
 pnpm test
 ```
 
