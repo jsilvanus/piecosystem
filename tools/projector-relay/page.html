@@ -35,19 +35,19 @@ const $=s=>document.querySelector(s),T=[["both","Molemmat"],["proj1","Vasen (1)"
 const IN=Object.fromEntries(I);let target="both";
 const say=(t,c)=>{$("#msg").textContent=t;$("#msg").className=c||""};
 async function api(p,b){const r=await fetch(p,b?{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)}:{});
- if(r.status===401&&p!=="/api/login"){show(false);return null}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Virhe");return j}
+ if(r.status===401&&p!=="api/login"){show(false);return null}const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Virhe");return j}
 function show(on){$("#login").hidden=on;$("#app").hidden=!on}
 function draw(){$("#tg").innerHTML="";T.forEach(([k,l])=>{const b=document.createElement("button");b.textContent=l;if(k===target)b.className="on";b.onclick=()=>{target=k;draw()};$("#tg").append(b)});
- $("#ins").innerHTML="";I.forEach(([n,l])=>{const b=document.createElement("button");b.textContent=l;b.onclick=()=>act("/api/route",{input:n,target},"Kuva vaihdettu: "+l);$("#ins").append(b)})}
+ $("#ins").innerHTML="";I.forEach(([n,l])=>{const b=document.createElement("button");b.textContent=l;b.onclick=()=>act("api/route",{input:n,target},"Kuva vaihdettu: "+l);$("#ins").append(b)})}
 const PW={on:"päällä",standby:"pois (valmiustila)",warmup:"lämpenee",cooldown:"jäähtyy"};
-async function refresh(){try{const s=await api("/api/status");if(!s)return;
+async function refresh(){try{const s=await api("api/status");if(!s)return;
  const p=x=>x?(PW[x.power]||x.power):"ei tietoa";const r=n=>s.routes&&s.routes[n]?IN[s.routes[n]]:"ei tietoa";
  $("#status").innerHTML=`<div class="st"><b>Vasen (1)</b><span>${p(s.proj1)} · ${r("proj1")}</span></div><div class="st"><b>Oikea (2)</b><span>${p(s.proj2)} · ${r("proj2")}</span></div>`;
  $("#exp").textContent="Sivu sulkeutuu "+new Date(s.expiresAt).toLocaleString("fi-FI")}catch(e){$("#status").textContent="Tilaa ei saatu: "+e.message}}
 async function act(p,b,ok){say("Odota…");try{if(await api(p,b)){say(ok,"good");setTimeout(refresh,2500)}}catch(e){say(e.message,"err")}}
 document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{const[t,w]=b.dataset.p.split(":");
- if(w==="off"&&!confirm("Sammutetaanko varmasti?"))return;act("/api/power",{target:t,power:w},w==="on"?"Käynnistetään…":"Sammutetaan…")});
-$("#go").onclick=async()=>{try{await api("/api/login",{pin:$("#pin").value});$("#pin").value="";show(true);say("");refresh()}catch(e){alert(e.message)}};
+ if(w==="off"&&!confirm("Sammutetaanko varmasti?"))return;act("api/power",{target:t,power:w},w==="on"?"Käynnistetään…":"Sammutetaan…")});
+$("#go").onclick=async()=>{try{await api("api/login",{pin:$("#pin").value});$("#pin").value="";show(true);say("");refresh()}catch(e){alert(e.message)}};
 $("#pin").onkeydown=e=>{if(e.key==="Enter")$("#go").click()};
-draw();api("/api/status").then(s=>{if(s){show(true);refresh()}else show(false)}).catch(()=>show(false));setInterval(()=>{if(!$("#app").hidden)refresh()},15000);
+draw();api("api/status").then(s=>{if(s){show(true);refresh()}else show(false)}).catch(()=>show(false));setInterval(()=>{if(!$("#app").hidden)refresh()},15000);
 </script></body></html>
