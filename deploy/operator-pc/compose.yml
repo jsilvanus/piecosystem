@@ -54,7 +54,7 @@ services:
       # `host:` and `tier:` here; the priority order itself (assisting 1, operator 2, pi 3) is set by the
       # orchestrator side. FFFLEET_PRIORITY is passed through for the job-priority work and is ignored until
       # fffleet reads it.
-      FFFLEET_CAPABILITIES: ${FFFLEET_CAPABILITIES:-host:operator-pc,tier:2}
+      FFFLEET_CAPABILITIES: ${FFFLEET_CAPABILITIES:-normal,dsk,gpu,host:operator-pc}
       FFFLEET_PRIORITY: ${FFFLEET_PRIORITY:-2}
       # Reachability probes: a worker that cannot see these drops out of scheduling by itself.
       FFFLEET_PROBE: ${FFFLEET_PROBE:-ollama=ollama:11434,auditor=auditor-stt:8090}

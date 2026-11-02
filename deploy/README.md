@@ -9,10 +9,7 @@ The **fffleet orchestrator runs on the Pi** (kirkonpi, wired `192.168.1.78:5000`
 (`FFFLEET_ORCHESTRATOR_URL`). Each worker must advertise an address the Pi can reach (`FFFLEET_ADVERTISE_URL`, the PC's LAN IP) and share
 `FFFLEET_WORKER_TOKEN` with the orchestrator.
 
-**Priority.** Intended order: DSK jobs assisting PC (1) then operator PC (2); normal ffmpeg stream management assisting (1), operator (2), Pi (3);
-Pi-only hardware jobs (Hama capture etc.) on the Pi only. fffleet's `workerPreference` (ordered worker ids, strict allowlist) does the ordering, using
-the worker ids `assisting-pc`, `operator-pc` and the Pi's id. Each stack sets `FFFLEET_WORKER_ID`, `FFFLEET_CAPABILITIES` (`host:`, `tier:`) and a
-`FFFLEET_PRIORITY` pass-through that fffleet does not read yet; the job-priority work decides what consumes them.
+**Roles and priority.** Capabilities `usb` (Pi only), `normal` (all three), `dsk` and `gpu` (operator PC); placement rules and the Pi's own orchestrator and worker are in [`fleet-pi/`](fleet-pi), the plan in [`../docs/fleet-worker-roles.md`](../docs/fleet-worker-roles.md). Each stack sets `FFFLEET_WORKER_ID` and `FFFLEET_CAPABILITIES`; `FFFLEET_PRIORITY` is a pass-through fffleet does not read.
 
 Images: `ghcr.io/jsilvanus/lcyt-fleet-worker` (from live-captions-yt, replaces separate DSK and perception workers),
 `ghcr.io/jsilvanus/liturgos-auditor-stt` (`-cuda` tag for GPU), `ollama/ollama`.

@@ -22,7 +22,7 @@ services:
       FFFLEET_WORKER_TOKEN: ${FFFLEET_WORKER_TOKEN:?set FFFLEET_WORKER_TOKEN}
       FFFLEET_SLOTS: ${FFFLEET_SLOTS:-default=3,stream=2}
       # See the operator PC stack: host/tier tags for routing; the priority order is set on the orchestrator side.
-      FFFLEET_CAPABILITIES: ${FFFLEET_CAPABILITIES:-host:assisting-pc,tier:1}
+      FFFLEET_CAPABILITIES: ${FFFLEET_CAPABILITIES:-normal,host:assisting-pc}
       FFFLEET_PRIORITY: ${FFFLEET_PRIORITY:-1}
       # Drop out of scheduling when MediaMTX on the Pi cannot be reached (stream jobs may pull/push there).
       FFFLEET_PROBE: ${FFFLEET_PROBE:-}
