@@ -112,3 +112,13 @@ test('an ffmpeg that dies fails the job with a scrubbed message', async () => {
     return true;
   });
 });
+
+test('the encoder is x264 by default, nvenc on request, and anything else is refused', () => {
+  assert.equal(readPlan(spec(), {}).encoder, 'x264');
+  assert.equal(readPlan(spec(), { PIECO_PAGE_ENCODER: 'nvenc' }).encoder, 'nvenc');
+  assert.equal(readPlan(spec({ encoder: 'x264' }), { PIECO_PAGE_ENCODER: 'nvenc' }).encoder, 'x264', 'the job wins');
+  assert.throws(() => readPlan(spec({ encoder: 'vaapi' }), {}), /encoder/);
+  const text = buildEncodeArgs(readPlan(spec({ encoder: 'nvenc' }), {})).join(' ');
+  assert.ok(text.includes('-c:v h264_nvenc') && !text.includes('libx264'));
+  assert.ok(buildEncodeArgs(readPlan(spec(), {})).join(' ').includes('-f image2pipe -c:v mjpeg'));
+});
