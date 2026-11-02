@@ -2,7 +2,7 @@
 
 This catalog details all active projects within the Raspberry Pi production ecosystem at Riihimäen Keskuskirkko.
 
-> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`, `saarnavideo` (post-stream editing). `live-captions-yt` is a reference, not a seam. See the README.
+> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `canva-pieco-app` (formerly `picanva`), `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`, `saarnavideo` (post-stream editing). `live-captions-yt` is a reference, not a seam. See the README.
 
 ---
 
@@ -11,7 +11,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | Project | Primary Layer (Proposed) | Refined Layer (4+1) | Core Function | Tech Stack | Default Port(s) |
 |---|---|---|---|---|---|
 | [`picam`](file:///d:/picam) | Hardware connections | Layer 1: Southbound HW | VISCA & CGI PTZ camera controller | Node 24, Fastify, TS | `3102` (VISCA: `52381`, CGI: `80`) |
-| [`picanva`](file:///d:/picanva) | Media creation | Layer 2: Media Pipeline | Canva App plugin for liturgical slides | TS, Canva SDK, React | Canva Sandbox |
+| [`canva-pieco-app`](file:///d:/canva-pieco-app) (formerly `picanva`) | Media creation | **Seam** (not in the Pi layers) | Canva App plugin for liturgical slides | TS, Canva SDK, React | Canva Sandbox |
 | [`virtual-screen-streamer`](file:///d:/virtual-screen-streamer) | Media creation | **Seam** (not in the Pi layers) | Windows virtual monitor & RTMP sender (formerly `picompanion`) | C#, .NET, IddCx Driver | RTMP out |
 | [`picontrol`](file:///d:/picontrol) | Event orchestration | +1 Control Plane | Operator Web UI housing & CLI | Node 22+, React, Vite | `5173` dev (UI dev: `5173`) |
 | [`piui`](file:///d:/piui) | UI Component Library | +1 Presentation Plane | Shared atomic & molecular UI components library (`@piecosystem/piui`) | Node 22+, TypeScript, Tailwind | Library / NPM |
@@ -58,12 +58,12 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 2. picanva
-- **Path**: `D:\picanva`
+### 2. canva-pieco-app (formerly picanva)
+- **Path**: `D:\canva-pieco-app`
 - **Role**: Official Canva App (SDK plugin) enabling worship teams to prepare and project liturgy slides directly from Canva.
 - **Layers**:
   - *Proposed*: Media creation
-  - *Refined*: Layer 2 (Content Staging & Media Pipeline)
+  - *Refined*: Seam (runs inside Canva, meets `pigateway` over HTTPS)
 - **Key Capabilities**:
   - Connects Canva directly to `pigateway` and `piprogram`.
   - Stages visual media, sets up display routes in `pimatrix`, and triggers live slide advancing during worship.
