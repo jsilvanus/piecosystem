@@ -74,7 +74,7 @@ flowchart TD
         PICAM["picam<br/>(VISCA-over-IP & CGI PTZ)"]
         PISWITCH["piswitch<br/>(ATEM Switcher Driver)"]
         PISOUND["pisound<br/>(BSS Soundweb HiQnet TCP 1023)"]
-        PILIGHT["pilight<br/>(Tally-Ma UDP/HTTP Lights)"]
+        PITALLY["pitally<br/>(Tally-Ma UDP/HTTP Lights)"]
         HW_DEVICES["Physical Hardware:<br/>Cameras, ATEM, BSS DSP, AMX NetLinx, Tallies, Mics"]
     end
 
@@ -94,13 +94,13 @@ flowchart TD
     GATEWAY --> PICAM
     GATEWAY --> PISWITCH
     GATEWAY --> PISOUND
-    GATEWAY --> PILIGHT
+    GATEWAY --> PITALLY
 
     %% Hardware Interfacing
     PICAM --> HW_DEVICES
     PISWITCH --> HW_DEVICES
     PISOUND --> HW_DEVICES
-    PILIGHT --> HW_DEVICES
+    PITALLY --> HW_DEVICES
 
     %% Media Flow (Direct Data Plane)
     HW_DEVICES ==>|Video Feeds| MATRIX
@@ -129,7 +129,7 @@ flowchart TD
   - `picam`: Direct binary VISCA-over-IP (UDP 52381) and HTTP CGI for PTZ cameras (pan/tilt speeds, optical zoom, presets, AVer SmartFrame, defocus privacy blur).
   - `piswitch`: Video switcher driver for Blackmagic ATEM switchers (UDP 9910) and local software fallback switchers. Includes `MediaPoolManager` with 6-slot circular slide buffer (slots 1..6) and 18-slot graphics pool (slots 7..24), automated $(N-2)$ slide cleanup, and Media Player source routing.
   - `pisound`: Harman London Direct Inject protocol (TCP 1023) to control BSS Soundweb London BLU-100 DSP (handheld mics, madonnas, sanctuary wired mics, auto-mixer vs SQ-5 presets).
-  - `pilight`: Multi-segment wireless tally controller for Tally-Ma lights via HTTP cues and UDP 21324 binary packets.
+  - `pitally`: Multi-segment wireless tally controller for Tally-Ma lights via HTTP cues and UDP 21324 binary packets.
   - `pivoice` (Hardware Ingest part): Direct ALSA USB microphone capture (Hama mic), continuous/scheduled auto-probing.
   - `pigateway` (Southbound Coordinator): Manages hardware watchdog sockets, AMX NetLinx master (TCP 6501/6600), Matrox Monarch HDX encoder, and device state aggregation.
 

@@ -42,7 +42,7 @@ flowchart TD
         VOICE["pivoice (Port 3106 UDP / REST)<br/>(ALSA Mic Capture & Silero VAD)"]
         SOUND["pisound (Port 3105 / TCP 1023)<br/>(BSS BLU-100 DSP Controller)"]
         CAM["picam (Port 3102 / UDP 52381)<br/>(VISCA-over-IP Controller)"]
-        LIGHT["pilight (Port 3107 / UDP 21324)<br/>(Tally-Ma Wireless Controller)"]
+        LIGHT["pitally (Port 3107 / UDP 21324)<br/>(Tally-Ma Wireless Controller)"]
         TUBE["pitube (Port 3500)<br/>(YouTube Lifecycle & Captions)"]
     end
 
@@ -86,7 +86,7 @@ flowchart TD
 | **Audio Pi** | `pivoice` | `3106` UDP / REST | Node 24 (ALSA + Silero) | `systemctl start pivoice` |
 | **Audio Pi** | `pisound` | `3105`, Soundweb `1023` | Node 22+ (Fastify) | `systemctl start pisound` |
 | **Audio Pi** | `picam` | `3102`, VISCA `52381` | Node 24 (Fastify) | `systemctl start picam` |
-| **Audio Pi** | `pilight` | `3107`, UDP `21324` | Node 22+ (Fastify) | `systemctl start pilight` |
+| **Audio Pi** | `pitally` | `3107`, UDP `21324` | Node 22+ (Fastify) | `systemctl start pitally` |
 | **Audio Pi** | `pitube` | `3500` | Node 22+ (Fastify) | `systemctl start pitube` |
 | **Cloud VM** | `web-radio-relay` | `8080`, `1935`, `3000` | Docker (Nginx + Node) | `docker compose up -d` |
 
@@ -175,7 +175,7 @@ flowchart TD
 
 ---
 
-### Phase D: Audio Ingest, DSP & Caption Egress (`pivoice`, `pisound`, `pitube`, `pilight`)
+### Phase D: Audio Ingest, DSP & Caption Egress (`pivoice`, `pisound`, `pitube`, `pitally`)
 
 1. **Verify USB Audio & BSS DSP Connectivity**:
    - USB Hama Mic on Audio Pi: Verify with `arecord -l`.
@@ -183,7 +183,7 @@ flowchart TD
 2. **Start Audio and Egress Services**:
    - `pivoice`: Captures mic, Silero VAD gates speech, streams 16kHz PCM to `liturgos-auditor`.
    - `pitube`: Authenticates with YouTube OAuth2 refresh token, attaches to `pigateway` transcript SSE bus, begins 30s-delayed timed CEA-608 caption ingestion.
-   - `pilight`: Discovers Tally-Ma devices via mDNS (`tally01.local`, `tally02.local`) and initializes 9-LED color zones.
+   - `pitally`: Discovers Tally-Ma devices via mDNS (`tally01.local`, `tally02.local`) and initializes 9-LED color zones.
 
 ---
 
@@ -223,6 +223,6 @@ To verify full ecosystem readiness before a live Sunday worship service:
 2. **Workstation / GPU STT Failure**:
    - If `liturgos-auditor` becomes unreachable, `pigateway` reports `auditor: available=false` and logs warnings. `pitube` gracefully holds caption queue without aborting the YouTube video broadcast.
 3. **Loss of mDNS on Tally-Ma Lights**:
-   - `pilight` automatically falls back from `tallyXX.local` to configured static DHCP fallback IPs (`192.168.1.70+`) without interrupting live tally cues.
+   - `pitally` automatically falls back from `tallyXX.local` to configured static DHCP fallback IPs (`192.168.1.70+`) without interrupting live tally cues.
 4. **Internet Disconnection**:
    - Sanctuary PA (`pisound`), in-house video matrix (`pimatrix`), slide projection (`piprogram`), and tallies continue functioning on local LAN without cloud dependency.
