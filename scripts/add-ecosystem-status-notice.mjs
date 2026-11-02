@@ -4,7 +4,6 @@ import { resolve } from 'node:path';
 const REPOS = [
   'picam',
   'picanva',
-  'picompanion',
   'picontrol',
   'picontrol-mcp',
   'pigateway',
