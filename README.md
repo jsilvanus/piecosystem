@@ -89,6 +89,9 @@ A **seam** project is not a `pi*` service and not part of the Pi layers. It runs
 | `web-radio-relay` | Church VPS | Radio stream from `pivoice` over the reverse-ssh tunnel |
 | `fffleet` | Orchestrator and workers | Job API for renders and transcodes |
 | `keskuskirkko` | AMX NX master | TCP protocol with `pimatrix` / `pigateway` |
+| `saarnavideo` | Server / operator PC | Post-stream editing: takes finished recordings and publishes videos |
+
+`live-captions-yt` (LCYT) is a **reference** for features and behaviour, not a seam project and not part of the Pi layers.
 
 👉 **Read the full architectural evaluation**: [docs/architecture-layers.md](docs/architecture-layers.md)
 

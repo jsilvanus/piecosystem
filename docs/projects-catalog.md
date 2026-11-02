@@ -2,7 +2,7 @@
 
 This catalog details all active projects within the Raspberry Pi production ecosystem at Riihimäen Keskuskirkko.
 
-> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`. See the README.
+> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`, `saarnavideo` (post-stream editing). `live-captions-yt` is a reference, not a seam. See the README.
 
 ---
 
