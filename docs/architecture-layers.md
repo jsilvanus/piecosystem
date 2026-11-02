@@ -25,7 +25,7 @@ In production broadcast and AV-over-IP systems, standard practice requires addre
    - If "Hardware connections" conflates device control (VISCA, Tally UDP) with raw video/audio capture (HDMI, USB ALSA), architectural boundaries blur.
 
 2. **"Media Creation" vs. "Real-Time Media Processing & Composition"**:
-   - *Media Creation & Staging*: Designing slides in Canva (`picanva`), formatting service hymns (`piprogram`), or generating virtual monitors on a PC (`picompanion`).
+   - *Media Creation & Staging*: Designing slides in Canva (`picanva`), formatting service hymns (`piprogram`), or generating virtual monitors on the operator PC (`virtual-screen-streamer`, a seam project outside the Pi layers).
    - *Live Media Processing & Matrixing*: Compositing video layers, switching camera feeds, PiP overlays, and hardware display outputs (`pimatrix`, `piswitch`).
 
 3. **Defining the "Consumer Edge"**:
@@ -64,7 +64,6 @@ flowchart TD
         CANVA["picanva<br/>(Canva Slide App)"]
         PGM["piprogram<br/>(Hymns, Slides, PPTX)"]
         GRAPHICS["pigraphics<br/>(HTML5/CSS Lower-Thirds & Overlays)"]
-        COMPANION["picompanion<br/>(Virtual Displays / RTMP)"]
         PERCEPTION["piperception<br/>(YOLOX / ONNX Bbox & Person Tracking)"]
         VOICE_DSP["pivoice<br/>(ALSA Capture, Silero VAD, PCM Fanout)"]
         MATRIX["pimatrix & piswitch<br/>(Compositor, Video Matrix, Multiview)"]
@@ -140,7 +139,6 @@ flowchart TD
   - `picanva`: Canva App plugin for liturgical slides, worship lyrics, and real-time presentation control.
   - `piprogram`: Presentation content engine for slide distribution, PPTX conversion, hymn lyric formatting, and stage displays.
   - `pigraphics`: Broadcast graphics engine rendering HTML5/CSS animated lower thirds, speaker tags, liturgy badges, bug/clock overlays, and alpha-keyed outputs.
-  - `picompanion`: Windows desktop companion utilizing virtual monitor drivers to push screen captures as RTMP signals into the matrix.
   - `mediamtx`: Ultra-low-latency RTSP, RTMP, WebRTC, and HLS media router / relay server.
   - `fffleet`: Distributed FFmpeg transcode & stream orchestration cluster (leader + workers) for parallel stream encoding.
   - `liturgos-auditor`: Speech-to-Text (STT) transcription engine converting spoken audio into real-time text tokens, timestamps, and caption feeds.

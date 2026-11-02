@@ -2,6 +2,8 @@
 
 This catalog details all active projects within the Raspberry Pi production ecosystem at Riihimäen Keskuskirkko.
 
+> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`. See the README.
+
 ---
 
 ## Catalog Summary Table
@@ -10,7 +12,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 |---|---|---|---|---|---|
 | [`picam`](file:///d:/picam) | Hardware connections | Layer 1: Southbound HW | VISCA & CGI PTZ camera controller | Node 24, Fastify, TS | `3102` (VISCA: `52381`, CGI: `80`) |
 | [`picanva`](file:///d:/picanva) | Media creation | Layer 2: Media Pipeline | Canva App plugin for liturgical slides | TS, Canva SDK, React | Canva Sandbox |
-| [`picompanion`](file:///d:/picompanion) | Media creation | Layer 2: Media Pipeline | Windows virtual monitor & RTMP sender | C#, .NET, IddCx Driver | RTMP out |
+| [`virtual-screen-streamer`](file:///d:/virtual-screen-streamer) | Media creation | **Seam** (not in the Pi layers) | Windows virtual monitor & RTMP sender (formerly `picompanion`) | C#, .NET, IddCx Driver | RTMP out |
 | [`picontrol`](file:///d:/picontrol) | Event orchestration | +1 Control Plane | Operator Web UI housing & CLI | Node 22+, React, Vite | `5173` dev (UI dev: `5173`) |
 | [`piui`](file:///d:/piui) | UI Component Library | +1 Presentation Plane | Shared atomic & molecular UI components library (`@piecosystem/piui`) | Node 22+, TypeScript, Tailwind | Library / NPM |
 | [`picontrol-mcp`](file:///d:/picontrol-mcp) | Event orchestration | +1 Control Plane | MCP Server for AI agents (`pi://`) | Node 24, Fastify, TS | `3600` |
@@ -69,12 +71,12 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ---
 
-### 3. picompanion
-- **Path**: `D:\picompanion`
-- **Role**: Windows companion application for screen sharing and presentation capture into PiMatrix.
+### 3. virtual-screen-streamer (formerly picompanion)
+- **Path**: `D:\virtual-screen-streamer`
+- **Role**: Windows program on the operator PC that streams several virtual screens as RTMP into PiMatrix. Not a Node project and not a Pi service.
 - **Layers**:
   - *Proposed*: Media creation
-  - *Refined*: Layer 2 (Media Pipeline & Ingest)
+  - *Refined*: **Seam** (outside the Pi layers; meets the ecosystem at RTMP)
 - **Key Capabilities**:
   - Creates virtual display monitors using Windows Indirect Display Driver (`IddCx`).
   - Encodes and broadcasts virtual monitor output via RTMP directly into `pimatrix`.
