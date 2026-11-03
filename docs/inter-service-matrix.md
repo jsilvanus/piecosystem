@@ -38,7 +38,8 @@ This document defines the network topology, listening ports, communication proto
 | **5173 (dev)** | HTTP | `picontrol` | Human Operator Web UI server | Web UI & API Proxy |
 | **6501 / 6600** | TCP | `pigateway` | AMX NetLinx master communication | Raw TCP socket |
 | **6601** | TCP | `pigateway` / `pimatrix` | Forwarded video AMX command line | Raw TCP socket |
-| **8080 / 8081** | HTTP | `pimatrix` | Video routing & compositor API | REST API & WebSocket |
+| **3101** | HTTP | `pimatrix` | Video routing & compositor API (port map of 2026-11-02; the UDP `3101` of `pigateway` is a different protocol) | REST API & WebSocket |
+| **8080** | HTTP | `picontrol` UI (Pi) | Operator UI served on the Pi (`projector-relay` is on 127.0.0.1:3180) | Web UI |
 | **8080** | HTTP | `web-radio-relay` | HLS audio streaming & archive MP3 files | HTTP file server |
 | **8090** | HTTP | `liturgos-auditor` | Speech-to-text inference API & live SSE | REST API & SSE (`/v1/live`) |
 | **8554** | TCP/RTSP | `mediamtx` | RTSP live camera streaming crossbar | Streaming media |
@@ -59,7 +60,7 @@ graph LR
     MCP["picontrol-mcp"] -->|Streamable HTTP| OPERATOR["AI Agents / Users"]
     MCP -->|HTTP REST| PIGATEWAY["pigateway (3100)"]
     MCP -->|HTTP REST| PIRUNDOWN["pirundown (3400)"]
-    MCP -->|HTTP REST| PIMATRIX["pimatrix (8080)"]
+    MCP -->|HTTP REST| PIMATRIX["pimatrix (3101)"]
 
     PICONTROL["picontrol (3000)"] -->|HTTP / SSE| PIGATEWAY
     PICONTROL -->|HTTP| PIRUNDOWN
