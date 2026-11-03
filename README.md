@@ -73,9 +73,9 @@ This model is intuitive and accurately describes the linear journey of media. Ho
 |---|---|---|
 | **Layer 1: Southbound Hardware Interfacing** | Physical device protocol drivers (VISCA, HiQnet, ATEM, Tally-Ma, ALSA), video matrix crossbars & hardware display sinks. | [`pimatrix`](file:///d:/pimatrix), [`picam`](file:///d:/picam), [`piswitch`](file:///d:/piswitch), [`pisound`](file:///d:/pisound), [`pitally`](file:///d:/pitally), [`pivoice`](file:///d:/pivoice), [`pigateway`](file:///d:/pigateway), [`pipoe`](file:///d:/pipoe) |
 | **Layer 2: Media Pipeline & Real-Time Composition** | Content authoring, slide staging, graphics generation, Speech-to-Text transcription, audio VAD/DSP, video perception, and compositing. | [`piprogram`](file:///d:/piprogram), [`pigraphics`](file:///d:/pigraphics), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`piperception`](file:///d:/piperception), [`pivoice`](file:///d:/pivoice) |
-| **Layer 3: Orchestration, State & Workflow** | Deterministic service rundowns, YAML v2 cue sheets, dynamic variable fetching, 3D venue digital twins, and centralized SSE event distribution. | [`pistorage`](file:///d:/pistorage) | Shared object storage: S3-compatible backend (VersityGW now, Hetzner later) with a Pi read-through disk cache | Node 24, Fastify, TS | `3700` |
-| [`pirundown`](file:///d:/pirundown), [`pispace`](file:///d:/pispace), [`pigateway`](file:///d:/pigateway) |
-| **Layer 4: Presentation & Egress Delivery (Consumer Edge)** | External broadcasting (YouTube Live), timed closed caption streaming, low-latency web radio, sanctuary projectors, and confidence monitors. | [`pitube`](file:///d:/pitube), [`web-radio-relay`](file:///d:/web-radio-relay), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`pimatrix`](file:///d:/pimatrix) (HDMI), [`piprogram`](file:///d:/piprogram) (Stage) |
+| **Layer 3: Orchestration, State & Workflow** | Deterministic service rundowns, YAML v2 cue sheets, dynamic variable fetching, 3D venue digital twins, and centralized SSE event distribution. | [`pirundown`](file:///d:/pirundown), [`pispace`](file:///d:/pispace), [`pigateway`](file:///d:/pigateway) |
+| **Storage (shared)** | Durable shared files: S3-compatible backend (VersityGW now, Hetzner later) behind a Pi read-through disk cache. | [`pistorage`](file:///d:/pistorage) |
+| **Layer 4: Presentation & Egress Delivery (Consumer Edge)** | External broadcasting (YouTube Live), timed closed caption streaming, low-latency web radio, sanctuary projectors, and confidence monitors. | [`pitube`](file:///d:/pitube), [`web-radio-relay`](file:///d:/web-radio-relay), [`liturgos-auditor`](file:///d:/liturgos-auditor), [`pimatrix`](file:///d:/pimatrix) (HDMI), [`piprogram`](file:///d:/piprogram) (Stage), [`pinotify`](file:///d:/pinotify) (skeleton) |
 | **+1 Cross-Cutting Control & Agentic Plane** | Unified human operator UI/CLI, Model Context Protocol (MCP) tooling for AI agents (`pi://` resources), and ecosystem governance. | [`picontrol`](file:///d:/picontrol), [`picontrol-mcp`](file:///d:/picontrol-mcp), [`piecosystem`](file:///d:/piecosystem) |
 
 ### Seam projects
@@ -120,6 +120,10 @@ A **seam** project is not a `pi*` service and not part of the Pi layers. It runs
 | [`pitube`](file:///d:/pitube) | YouTube Live lifecycle manager & timed live caption sender | Node 22+, TS | `3500` |
 | [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3106` |
 | [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node 22+, Fastify, TS | `3202` |
+| [`pistorage`](file:///d:/pistorage) | Shared object storage: S3-compatible backend (VersityGW now, Hetzner later) behind a Pi disk cache | Node 24, Fastify, TS | `3700` |
+| [`pinotify`](file:///d:/pinotify) | Notifications built on `notify-core` (skeleton, not installed on the Pi) | Node, TS | `3109` |
+| [`notify-core`](file:///d:/notify-core) (seam, library) | Notification engine library, `@jsilvanus/notify-core` (EUPL-1.2) | Node, ESM | Library / NPM |
+| [`pisim`](file:///d:/pisim) (seam) | Ecosystem simulator for testing without hardware | Node, TS | N/A |
 | [`piecosystem`](file:///d:/piecosystem) | Ecosystem governance, architecture docs & dev coordination | Node, Markdown | N/A |
 
 👉 **Complete details on each project**: [docs/projects-catalog.md](docs/projects-catalog.md)

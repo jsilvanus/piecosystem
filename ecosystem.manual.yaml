@@ -58,3 +58,30 @@ services:
     layer: Seam
     kind: control
     runtime: node
+
+  # Added 2026-11-03. The three below have no "pi" block yet (no port or health endpoint known), so they are
+  # listed by hand; move each into its package.json "pi" block when it has a port.
+  - service: notify-core
+    displayName: notify-core (library, @jsilvanus/notify-core)
+    dir: notify-core
+    layer: Seam
+    kind: library
+    runtime: node
+    versionFile: package.json
+
+  - service: pinotify
+    displayName: pinotify (notifications, skeleton)
+    dir: pinotify
+    layer: Layer 4 - Consumer Edge
+    kind: control
+    runtime: node
+    versionFile: package.json
+    # Listens on 3109; no health endpoint known yet, so no port entry (the generator needs both).
+
+  - service: pisim
+    displayName: pisim (ecosystem simulator)
+    dir: pisim
+    layer: Seam
+    kind: control
+    runtime: node
+    versionFile: package.json

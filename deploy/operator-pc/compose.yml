@@ -2,12 +2,15 @@
 #   - auditor-stt   liturgos-auditor speech-to-text (CPU by default, GPU with compose.gpu.yml)
 #   - fleet-worker  LCYT "fat" fffleet worker: ffmpeg + DSK (type:dsk) + perception (type:perception)
 #   - ollama        local LLM server, reachable only from this compose network and from localhost
+#   - versitygw     S3 gateway (VersityGW, posix backend) = the S3 backend of pistorage; versitygw-init creates its bucket
 # The fffleet orchestrator runs on the Pi (kirkonpi, wired 192.168.1.78:5000), not here.
 #
 #   cp .env.example .env   # fill in tokens and this PC's LAN address
 #   docker compose up -d
 #   docker compose -f compose.yml -f compose.gpu.yml up -d     # NVIDIA GPU
 #   docker compose exec ollama ollama pull llama3.1:8b
+# pistorage (on the Pi) points at versitygw: PISTORAGE_S3_ENDPOINT=http://<this PC's LAN address>:7070,
+# PISTORAGE_S3_BUCKET=pistorage, PISTORAGE_S3_ACCESS_KEY / _SECRET_KEY = VERSITYGW_ACCESS_KEY / _SECRET_KEY below.
 # Nothing here has been run on the real machines yet.
 name: operator-pc
 
@@ -83,7 +86,44 @@ services:
       - "127.0.0.1:${OLLAMA_HOST_PORT:-11434}:11434"
     restart: unless-stopped
 
+  # S3 gateway for pistorage. The posix backend keeps every object as a plain file under /data (named volume
+  # versitygw-data), so it is easy to back up and to move to Hetzner Object Storage later (only the pistorage
+  # endpoint, bucket and keys change). The port is published on the LAN because the Pi connects from outside;
+  # the keys are required, there is no anonymous access.
+  versitygw:
+    image: versity/versitygw:${VERSITYGW_VERSION:-latest}
+    command: ["--access", "${VERSITYGW_ACCESS_KEY:?set VERSITYGW_ACCESS_KEY}", "--secret", "${VERSITYGW_SECRET_KEY:?set VERSITYGW_SECRET_KEY}", "--port", ":7070", "posix", "/data"]
+    ports:
+      - "${VERSITYGW_HOST_PORT:-7070}:7070"
+    volumes:
+      - versitygw-data:/data
+    restart: unless-stopped
+
+  # Creates the pistorage bucket (retries until the gateway answers) and exits.
+  versitygw-init:
+    image: amazon/aws-cli:latest
+    restart: "no"
+    depends_on:
+      - versitygw
+    environment:
+      AWS_ACCESS_KEY_ID: ${VERSITYGW_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${VERSITYGW_SECRET_KEY}
+      AWS_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      BUCKET: ${PISTORAGE_BUCKET:-pistorage}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        for i in $$(seq 1 30); do
+          if aws --endpoint-url http://versitygw:7070 s3api head-bucket --bucket "$$BUCKET" 2>/dev/null; then echo "bucket $$BUCKET exists"; exit 0; fi
+          if aws --endpoint-url http://versitygw:7070 s3api create-bucket --bucket "$$BUCKET" 2>/dev/null; then echo "bucket $$BUCKET created"; exit 0; fi
+          sleep 2
+        done
+        echo "could not create bucket $$BUCKET" >&2; exit 1
+
 volumes:
+  versitygw-data:
   auditor-stt-models:
   auditor-stt-data:
   ollama-data:
