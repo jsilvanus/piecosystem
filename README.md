@@ -121,7 +121,7 @@ A **seam** project is not a `pi*` service and not part of the Pi layers. It runs
 | [`pivoice`](file:///d:/pivoice) | ALSA mic capture, Silero VAD neural analysis & PCM fanout | Node 24, ONNX Runtime | REST API & UDP `3106` |
 | [`piperception`](file:///d:/piperception) | Real-time YOLOX/ONNX person detection & multi-target tracking | Node 22+, Fastify, TS | `3202` |
 | [`pistorage`](file:///d:/pistorage) | Shared object storage: S3-compatible backend (VersityGW now, Hetzner later) behind a Pi disk cache | Node 24, Fastify, TS | `3700` |
-| [`pinotify`](file:///d:/pinotify) | Notifications built on `notify-core` (skeleton, not installed on the Pi) | Node, TS | TBD |
+| [`pinotify`](file:///d:/pinotify) | Notifications built on `notify-core` (skeleton, not installed on the Pi) | Node, TS | `3109` |
 | [`notify-core`](file:///d:/notify-core) (seam, library) | Notification engine library, `@jsilvanus/notify-core` (EUPL-1.2) | Node, ESM | Library / NPM |
 | [`pisim`](file:///d:/pisim) (seam) | Ecosystem simulator for testing without hardware | Node, TS | N/A |
 | [`piecosystem`](file:///d:/piecosystem) | Ecosystem governance, architecture docs & dev coordination | Node, Markdown | N/A |

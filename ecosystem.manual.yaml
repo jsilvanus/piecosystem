@@ -76,6 +76,7 @@ services:
     kind: control
     runtime: node
     versionFile: package.json
+    # Listens on 3109; no health endpoint known yet, so no port entry (the generator needs both).
 
   - service: pisim
     displayName: pisim (ecosystem simulator)

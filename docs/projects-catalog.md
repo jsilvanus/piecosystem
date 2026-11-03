@@ -35,7 +35,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pivoice`](file:///d:/pivoice) | Hardware connections / Media | Layer 1 & 2: HW Capture/DSP | ALSA audio capture, Silero VAD, fanout | Node 24, ONNX Runtime | REST API & UDP Telemetry |
 | [`piperception`](file:///d:/piperception) | Media creation | Layer 2: Video Perception | Real-time YOLOX/ONNX person detection & tracking | Node/Python, ONNX | Ingests video, outputs 2D bboxes |
 | [`pistorage`](file:///d:/pistorage) | Storage | Storage: Shared Object Storage | Durable file storage: S3-compatible backend (VersityGW now, Hetzner later) behind a read-through disk cache | Node 24, Fastify, TS | `3700` |
-| [`pinotify`](file:///d:/pinotify) | Consumer edge | Layer 4: Presentation/Egress | Notifications from ecosystem events, built on `notify-core` (skeleton, not installed on the Pi) | Node, TS | TBD |
+| [`pinotify`](file:///d:/pinotify) | Consumer edge | Layer 4: Presentation/Egress | Notifications from ecosystem events, built on `notify-core` (skeleton, not installed on the Pi) | Node, TS | `3109` |
 | [`notify-core`](file:///d:/notify-core) | Shared library | **Seam** (library) | Notification engine library (`@jsilvanus/notify-core`, EUPL-1.2, on npm) | Node, ESM | Library / NPM |
 | [`pisim`](file:///d:/pisim) | Coordination | **Seam** (test tooling) | Ecosystem simulator: fake devices and events for testing without hardware | Node, TS | N/A |
 | [`liturgos-auditor`](file:///d:/liturgos-auditor) | Media creation | Layer 2: Speech-to-Text | Real-time speech transcription (Whisper STT) | Python / Faster-Whisper | Ingests PCM, outputs text tokens |
@@ -473,7 +473,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 - **Path**: `D:\pinotify`
 - **Repository**: [https://github.com/jsilvanus/pinotify](https://github.com/jsilvanus/pinotify)
 - **Role**: Notification service for the ecosystem, built on `notify-core`.
-- **Status**: skeleton only (merged); not installed on the Pi, no systemd unit, no port assigned. The unit and a matrix entry wait for Juha's go.
+- **Status**: skeleton only (merged); not installed on the Pi, no systemd unit, listens on port `3109`. The unit and the Pi install wait for Juha's go.
 
 ---
 
