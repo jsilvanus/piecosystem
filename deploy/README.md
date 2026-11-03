@@ -2,7 +2,7 @@
 
 | Stack | Host | Runs |
 |---|---|---|
-| [`operator-pc/`](operator-pc) | Operator PC (Windows, Docker Desktop) | liturgos-auditor STT, LCYT fat fffleet worker (ffmpeg, DSK, perception), ollama |
+| [`operator-pc/`](operator-pc) | Operator PC (Windows, Docker Desktop) | liturgos-auditor STT, LCYT fat fffleet worker (ffmpeg, DSK, perception), ollama, VersityGW (S3 backend of pistorage) |
 | [`assisting-pc/`](assisting-pc) | Assisting PC (gaming laptop 2) | LCYT fat fffleet worker (ffmpeg, DSK, perception) |
 
 The **fffleet orchestrator runs on the Pi** (kirkonpi, wired `192.168.1.78:5000`), not in these stacks; both workers register with it
@@ -12,7 +12,9 @@ The **fffleet orchestrator runs on the Pi** (kirkonpi, wired `192.168.1.78:5000`
 **Roles and priority.** Capabilities `usb` (Pi only), `normal` (all three), `dsk` and `gpu` (operator PC); placement rules and the Pi's own orchestrator and worker are in [`fleet-pi/`](fleet-pi), the plan in [`../docs/fleet-worker-roles.md`](../docs/fleet-worker-roles.md). Each stack sets `FFFLEET_WORKER_ID` and `FFFLEET_CAPABILITIES`; `FFFLEET_PRIORITY` is a pass-through fffleet does not read.
 
 Images: `ghcr.io/jsilvanus/lcyt-fleet-worker` (from live-captions-yt, replaces separate DSK and perception workers),
-`ghcr.io/jsilvanus/liturgos-auditor-stt` (`-cuda` tag for GPU), `ollama/ollama`.
+`ghcr.io/jsilvanus/liturgos-auditor-stt` (`-cuda` tag for GPU), `ollama/ollama`, `versity/versitygw`, `amazon/aws-cli` (one-shot bucket creation).
+
+**VersityGW / pistorage.** The operator-PC stack runs `versitygw` (posix backend, S3 on port `7070`, data in the `versitygw-data` volume) and a one-shot `versitygw-init` that creates the `pistorage` bucket. Set `VERSITYGW_ACCESS_KEY` / `VERSITYGW_SECRET_KEY` in `.env`, then on the Pi set `PISTORAGE_S3_ENDPOINT=http://<operator PC LAN address>:7070`, `PISTORAGE_S3_BUCKET=pistorage` and the same keys as `PISTORAGE_S3_ACCESS_KEY` / `PISTORAGE_S3_SECRET_KEY` (path-style stays on). Moving to Hetzner Object Storage later changes only those variables. Unverified: nothing has been run against a real VersityGW yet.
 
 Validate without starting anything: `docker compose --env-file .env.example config`. Not yet run on the real PCs; the GPU overlays and the
 published image tags are unverified.

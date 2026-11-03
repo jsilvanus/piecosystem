@@ -154,6 +154,15 @@ flowchart TD
   - `pispace`: Spatial engine and geometric digital-twin service. Fuses FreeD camera tracking telemetry (`UDP 40000`) and 2D bounding boxes (from `piperception`) to calculate real-time 3D positions $(X, Y, Z)$ within sanctuary zones (`pulpit`, `lectern`, `altar`, `choir`), and provides inverse PTZ targeting solvers.
   - `pigateway` (Event Broker part): Low-latency Server-Sent Events (SSE) bus (`GET /api/v1/events`), maintaining authoritative cache of system and device states.
 
+### Storage (shared, outside the numbered layers)
+- **Mission**: Durable files that several services need (slides, images, audio, recordings), kept off the Pi's SD card.
+- **Projects**:
+  - `pistorage`: S3-compatible backend (VersityGW on the operator PC now, Hetzner Object Storage later) behind a read-through disk cache on the Pi, with a write spool and `useAt` prefetch. Port `3700`.
+
+### Seam additions (2026-11-03)
+- `notify-core`: notification engine library (`@jsilvanus/notify-core`); `pinotify` is the service built on it (skeleton, Layer 4).
+- `pisim`: ecosystem simulator for testing without hardware.
+
 ### Layer 4: Presentation & Egress Delivery (Consumer Edge)
 - **Mission**: Deliver the finished broadcast and interactive experience to congregation members, online audiences, and worship leaders.
 - **Projects**:
