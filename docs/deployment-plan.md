@@ -25,13 +25,13 @@ flowchart TD
     subgraph NODE_PI_GATEWAY["Primary Gateway Pi (Raspberry Pi 5 / 8GB)"]
         GW["pigateway (Port 3000)"]
         MCP["picontrol-mcp (Port 3600)"]
-        UI["picontrol (Port 3000)"]
+        UI["picontrol (UI 8080 on the Pi, 5173 dev)"]
         RUNDOWN["pirundown (Port 3400)"]
         DESIGNER["pirundown-designer (Port 3610)"]
     end
 
     subgraph NODE_PI_VIDEO["Video Compositor Pi (Raspberry Pi 5 / 8GB)"]
-        MATRIX["pimatrix (Port 8080)<br/>(HDMI KMS Keying)"]
+        MATRIX["pimatrix (Port 3101)<br/>(HDMI KMS Keying)"]
         PISWITCH["piswitch (Port 3103)<br/>(ATEM UDP 9910 & Media Pool)"]
         GRAPHICS["pigraphics (Port 3201)<br/>(HTML5 / CSS Keying)"]
         SPACE["pispace (Port 3203)<br/>(3D Sanctuary Twin)"]
@@ -78,7 +78,7 @@ flowchart TD
 | **Gateway Pi** | `picontrol` | `5173` (dev) | Node 22+ (React/Vite) | `systemctl start picontrol` |
 | **Gateway Pi** | `pirundown` | `3400` | Node 22+ (Fastify) | `systemctl start pirundown` |
 | **Gateway Pi** | `pirundown-designer` | `3610` | Node 22+ (Fastify/React) | `systemctl start pirundown-designer` |
-| **Video Pi** | `pimatrix` | `8080`, `8081` | Node 24 + GStreamer | `systemctl start pimatrix` |
+| **Video Pi** | `pimatrix` | `3101` | Node 24 + GStreamer | `systemctl start pimatrix` |
 | **Video Pi** | `piswitch` | `3103`, ATEM `9910` | Node 22+ (Fastify) | `systemctl start piswitch` |
 | **Video Pi** | `pigraphics` | `3201` | Node 22+ (Fastify) | `systemctl start pigraphics` |
 | **Video Pi** | `pispace` | `3203` | Node 22+ (Fastify) | `systemctl start pispace` |
@@ -129,15 +129,15 @@ flowchart TD
 
 1. **Configure `pigateway` environment** (`.env`):
    ```env
-   PIGATEWAY_PORT=3100
+   PIGATEWAY_PORT=3000
    PIGATEWAY_MODE=production
    PIGATEWAY_API_KEY=<random-secret-token>
    PIGATEWAY_AUDITOR_URL=http://<workstation-ip>:8090
    PIGATEWAY_MEDIAMTX_RTSP_URL=rtsp://<workstation-ip>:8554
    PIGATEWAY_PIRUNDOWN_API_URL=http://127.0.0.1:3400
-   PIGATEWAY_PISPACE_API_URL=http://<video-pi-ip>:3108
-   PIGATEWAY_PIGRAPHICS_API_URL=http://<video-pi-ip>:3107
-   PIGATEWAY_PIPERCEPTION_API_URL=http://<video-pi-ip>:3110
+   PIGATEWAY_PISPACE_API_URL=http://<video-pi-ip>:3203
+   PIGATEWAY_PIGRAPHICS_API_URL=http://<video-pi-ip>:3201
+   PIGATEWAY_PIPERCEPTION_API_URL=http://<video-pi-ip>:3202
    ```
 2. **Start Gateway and Orchestrator Services**:
    ```bash
