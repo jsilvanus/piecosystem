@@ -20,6 +20,7 @@ const DEFAULT_REPOS = [
   'pipoe', 'piprogram', 'pigraphics', 'piperception', 'pispace', 'piembed', 'piagent',
   'pirundown', 'pidirector', 'picomposer', 'pitube', 'picontrol-mcp', 'picomposer-mcp',
   'pirundown-designer', 'picontrol', 'piui', 'canva-pieco-app', 'piecosystem',
+  'pistorage', 'pisim', 'pinotify', 'notify-core',
 ];
 
 function parseArgs(argv) {

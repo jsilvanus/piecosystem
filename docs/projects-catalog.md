@@ -2,7 +2,7 @@
 
 This catalog details all active projects within the Raspberry Pi production ecosystem at Riihimäen Keskuskirkko.
 
-> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `canva-pieco-app` (formerly `picanva`), `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`, `saarnavideo` (post-stream editing). `live-captions-yt` is a reference, not a seam. See the README.
+> **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `canva-pieco-app` (formerly `picanva`), `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`, `saarnavideo` (post-stream editing), `notify-core` (library), `pisim` (simulator). `live-captions-yt` is a reference, not a seam. See the README.
 
 ---
 
@@ -34,6 +34,10 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pitube`](file:///d:/pitube) | Consumer edge | Layer 4: Presentation/Egress | YouTube Live lifecycle & delayed captions | Node 22+, TS | `3500` |
 | [`pivoice`](file:///d:/pivoice) | Hardware connections / Media | Layer 1 & 2: HW Capture/DSP | ALSA audio capture, Silero VAD, fanout | Node 24, ONNX Runtime | REST API & UDP Telemetry |
 | [`piperception`](file:///d:/piperception) | Media creation | Layer 2: Video Perception | Real-time YOLOX/ONNX person detection & tracking | Node/Python, ONNX | Ingests video, outputs 2D bboxes |
+| [`pistorage`](file:///d:/pistorage) | Storage | Storage: Shared Object Storage | Durable file storage: S3-compatible backend (VersityGW now, Hetzner later) behind a read-through disk cache | Node 24, Fastify, TS | `3700` |
+| [`pinotify`](file:///d:/pinotify) | Consumer edge | Layer 4: Presentation/Egress | Notifications from ecosystem events, built on `notify-core` (skeleton, not installed on the Pi) | Node, TS | TBD |
+| [`notify-core`](file:///d:/notify-core) | Shared library | **Seam** (library) | Notification engine library (`@jsilvanus/notify-core`, EUPL-1.2, on npm) | Node, ESM | Library / NPM |
+| [`pisim`](file:///d:/pisim) | Coordination | **Seam** (test tooling) | Ecosystem simulator: fake devices and events for testing without hardware | Node, TS | N/A |
 | [`liturgos-auditor`](file:///d:/liturgos-auditor) | Media creation | Layer 2: Speech-to-Text | Real-time speech transcription (Whisper STT) | Python / Faster-Whisper | Ingests PCM, outputs text tokens |
 | [`piecosystem`](file:///d:/piecosystem) | Coordination | +1 Governance Plane | Architecture, roadmap & coordination | Node, Markdown | N/A |
 
@@ -444,5 +448,46 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - PoE on/off with read-back verification, and `cycle` (off, wait 1-60 s, on). Only ports named in `PIPOE_PORT_NAMES` can be switched; one operation per port at a time.
   - SNMP v2c driver on the standard PoE MIB (RFC 3621); simulation mode by default; optional bearer token.
   - No polling, watchdog or automatic cycling: callers (for example picam's freeze handling) decide when to cycle.
-- **Protocols & Interfaces**: Fastify REST on port `3302` (`/openapi.json`), CLI `pipoe`, SNMP UDP `161` to the switch (factory address `192.168.0.100`, moving to `192.168.1.2`).
+- **Protocols & Interfaces**: Fastify REST on port `3108` (`/openapi.json`), CLI `pipoe`, SNMP UDP `161` to the switch (factory address `192.168.0.100`, moving to `192.168.1.2`).
 - **Status**: never run against the real switch; SNMP is off on the switch until it is enabled in its web UI. See the pipoe README for the read-only probes.
+
+---
+
+### 28. pistorage
+- **Path**: `D:\pistorage`
+- **Repository**: [https://github.com/jsilvanus/pistorage](https://github.com/jsilvanus/pistorage)
+- **Role**: Durable shared file storage for the ecosystem: an S3-compatible backend behind a read-through disk cache on the Pi, with a local-disk backend for development.
+- **Layers**: Storage (shared by Layer 2 media services)
+- **Key Capabilities**:
+  - Backends: S3 or any S3-compatible service (VersityGW on the operator PC now, Hetzner Object Storage later; switching is configuration only), or local disk. Keys carry the `pi/` prefix (`PISTORAGE_KEY_PREFIX`).
+  - Read-through disk cache with TTL and size cap; write spool that holds writes while the backend is down.
+  - `useAt` dates/ranges stored with each object drive prefetch into the cache before the service; signed links for browsers; optional retention sweep.
+  - Client library and CLI `pistorage`; OpenAPI contract.
+- **Protocols & Interfaces**: Fastify REST on port `3700` (`PISTORAGE_PORT`, `/health`), bearer or `x-api-key`.
+- **Backend for local testing**: the `versitygw` service in `deploy/operator-pc/compose.yml` (S3 on host port `7070`, bucket `pistorage`). Point `PISTORAGE_S3_ENDPOINT` at it.
+- **Status**: nothing run against a real S3 service yet; local backend and fake-offline tests only.
+
+---
+
+### 29. pinotify
+- **Path**: `D:\pinotify`
+- **Repository**: [https://github.com/jsilvanus/pinotify](https://github.com/jsilvanus/pinotify)
+- **Role**: Notification service for the ecosystem, built on `notify-core`.
+- **Status**: skeleton only (merged); not installed on the Pi, no systemd unit, no port assigned. The unit and a matrix entry wait for Juha's go.
+
+---
+
+### 30. notify-core
+- **Path**: `D:\notify-core`
+- **Repository**: [https://github.com/jsilvanus/notify-core](https://github.com/jsilvanus/notify-core)
+- **Role**: Library: the notification engine, extracted from LCYT's `lcyt-notify` (EUPL-1.2, published as `@jsilvanus/notify-core` on npm with changesets and trusted publishing).
+- **Layers**: Seam (shared library, not a service)
+- **Consumers**: `pinotify`. Switching LCYT's `lcyt-notify` to it is future work.
+
+---
+
+### 31. pisim
+- **Path**: `D:\pisim`
+- **Repository**: [https://github.com/jsilvanus/pisim](https://github.com/jsilvanus/pisim)
+- **Role**: Ecosystem simulator: stands in for devices and events so services (for example `picomposer`, which subscribes to gateway events) can be tested without hardware.
+- **Layers**: Seam (test tooling)
