@@ -20,6 +20,7 @@ This document defines the network topology, listening ports, communication proto
 | **3105** | HTTP | `pisound` | Sound & microphone service API | REST API |
 | **3107** | HTTP | `pitally` | Tally light controller API | REST API |
 | **3108** | HTTP | `pipoe` | PoE switch controller (PLANET switch via SNMP) | REST API |
+| **3109** | HTTP | `pinotify` | Notifications built on `notify-core` (skeleton, not installed on the Pi) | REST API |
 | **3200** | HTTP | `piprogram` | Hymns, slides, PPTX pipeline, three program feeds (PiPGM1-3) and PA audio control | REST API & SSE (`/api/v1/events`) |
 | **3201** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3202** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
@@ -31,7 +32,7 @@ This document defines the network topology, listening ports, communication proto
 | **3500** | HTTP | `pitube` | YouTube lifecycle & caption coordinator | REST API |
 | **3600** | HTTP | `picontrol-mcp` | MCP Server for AI agents (`pi://`) | Streamable HTTP |
 | **3610** | HTTP | `pirundown-designer` | Visual authoring & cue-sheet designer for Rundown v2 YAML | Web UI & REST API |
-| **3700** | HTTP | `pistorage` | Shared object storage: S3-compatible backend (VersityGW / Hetzner) with Pi read-through disk cache | REST API |
+| **3700** | HTTP | `pistorage` | Shared object storage: S3-compatible backend (VersityGW / Hetzner) with Pi read-through disk cache (binds 127.0.0.1 on the Pi) | REST API |
 | **5000** | HTTP | `fffleet-orchestrator` | Fleet job queue API & Web Dashboard (`/ui/`) | REST API & Web UI |
 | **5101+** | HTTP | `fffleet-worker` | Worker process & daemon job execution | REST API |
 | **5173 (dev)** | HTTP | `picontrol` | Human Operator Web UI server | Web UI & API Proxy |
