@@ -23,7 +23,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3201` |
 | [`pitally`](file:///d:/pitally) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3107` (UDP: `21324`) |
 | [`pipoe`](file:///d:/pipoe) | Hardware connections | Layer 1: Southbound HW | PoE switch controller (PLANET GS-4210-16P2S, SNMP): port status, PoE on/off/cycle | Node 22+, Fastify, TS | `3108` (SNMP: `161`) |
-| [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `8080`, `8081` (RTSP/WebRTC) |
+| [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `3101`|
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
 | [`pirundown-designer`](file:///d:/pirundown-designer) | Event orchestration / Authoring | +1 Control Plane & Staging | Visual authoring & cue-sheet designer for Rundown v2 YAML | Node 22+, React, Vite, Fastify | `3610` |
@@ -58,7 +58,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Real-time settling & motion tracking (`CameraSettlingTracker`): ingests FreeD telemetry, tracks multi-frame velocity, and emits `action: "preset:settled"` onto the event bus when travel physically halts.
   - AVer SmartFrame auto-framing toggle and FreeD tracking target configuration.
   - Defocus near-limit blur privacy toggle.
-- **Protocols & Interfaces**: Fastify REST API (`3300`), VISCA UDP (`52381`), HTTP CGI (`80`).
+- **Protocols & Interfaces**: Fastify REST API (`3102`), VISCA UDP (`52381`), HTTP CGI (`80`).
 
 ---
 
@@ -108,7 +108,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - *Proposed*: Event orchestration
   - *Refined*: +1 Control & Observability Plane (Agentic Interface)
 - **Key Capabilities**:
-  - Streamable HTTP stateless MCP server on port `3200`.
+  - Streamable HTTP stateless MCP server on port `3600`.
   - Exposes domain-grouped tools: `routing_*`, `camera_*`, `atem_*`, `program_*`, `composites_*`, `voice_*`, `youtube_*`, `tally_*`, `radio_*`.
   - Exposes state via `pi://` URI resources (`pi://routing/matrix`, `pi://atem`, `pi://youtube/status`, `pi://tally/lights`).
   - Granular RBAC (`viewer`, `operator`, `admin`) with secret masking.
@@ -140,7 +140,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Dual-channel stream and record orchestration (`encoder1`, `encoder2`, or `both`).
   - Serialized busy retry queueing handling Monarch firmware `RETRY` responses.
   - Video and audio lock status queries, bitrate configuration, and RTMP destination management.
-- **Protocols & Interfaces**: Fastify REST API (`3109`), SSE stream (`/events`), HTTP/HTTPS device control.
+- **Protocols & Interfaces**: Fastify REST API (`3104`), SSE stream (`/events`), HTTP/HTTPS device control.
 
 ---
 
@@ -228,7 +228,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Raycasting: combines FreeD camera tracking telemetry (`UDP 40000`) and 2D bounding boxes (from `piperception`) to calculate exact 3D venue positions.
   - Inverse PTZ solver: calculates required pan, tilt, zoom angles to frame any target coordinate or named zone with requested shot types (`wide`, `medium`, `tight`, `close_up`).
   - Emits real-time spatial events (`zone_enter`, `zone_exit`, `subject_moved`) via SSE.
-- **Protocols & Interfaces**: Fastify REST API and SSE on port `3108`.
+- **Protocols & Interfaces**: Fastify REST API and SSE on port `3203`.
 
 ---
 
@@ -244,7 +244,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Normalized 2D bounding boxes (`[x, y, w, h]`), confidence scores, and crop framing.
   - Feeds 2D detections into `pispace` (`POST /api/v1/spatial/tracks`) for 3D world projection and camera ray intersection.
   - Standalone Fastify server, Web UI monitor, and CLI `piperception`.
-- **Protocols & Interfaces**: Fastify REST API & SSE on port `3110`.
+- **Protocols & Interfaces**: Fastify REST API & SSE on port `3202`.
 
 ---
 
@@ -323,7 +323,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Bi-directional live synchronization with syntax-highlighted YAML editor and real-time Zod schema & variable interpolation validation.
   - Built-in Finnish Lutheran template library (*Messu*, *Sanajumalanpalvelus*).
   - Direct HTTP push egress: `POST http://localhost:3400/api/v1/rundown/load`.
-- **Protocols & Interfaces**: Fastify REST API & Web UI (`3410`), CLI `pirundown-designer`.
+- **Protocols & Interfaces**: Fastify REST API & Web UI (`3610`), CLI `pirundown-designer`.
 
 ---
 
@@ -404,7 +404,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Authenticated least-privilege MCP client connecting to `picontrol-mcp` under dedicated `director` role.
   - Autonomous director mode (live camera presets and ATEM cuts) or Advisory co-pilot mode for human operators.
   - Architectural spec: [pidirector-architecture-plan.md](pidirector-architecture-plan.md).
-- **Protocols & Interfaces**: Fastify REST & SSE on port `3450`.
+- **Protocols & Interfaces**: Fastify REST & SSE on port `3401`.
 
 ---
 
@@ -419,7 +419,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Inter-agent message router and mailbox manager (Agent-as-a-Tool and asynchronous intent blackboard).
   - Out-of-band hard preemption ($<5\text{ms}$) via `AbortController` and `pigateway` SSE bus.
   - Architectural spec: [piagent-architecture-plan.md](piagent-architecture-plan.md).
-- **Protocols & Interfaces**: Fastify REST & SSE on port `3120`.
+- **Protocols & Interfaces**: Fastify REST & SSE on port `3301`.
 
 ---
 
