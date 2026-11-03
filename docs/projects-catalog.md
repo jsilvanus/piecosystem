@@ -23,7 +23,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pigraphics`](file:///d:/pigraphics) | Media creation | Layer 2: Graphics & Streaming | Broadcast graphics engine, CSS animations, ATEM keying & Fill/Key streaming | Node 22+, Fastify, TS | `3201` |
 | [`pitally`](file:///d:/pitally) | Hardware connections | Layer 1: Southbound HW | Tally-Ma wireless tally controller | Node 22+, Fastify, TS | `3107` (UDP: `21324`) |
 | [`pipoe`](file:///d:/pipoe) | Hardware connections | Layer 1: Southbound HW | PoE switch controller (PLANET GS-4210-16P2S, SNMP): port status, PoE on/off/cycle | Node 22+, Fastify, TS | `3108` (SNMP: `161`) |
-| [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `3101`|
+| [`pimatrix`](file:///d:/pimatrix) | Hardware connections | Layer 1: Hardware Video Matrix | Video routing matrix, compositor & display engine | Node 24, GStreamer, C++ | `3101` |
 | [`piprogram`](file:///d:/piprogram) | Media creation | Layer 2 & 4: Media & Stage | Hymns, slides, PPTX, stage display | Node 24, Fastify, TS | Configurable Fastify |
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
 | [`pirundown-designer`](file:///d:/pirundown-designer) | Event orchestration / Authoring | +1 Control Plane & Staging | Visual authoring & cue-sheet designer for Rundown v2 YAML | Node 22+, React, Vite, Fastify | `3610` |
