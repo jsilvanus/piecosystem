@@ -25,6 +25,7 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { defaultRoot } from './lib/paths.mjs';
 
@@ -371,6 +372,6 @@ export function main(argv = process.argv.slice(2)) {
   return o.failOnMismatch && result.findings.length ? 1 : 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) {
+if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
   process.exitCode = main();
 }
