@@ -42,6 +42,7 @@ const PI_PROJECTS = [
   'piui',
   'piecosystem',
   // Adjacent & Infrastructure
+  'keskuskirkko',
   'liturgos-auditor',
   'web-radio-relay',
   'fffleet',

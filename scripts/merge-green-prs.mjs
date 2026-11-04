@@ -6,10 +6,11 @@
 //   node scripts/merge-green-prs.mjs                 dry run: report only, merge nothing
 //   node scripts/merge-green-prs.mjs --merge         merge the green ones (merge commit)
 //   node scripts/merge-green-prs.mjs --merge --method squash
+//   node scripts/merge-green-prs.mjs --merge --allow-no-checks   also merge PRs that report no checks
 //   node scripts/merge-green-prs.mjs --repos pimatrix,picam --branch claude/project-thread-htfrjs
 //
 // A PR is merged only when it is open, not a draft, mergeable (no conflicts), has at
-// least one check, and every check has finished successfully (skipped/neutral count
+// least one check (unless --allow-no-checks), and every check has finished successfully (skipped/neutral count
 // as fine). Anything else is reported and left alone. The script never forces anything.
 
 import { execFileSync } from 'node:child_process';
@@ -24,10 +25,11 @@ const DEFAULT_REPOS = [
 ];
 
 function parseArgs(argv) {
-  const opts = { merge: false, method: 'merge', repos: DEFAULT_REPOS, branch: null, owner: OWNER };
+  const opts = { merge: false, method: 'merge', repos: DEFAULT_REPOS, branch: null, owner: OWNER, allowNoChecks: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--merge') opts.merge = true;
+    else if (a === '--allow-no-checks') opts.allowNoChecks = true;
     else if (a === '--method') opts.method = argv[++i];
     else if (a === '--repos') opts.repos = argv[++i].split(',').map(s => s.trim()).filter(Boolean);
     else if (a === '--branch') opts.branch = argv[++i];
@@ -51,8 +53,10 @@ function ghJson(args) {
 
 const OK = new Set(['SUCCESS', 'SKIPPED', 'NEUTRAL']);
 
-function checkVerdict(rollup) {
-  if (!rollup || rollup.length === 0) return { ok: false, why: 'no checks reported' };
+function checkVerdict(rollup, allowNoChecks = false) {
+  if (!rollup || rollup.length === 0) {
+    return allowNoChecks ? { ok: true, why: 'no checks reported, allowed' } : { ok: false, why: 'no checks reported' };
+  }
   const bad = [];
   for (const c of rollup) {
     const name = c.name ?? c.context ?? 'check';
@@ -83,7 +87,7 @@ function processRepo(opts, repo) {
   if (pr.isDraft) return { repo, result: `skip ${label}: draft` };
   if (pr.mergeable === 'CONFLICTING') return { repo, result: `skip ${label}: merge conflicts` };
 
-  const verdict = checkVerdict(pr.statusCheckRollup);
+  const verdict = checkVerdict(pr.statusCheckRollup, opts.allowNoChecks);
   if (!verdict.ok) return { repo, result: `skip ${label}: ${verdict.why}` };
   if (!opts.merge) return { repo, result: `green ${label} (${verdict.why}), would merge (dry run)` };
 

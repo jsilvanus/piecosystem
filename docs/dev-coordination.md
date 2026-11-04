@@ -11,16 +11,24 @@ The Pi ecosystem is designed as a set of focused, decoupled repositories rather 
 - **Fail-Safe Isolation**: A failure in slide rendering (`piprogram`) or YouTube live captioning (`pitube`) cannot crash camera PTZ motors (`picam`) or audio routing (`pisound`).
 - **Coordinated Planning**: `piecosystem` serves as the central umbrella for roadmaps, architectural contracts, integration testing, and project-wide health checks.
 
-### Repository Status Tooling
-From the root of `piecosystem`, run:
+### Repository Status & Fleet Synchronization Tooling
+From the root of `piecosystem`:
+
 ```bash
-npm run status
+# Check status and remote commit drift across all 35+ repositories:
+pnpm fleet:sync
+
+# Fast-forward pull all clean repositories behind origin/main:
+pnpm fleet:pull
+
+# Automatically clone any newly added ecosystem repos from jsilvanus:
+pnpm fleet:clone
+
+# Legacy quick status table:
+pnpm status
+# or on Windows PowerShell:
+pnpm status:ps
 ```
-or on Windows PowerShell:
-```powershell
-npm run status:ps
-```
-This inspects all 15 repositories, displaying their package version, current git branch, and whether they have uncommitted dirty files.
 
 ---
 
@@ -72,3 +80,11 @@ To prevent port conflicts across the Raspberry Pi host system:
    - Patch versions address bug fixes, protocol tweaks, and performance enhancements.
 3. **Commit Messages**:
    - Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
+
+---
+
+## 5. Physical Venue Boundary & Site Profiles
+
+- **`piecosystem` & `pi*` Services**: Generic software, protocol drivers, and control pipelines. Microservices must not hardcode church IP addresses, channel assignments, or room layouts.
+- **`keskuskirkko` Repository**: Sole authoritative repository for Riihimäen Keskuskirkko physical location data, AMX NetLinx source code, cabling diagrams, and venue hardware profiles.
+- **Configuration Contract**: Microservices consume site-specific topology via `venue-profile.yaml` (see [`docs/site-profile-spec.md`](./site-profile-spec.md)) loaded via `VENUE_PROFILE_PATH` or `VENUE_PROFILE_URL`.

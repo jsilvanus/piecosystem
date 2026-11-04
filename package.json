@@ -14,7 +14,10 @@
     "deps": "node scripts/dep-check.mjs",
     "status": "node scripts/ecosystem-status.mjs",
     "status:ps": "powershell -ExecutionPolicy Bypass -File scripts/ecosystem-status.ps1",
-    "test": "node --test \"test/*.test.mjs\" \"tools/*/test/*.test.mjs\" \"docker/fat-worker/executors/*/test/*.test.mjs\""
+    "test": "node --test \"test/*.test.mjs\" \"tools/*/test/*.test.mjs\" \"docker/fat-worker/executors/*/test/*.test.mjs\"",
+    "fleet:sync": "node scripts/fleet-sync.mjs",
+    "fleet:pull": "node scripts/fleet-sync.mjs --pull",
+    "fleet:clone": "node scripts/fleet-sync.mjs --clone"
   },
   "devDependencies": {
     "yaml": "^2.9.1"

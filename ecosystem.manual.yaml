@@ -37,14 +37,6 @@ services:
     port: 5000
     healthEndpoint: /v1/health
 
-  - service: pitube
-    displayName: pitube
-    dir: pitube
-    layer: Layer 4 - Consumer Edge
-    port: 3105
-    healthEndpoint: /health
-    envPortVar: PITUBE_PORT
-
   - service: virtual-screen-streamer
     displayName: virtual-screen-streamer (formerly picompanion)
     dir: virtual-screen-streamer
@@ -68,15 +60,6 @@ services:
     kind: library
     runtime: node
     versionFile: package.json
-
-  - service: pinotify
-    displayName: pinotify (notifications, skeleton)
-    dir: pinotify
-    layer: Layer 4 - Consumer Edge
-    kind: control
-    runtime: node
-    versionFile: package.json
-    # Listens on 3109; no health endpoint known yet, so no port entry (the generator needs both).
 
   - service: pisim
     displayName: pisim (ecosystem simulator)
