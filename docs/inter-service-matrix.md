@@ -25,6 +25,7 @@ This document defines the network topology, listening ports, communication proto
 | **3201** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3202** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
 | **3203** | HTTP | `pispace` | Spatial engine, 3D venue digital twin & solver | REST API & SSE (`/events`) |
+| **40002** | UDP | `pigateway` | PiPerception 2D screen tracking ingestion (magic "PT" / JSON) | Binary/JSON UDP datagrams |
 | **3300** | HTTP | `piembed` | Vector embedding & semantic cue matching engine (Ollama + Hugging Face ONNX) | REST API |
 | **3301** | HTTP | `piagent` | Centralized Agent Infrastructure Plane (LangGraph, AI SDK, MCP) | REST API & SSE (`/api/v1/agent/events`) |
 | **3400** | HTTP | `pirundown` | Service rundown engine API | REST API & SSE |
@@ -85,6 +86,7 @@ graph LR
     CAMS["PTZ Cameras"] -->|FreeD UDP 40000| PIGATEWAY
 
     PITUBE -->|Heartbeat Status| PIGATEWAY
+    PERCEPTION["piperception"] -->|Screen Tracking UDP 40002| PIGATEWAY
     PIVOICE["pivoice"] -->|Telemetry UDP 3106| PIGATEWAY
     PISOUND -->|Telemetry UDP 3102| PIGATEWAY
 
