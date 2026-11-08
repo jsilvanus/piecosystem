@@ -46,7 +46,7 @@ To prevent rogue unmanaged processes, CPU spikes on the Pi, and disjointed failu
 | **`pigraphics`** | Lower-third still rasterization | Batch | Fixed | 1 (burst) | 1 (burst) | 1 (burst) | `operator-pc` / `assisting-pc` (`dsk`, `normal`) |
 | **`pivoice`** | ALSA USB mic capture (`CaptureSupervisor`) | Stream | Fixed | 1 | 1 | 1 | `pi` (`requires: ["usb"]`) |
 | **`pivoice`** | Radio RTMP encoder (`RadioOutputs`) | Stream | Fixed | 1 | 1 | 1 | `assisting-pc` / `operator-pc` (`normal`) |
-| **`piperception`** | Camera MJPEG ingest (10 fps YOLOX) | Stream | **1 per cam** | **2** (`cam1,2`) | **3** (`+cam3`) | **4** (`+aux`) | `operator-pc` / `assisting-pc` (`normal`, `gpu`) |
+| **`piperception`** | Person detection (`type: perception-detect`: reads the camera, YOLOX on CPU, sends detections only) | Stream | **1 per cam** | **2** (`cam1,2`) | **3** (`+cam3`) | **4** (`+aux`) | `operator-pc-detect` (detect-worker container); fallback: local feed to the Pi at 1 fps, detection on the Pi |
 | **`liturgos-auditor`** | Live STT stream ingest (`/v1/live`) | Stream | Fixed | 1 | 1 | 1 | `operator-pc` (`normal`) |
 | **`liturgos-auditor`** | Batch audio stripping & norm (`/v1/jobs`) | Batch | Fixed | 1 (burst) | 1 (burst) | 1 (burst) | `operator-pc` / `assisting-pc` (`normal`) |
 | **`web-radio-relay`** | HLS / MP3 radio supervisor | Stream | Fixed | 1 | 1 | 1 | `assisting-pc` / `operator-pc` (`normal`) |

@@ -4,9 +4,15 @@
 #   pi            usb, normal, host:pi, arch:arm64                      Pi 4: local USB capture hardware (slots: stream=2, default=1)
 #   operator-pc   normal, dsk, gpu, nvenc, desktop, host:operator-pc    Operator PC: strong machine + GPU (slots: stream=8, default=4)
 #   assisting-pc  normal, gpu, nvenc, host:assisting-pc                 Assisting CC: gaming laptop + GPU (slots: stream=4, default=2)
+#   operator-pc-detect  host:operator-pc, type:perception-detect        piperception detection worker on the operator PC (stream=4)
 #
 # No pools: the workers start themselves and register.
 placement:
+  # piperception person detection (job type perception-detect): the detection workers. Only workers with the
+  # piperception detect worker image have the type, so `others` just lets a future one join without an edit.
+  - match: { type: perception-detect }
+    workers: [operator-pc-detect, assisting-pc-detect]
+    others: true
   # Hardware that only exists on the Pi (Hama USB capture, USB audio, ...). Jobs say requires: ["usb"].
   # No other worker has the capability, so this rule is a safety net as much as a preference.
   - match: { requires: ["usb"] }
