@@ -153,6 +153,7 @@ flowchart TD
   - `pidirector`: Autonomous and advisory local AI stream director coordinating cameras, ATEM cuts, and rundown pacing via Ollama LLMs and MCP role-based permissions.
   - `pispace`: Spatial engine and geometric digital-twin service. Fuses FreeD camera tracking telemetry (`UDP 40000`) and 2D bounding boxes (from `piperception`) to calculate real-time 3D positions $(X, Y, Z)$ within sanctuary zones (`pulpit`, `lectern`, `altar`, `choir`), and provides inverse PTZ targeting solvers.
   - `pigateway` (Event Broker part): Low-latency Server-Sent Events (SSE) bus (`GET /api/v1/events`), maintaining authoritative cache of system and device states.
+- **Conditionals & Reactive Automations**: See [Event Conditionals & Automation Placement Guidelines](event-conditionals-architecture.md) for architectural rules governing where "When X happens, do Y" logic lives across the layers (Layer 3 Orchestrators vs. domain modules vs. hardware gateways).
 
 ### Storage (shared, outside the numbered layers)
 - **Mission**: Durable files that several services need (slides, images, audio, recordings), kept off the Pi's SD card.

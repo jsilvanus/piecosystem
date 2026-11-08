@@ -133,6 +133,7 @@ A **seam** project is not a `pi*` service and not part of the Pi layers. It runs
 ## 4. Documentation Index
 
 - 📐 **[Architectural Layers & Evaluation](docs/architecture-layers.md)**: Deep dive into the 4+1 plane model, Control vs Data plane invariants, and comparison with the proposed 4-layer taxonomy.
+- ⚡ **[Event Conditionals & Automation Guidelines](docs/event-conditionals-architecture.md)**: Architectural guide on where conditionals (*"When event X happens, do Y"*) belong across `pigateway`, individual modules, and Layer 3 orchestrators.
 - 📦 **[Projects Catalog](docs/projects-catalog.md)**: In-depth technical specifications, runtime environments, and capabilities for all 15 repositories.
 - 🔌 **[Inter-Service Communication & Ports Matrix](docs/inter-service-matrix.md)**: Protocol specifications, network listening port table, and security boundaries.
 - 🎬 **[End-to-End Workflow Scenarios](docs/workflow-scenarios.md)**: Step-by-step sequence diagrams for Sunday worship cue execution, AI agent assistance, and live captioning.
