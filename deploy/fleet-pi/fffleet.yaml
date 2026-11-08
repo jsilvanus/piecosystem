@@ -1,9 +1,9 @@
 # Placement for the church stack. Worker IDs are set with FFFLEET_WORKER_ID on each worker;
 # capabilities with FFFLEET_CAPABILITIES (see docs/fleet-worker-roles.md for the full plan).
 #
-#   pi            usb, normal         Pi 4: local USB capture hardware, light stream work next to MediaMTX
-#   operator-pc   normal, dsk, gpu    Operator PC: Docker worker, the strong machine
-#   assisting-pc  normal              Assisting PC: spare capacity
+#   pi            usb, normal, host:pi, arch:arm64                      Pi 4: local USB capture hardware (slots: stream=2, default=1)
+#   operator-pc   normal, dsk, gpu, nvenc, desktop, host:operator-pc    Operator PC: strong machine + GPU (slots: stream=8, default=4)
+#   assisting-pc  normal, gpu, nvenc, host:assisting-pc                 Assisting CC: gaming laptop + GPU (slots: stream=4, default=2)
 #
 # No pools: the workers start themselves and register.
 placement:
@@ -15,13 +15,14 @@ placement:
   - match: { type: dsk }
     workers: [operator-pc, assisting-pc]
   - match: { requires: ["gpu"] }
-    workers: [operator-pc]
-  # Relay / MediaMTX work ("normal"): stream jobs say requires: ["normal"]. Strong machines first, the Pi last.
+    workers: [operator-pc, assisting-pc]
+  # Relay / MediaMTX work ("normal"): stream jobs say requires: ["normal"].
+  # Assisting PC takes spare stream load first (e.g. piprogram feeders), operator PC second, Pi last.
   - match: { kind: stream, requires: ["normal"] }
-    workers: [operator-pc, assisting-pc, pi]
+    workers: [assisting-pc, operator-pc, pi]
   # Other stream jobs: same order.
   - match: { kind: stream }
-    workers: [operator-pc, assisting-pc, pi]
+    workers: [assisting-pc, operator-pc, pi]
   # Everything else: same order, and any other worker is allowed after them (least loaded).
-  - workers: [operator-pc, assisting-pc, pi]
+  - workers: [assisting-pc, operator-pc, pi]
     others: true

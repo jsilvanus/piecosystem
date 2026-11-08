@@ -9,7 +9,7 @@ The **fffleet orchestrator runs on the Pi** (kirkonpi, wired `192.168.1.78:5000`
 (`FFFLEET_ORCHESTRATOR_URL`). Each worker must advertise an address the Pi can reach (`FFFLEET_ADVERTISE_URL`, the PC's LAN IP) and share
 `FFFLEET_WORKER_TOKEN` with the orchestrator.
 
-**Roles and priority.** Capabilities `usb` (Pi only), `normal` (all three), `dsk` and `gpu` (operator PC); placement rules and the Pi's own orchestrator and worker are in [`fleet-pi/`](fleet-pi), the plan in [`../docs/fleet-worker-roles.md`](../docs/fleet-worker-roles.md). Each stack sets `FFFLEET_WORKER_ID` and `FFFLEET_CAPABILITIES`; `FFFLEET_PRIORITY` is a pass-through fffleet does not read.
+**Roles and priority.** Capabilities `usb,normal,host:pi,arch:arm64` (Pi 4, 2 stream slots), `normal,dsk,gpu,nvenc,desktop,host:operator-pc` (Operator PC, 8 stream slots), and `normal,gpu,nvenc,host:assisting-pc` (Assisting CC, 4 stream slots); placement rules and the Pi's own orchestrator and worker are in [`fleet-pi/`](fleet-pi), the full SFMBG migration and camera scaling plan in [`../docs/fleet-worker-roles.md`](../docs/fleet-worker-roles.md). Each stack sets `FFFLEET_WORKER_ID`, `FFFLEET_CAPABILITIES`, and `FFFLEET_SLOTS`.
 
 Images: `ghcr.io/jsilvanus/lcyt-fleet-worker` (from live-captions-yt, replaces separate DSK and perception workers),
 `ghcr.io/jsilvanus/liturgos-auditor-stt` (`-cuda` tag for GPU), `ollama/ollama`, `versity/versitygw`, `amazon/aws-cli` (one-shot bucket creation).
