@@ -12,7 +12,7 @@ Configuration files live in:
 
 | Worker ID | Machine / Host | `FFFLEET_CAPABILITIES` | Slots (`FFFLEET_SLOTS`) | Priority | Why |
 |---|---|---|---|:---:|---|
-| `pi` | kirkonpi (Raspberry Pi 4) | `usb,normal,host:pi,arch:arm64` | `stream=2,default=1` | 3 | Physical USB capture hardware owner (`hama` video capture stick, ALSA USB audio). Keep slot cap low to preserve CPU and RAM for `mediamtx` and `pigateway`. |
+| `pi` | Pi (Raspberry Pi 4) | `usb,normal,host:pi,arch:arm64` | `stream=2,default=1` | 3 | Physical USB capture hardware owner (`hama` video capture stick, ALSA USB audio). Keep slot cap low to preserve CPU and RAM for `mediamtx` and `pigateway`. |
 | `operator-pc` | Church Media Workstation (Linux/Win11 + NVIDIA GPU) | `normal,dsk,gpu,nvenc,desktop,host:operator-pc` | `stream=8,default=4` | 2 | Primary powerhouse: DSK / Chromium graphics rendering, GPU NVENC transcoding, camera perception streams, desktop screen capture, and batch video rendering. |
 | `assisting-pc` | Assisting CC (Gaming Laptop 2 + NVIDIA GPU) | `normal,gpu,nvenc,host:assisting-pc` | `stream=4,default=2` | 1 | High-priority stream offloader: takes continuous slide feeder streams (`piprogram` feeds 1–3), auxiliary camera perception feeds, and radio encoding first. |
 
@@ -86,8 +86,8 @@ Job placement is defined in `deploy/fleet-pi/fffleet.yaml`:
 
 1. **Verify Orchestrator on Pi**:
    ```bash
-   curl -s http://192.168.1.78:5000/v1/health
-   curl -s http://192.168.1.78:5000/v1/workers | jq
+   curl -s http://10.0.0.78:5000/v1/health
+   curl -s http://10.0.0.78:5000/v1/workers | jq
    ```
 2. **Verify Connected Workers**:
    - `pi`: capabilities `[usb, normal, host:pi, arch:arm64]`, slots `stream: 2, default: 1`

@@ -1,6 +1,6 @@
 # Architecture & Layering Model
 
-This document defines the architectural layers of the **Pi Production Ecosystem** (`pi*`), a modular, edge-native AV broadcast and live production stack powering worship services and events at Riihimäen Keskuskirkko.
+This document defines the architectural layers of the **Pi Production Ecosystem** (`pi*`), a modular, edge-native AV broadcast and live production stack powering worship services and events at the venue.
 
 ---
 

@@ -118,11 +118,11 @@ test('--allow-duplicates writes the file and reports the duplicates as warnings'
 test('services on different hosts (hostOverride) may use the same port', (t) => {
   const ws = workspace(t);
   addRepo(ws.root, 'one', { pi: { service: 'one', port: 3300, healthEndpoint: '/health' } });
-  addRepo(ws.root, 'two', { pi: { service: 'two', port: 3300, healthEndpoint: '/health', hostOverride: 'kirkonpi2.local' } });
+  addRepo(ws.root, 'two', { pi: { service: 'two', port: 3300, healthEndpoint: '/health', hostOverride: 'pi2.local' } });
   const result = run(['--root', ws.root, '--manual', ws.manual, '--out', ws.out]);
   assert.equal(result.code, 0, result.stderr);
   const two = buildEcosystem({ root: ws.root, manualPath: ws.manual }).services.find((s) => s.service === 'two');
-  assert.equal(two.hostOverride, 'kirkonpi2.local');
+  assert.equal(two.hostOverride, 'pi2.local');
   assert.deepEqual(findPortDuplicates(buildEcosystem({ root: ws.root, manualPath: ws.manual }).entries), []);
 });
 

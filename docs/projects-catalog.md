@@ -1,6 +1,6 @@
 # Projects Catalog
 
-This catalog details all active projects within the Raspberry Pi production ecosystem at Riihimäen Keskuskirkko.
+This catalog details all active projects within the Raspberry Pi production ecosystem at the venue.
 
 > **Seam projects** (`layer: Seam`) are not `pi*` services and sit outside the Pi layers: `virtual-screen-streamer`, `canva-pieco-app` (formerly `picanva`), `liturgos-auditor`, `web-radio-relay`, `fffleet`, `keskuskirkko`, `saarnavideo` (post-stream editing), `notify-core` (library), `pisim` (simulator). `live-captions-yt` is a reference, not a seam. See the README.
 
@@ -310,7 +310,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 
 ### 18. pirundown-designer
 - **Path**: `D:\pirundown-designer`
-- **Role**: Visual authoring and cue-sheet designer application for Rundown v2 YAML serving Riihimäen Keskuskirkko.
+- **Role**: Visual authoring and cue-sheet designer application for Rundown v2 YAML serving the venue.
 - **Layers**:
   - *Proposed*: Event orchestration / Authoring
   - *Refined*: +1 Control Plane & Content Staging
@@ -448,7 +448,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - PoE on/off with read-back verification, and `cycle` (off, wait 1-60 s, on). Only ports named in `PIPOE_PORT_NAMES` can be switched; one operation per port at a time.
   - SNMP v2c driver on the standard PoE MIB (RFC 3621); simulation mode by default; optional bearer token.
   - No polling, watchdog or automatic cycling: callers (for example picam's freeze handling) decide when to cycle.
-- **Protocols & Interfaces**: Fastify REST on port `3108` (`/openapi.json`), CLI `pipoe`, SNMP UDP `161` to the switch (factory address `192.168.0.100`, moving to `192.168.1.2`).
+- **Protocols & Interfaces**: Fastify REST on port `3108` (`/openapi.json`), CLI `pipoe`, SNMP UDP `161` to the switch (factory address `192.168.0.100`, moving to `10.0.0.2`).
 - **Status**: never run against the real switch; SNMP is off on the switch until it is enabled in its web UI. See the pipoe README for the read-only probes.
 
 ---

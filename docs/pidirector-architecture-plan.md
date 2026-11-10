@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-`pidirector` is an autonomous and semi-autonomous **Local AI Stream Director** engineered specifically for live worship services at **Riihimäen Keskuskirkko**. Operating within the Pi Ecosystem (`piecosystem`), it orchestrates camera framing, ATEM video switching, broadcast graphics, and rundown progression using a strictly **local Large Language Model via Ollama**.
+`pidirector` is an autonomous and semi-autonomous **Local AI Stream Director** engineered specifically for live worship services at **the venue**. Operating within the Pi Ecosystem (`piecosystem`), it orchestrates camera framing, ATEM video switching, broadcast graphics, and rundown progression using a strictly **local Large Language Model via Ollama**.
 
 ### Core Tenets
 1. **100% Local Inference**: Zero cloud reliance and zero latency spikes. Local execution protects parishioner privacy (GDPR) and guarantees stream continuity even during WAN outages.
@@ -159,7 +159,7 @@ export const RundownV2Schema = z.object({
 version: 2
 title: "Messu"
 service: "Päiväjumalanpalvelus"
-church: "Riihimäen Keskuskirkko"
+church: "Example Church"
 date: "2026-11-01"
 
 ai:

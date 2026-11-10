@@ -1,4 +1,4 @@
-# User systemd unit for the fffleet orchestrator on the Pi (kirkonpi, bare metal, node found on PATH: ~/.local/bin or ~/.local/node/bin).
+# User systemd unit for the fffleet orchestrator on the Pi (bare metal, node found on PATH: ~/.local/bin or ~/.local/node/bin).
 # Install:  mkdir -p ~/.config/systemd/user && cp fffleet-orchestrator.service ~/.config/systemd/user/
 #           systemctl --user daemon-reload && systemctl --user enable --now fffleet-orchestrator
 # Keep it running without a login session:  sudo loginctl enable-linger pi

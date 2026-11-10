@@ -1,8 +1,8 @@
-# fffleet orchestrator on the Pi (kirkonpi)
+# fffleet orchestrator on the Pi
 
-One orchestrator for the whole fleet runs on the Pi (Pi 4, Debian 13, Node 24 in `~/.local/bin` (kirkonpi) or `~/.local/node/bin`). Workers on the
+One orchestrator for the whole fleet runs on the Pi (Pi 4, Debian 13, Node 24 in `~/.local/bin` or `~/.local/node/bin`). Workers on the
 assisting PC, the operator PC and the Pi itself register with it; apps (LCYT, Saarnavideo) send jobs to
-`http://192.168.1.78:5000` (the Pi's planned wired address). Nothing here is deployed by the repo: copy the files by hand.
+`http://10.0.0.78:5000` (the Pi's planned wired address). Nothing here is deployed by the repo: copy the files by hand.
 
 ## Install
 

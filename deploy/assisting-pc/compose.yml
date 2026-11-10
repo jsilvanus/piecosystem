@@ -1,7 +1,7 @@
 # Assisting PC stack ("gaming laptop 2", NVIDIA GPU): DSK rendering and the fat fffleet worker only.
 # One container is both: the LCYT fat worker is the stock fffleet worker (ffmpeg) plus Chromium, the DSK
 # executor (type:dsk) and perception (type:perception). This PC is first in line for DSK and stream jobs.
-# The fffleet orchestrator runs on the Pi (kirkonpi, 192.168.1.78:5000).
+# The fffleet orchestrator runs on the Pi (10.0.0.78:5000).
 #
 #   cp .env.example .env
 #   docker compose up -d
@@ -17,8 +17,8 @@ services:
     environment:
       PORT: "5100"
       FFFLEET_WORKER_ID: ${FFFLEET_WORKER_ID:-assisting-pc}
-      FFFLEET_ADVERTISE_URL: ${FFFLEET_ADVERTISE_URL:?set FFFLEET_ADVERTISE_URL, e.g. http://192.168.1.51:5100}
-      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://192.168.1.78:5000}
+      FFFLEET_ADVERTISE_URL: ${FFFLEET_ADVERTISE_URL:?set FFFLEET_ADVERTISE_URL, e.g. http://10.0.0.51:5100}
+      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://10.0.0.78:5000}
       FFFLEET_WORKER_TOKEN: ${FFFLEET_WORKER_TOKEN:?set FFFLEET_WORKER_TOKEN}
       FFFLEET_SLOTS: ${FFFLEET_SLOTS:-stream=4,default=2}
       # See the operator PC stack: host/tier tags for routing; the priority order is set on the orchestrator side.

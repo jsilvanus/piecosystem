@@ -86,5 +86,5 @@ To prevent port conflicts across the Raspberry Pi host system:
 ## 5. Physical Venue Boundary & Site Profiles
 
 - **`piecosystem` & `pi*` Services**: Generic software, protocol drivers, and control pipelines. Microservices must not hardcode church IP addresses, channel assignments, or room layouts.
-- **`keskuskirkko` Repository**: Sole authoritative repository for Riihimäen Keskuskirkko physical location data, AMX NetLinx source code, cabling diagrams, and venue hardware profiles.
+- **`keskuskirkko` Repository**: Sole authoritative repository for the venue's physical location data, AMX NetLinx source code, cabling diagrams, and venue hardware profiles.
 - **Configuration Contract**: Microservices consume site-specific topology via `venue-profile.yaml` (see [`docs/site-profile-spec.md`](./site-profile-spec.md)) loaded via `VENUE_PROFILE_PATH` or `VENUE_PROFILE_URL`.

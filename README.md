@@ -1,6 +1,6 @@
 # Pi Ecosystem (`piecosystem`)
 
-Welcome to the central coordination, architecture, and planning repository for the **Raspberry Pi Production Ecosystem** (`pi*`), the modular AV broadcast and live church service stack powering **Riihimäen Keskuskirkko**.
+Welcome to the central coordination, architecture, and planning repository for the **Raspberry Pi Production Ecosystem** (`pi*`), the modular AV broadcast and live church service stack powering **the venue**.
 
 ---
 
@@ -206,7 +206,7 @@ Both are read from the ecosystem root: `PI_ROOT`, or the parent directory of thi
     "healthEndpoint": "/health",
     "envPortVar": "PICAM_PORT",
     "healthAuthEnv": "PICAM_API_KEY",
-    "hostOverride": "kirkonpi.local"
+    "hostOverride": "pi.local"
   }
 }
 ```
