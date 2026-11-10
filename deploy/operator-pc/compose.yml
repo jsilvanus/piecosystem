@@ -5,7 +5,7 @@
 #                   runs YOLOX on the CPU and sends only detections back; the Pi detects locally when it is off
 #   - ollama        local LLM server, reachable only from this compose network and from localhost
 #   - versitygw     S3 gateway (VersityGW, posix backend) = the S3 backend of pistorage; versitygw-init creates its bucket
-# The fffleet orchestrator runs on the Pi (kirkonpi, wired 192.168.1.78:5000), not here.
+# The fffleet orchestrator runs on the Pi (wired 10.0.0.78:5000), not here.
 #
 #   cp .env.example .env   # fill in tokens and this PC's LAN address
 #   docker compose up -d
@@ -51,8 +51,8 @@ services:
       PORT: "5100"
       FFFLEET_WORKER_ID: ${FFFLEET_WORKER_ID:-operator-pc}
       # The orchestrator calls the worker back on this address: the PC's LAN address, not a container name.
-      FFFLEET_ADVERTISE_URL: ${FFFLEET_ADVERTISE_URL:?set FFFLEET_ADVERTISE_URL, e.g. http://192.168.1.50:5100}
-      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://192.168.1.78:5000}
+      FFFLEET_ADVERTISE_URL: ${FFFLEET_ADVERTISE_URL:?set FFFLEET_ADVERTISE_URL, e.g. http://10.0.0.50:5100}
+      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://10.0.0.78:5000}
       FFFLEET_WORKER_TOKEN: ${FFFLEET_WORKER_TOKEN:?set FFFLEET_WORKER_TOKEN}
       FFFLEET_SLOTS: ${FFFLEET_SLOTS:-stream=8,default=4}
       # Tags for job routing. Jobs choose workers by worker id (workerPreference) and by `requires`, so keep
@@ -90,8 +90,8 @@ services:
     environment:
       PORT: "5100"
       FFFLEET_WORKER_ID: ${FFFLEET_DETECT_WORKER_ID:-operator-pc-detect}
-      FFFLEET_ADVERTISE_URL: ${FFFLEET_DETECT_ADVERTISE_URL:?set FFFLEET_DETECT_ADVERTISE_URL, e.g. http://192.168.1.50:5101}
-      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://192.168.1.78:5000}
+      FFFLEET_ADVERTISE_URL: ${FFFLEET_DETECT_ADVERTISE_URL:?set FFFLEET_DETECT_ADVERTISE_URL, e.g. http://10.0.0.50:5101}
+      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://10.0.0.78:5000}
       FFFLEET_WORKER_TOKEN: ${FFFLEET_WORKER_TOKEN:?set FFFLEET_WORKER_TOKEN}
       # One stream slot per camera (two now, room for cam3 and one spare).
       FFFLEET_SLOTS: ${FFFLEET_DETECT_SLOTS:-stream=4}

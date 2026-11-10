@@ -1,6 +1,6 @@
 # Deployment Plan: Pi Ecosystem & Adjacent Media Stack
 
-This document specifies the production deployment architecture, host topology, hardware placement, and operational runbook for the **Pi Production Ecosystem** and its adjacent containerized media services (`mediamtx`, `liturgos-auditor`, `fffleet`, `web-radio-relay`) powering Riihimäen Keskuskirkko.
+This document specifies the production deployment architecture, host topology, hardware placement, and operational runbook for the **Pi Production Ecosystem** and its adjacent containerized media services (`mediamtx`, `liturgos-auditor`, `fffleet`, `web-radio-relay`) powering the venue.
 
 ---
 
@@ -163,9 +163,9 @@ flowchart TD
    ```yaml
    paths:
      cam1:
-       source: rtsp://192.168.1.101:554/live/ch0
+       source: rtsp://10.0.0.101:554/live/ch0
      cam2:
-       source: rtsp://192.168.1.102:554/live/ch0
+       source: rtsp://10.0.0.102:554/live/ch0
    ```
 2. **Start Switcher & Graphics**:
    - `piswitch`: Connects to physical ATEM (UDP 9910) on LAN IP.
@@ -179,7 +179,7 @@ flowchart TD
 
 1. **Verify USB Audio & BSS DSP Connectivity**:
    - USB Hama Mic on Audio Pi: Verify with `arecord -l`.
-   - BSS BLU-100 DSP: Confirm TCP connection on `192.168.1.10:1023`.
+   - BSS BLU-100 DSP: Confirm TCP connection on `10.0.0.10:1023`.
 2. **Start Audio and Egress Services**:
    - `pivoice`: Captures mic, Silero VAD gates speech, streams 16kHz PCM to `liturgos-auditor`.
    - `pitube`: Authenticates with YouTube OAuth2 refresh token, attaches to `pigateway` transcript SSE bus, begins 30s-delayed timed CEA-608 caption ingestion.
@@ -223,6 +223,6 @@ To verify full ecosystem readiness before a live Sunday worship service:
 2. **Workstation / GPU STT Failure**:
    - If `liturgos-auditor` becomes unreachable, `pigateway` reports `auditor: available=false` and logs warnings. `pitube` gracefully holds caption queue without aborting the YouTube video broadcast.
 3. **Loss of mDNS on Tally-Ma Lights**:
-   - `pitally` automatically falls back from `tallyXX.local` to configured static DHCP fallback IPs (`192.168.1.70+`) without interrupting live tally cues.
+   - `pitally` automatically falls back from `tallyXX.local` to configured static DHCP fallback IPs (`10.0.0.70+`) without interrupting live tally cues.
 4. **Internet Disconnection**:
    - Sanctuary PA (`pisound`), in-house video matrix (`pimatrix`), slide projection (`piprogram`), and tallies continue functioning on local LAN without cloud dependency.

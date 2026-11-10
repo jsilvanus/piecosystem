@@ -165,7 +165,7 @@ export async function runSyncer(opts = {}) {
   if (cues.length === 0) {
     console.warn(`[test-syncer] No cues found in window [${clipStart}s, ${clipStart + duration}s]. Adding test cue.`);
     cues = [
-      { startMs: 1000, endMs: 6000, text: '[Riihimäen Keskuskirkko - Live Caption Sync Test]' },
+      { startMs: 1000, endMs: 6000, text: '[Example Church - Live Caption Sync Test]' },
       { startMs: 7000, endMs: 12000, text: 'Synkronoitu tekstitys: Viivekorjaus aktivoitu.' },
     ];
   }

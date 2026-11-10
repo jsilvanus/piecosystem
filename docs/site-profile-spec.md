@@ -1,6 +1,6 @@
 # Site Profile & Venue Configuration Specification
 
-This specification formalizes the architectural boundary between the generic **Pi Production Ecosystem** (`piecosystem`) and site-specific physical venue deployments (primarily [`keskuskirkko`](file:///d:/keskuskirkko) for Riihimäen Keskuskirkko).
+This specification formalizes the architectural boundary between the generic **Pi Production Ecosystem** (`piecosystem`) and site-specific physical venue deployments (primarily [`keskuskirkko`](file:///d:/keskuskirkko) for the venue).
 
 ---
 
@@ -61,18 +61,18 @@ Microservices consume venue configuration through one of three standard methods:
 schema: 1
 venue:
   id: "keskuskirkko"
-  name: "Riihimäen Keskuskirkko"
+  name: "Example Church"
   timezone: "Europe/Helsinki"
   locale: "fi-FI"
 
 network:
-  subnet: "192.168.1.0/24"
+  subnet: "10.0.0.0/24"
   topology: "flat-ethernet"
-  gateway: "192.168.1.1" # 4G/5G Cellular Router (NAT & DHCP)
+  gateway: "10.0.0.1" # 4G/5G Cellular Router (NAT & DHCP)
   switch:
     model: "PLANET SGS-4210-16P2S"
     description: "Managed 16-Port Gigabit 802.3at PoE+ Switch with 2 SFP Ports"
-    ip: "192.168.1.2"
+    ip: "10.0.0.2"
     snmpPort: 161
     snmpCommunity: "public"
     poeBudgetWatts: 220
@@ -102,7 +102,7 @@ devices:
   videoSwitcher:
     id: "atem-sdi-extreme"
     model: "Blackmagic ATEM SDI Extreme ISO"
-    ip: "192.168.1.20"
+    ip: "10.0.0.20"
     port: 9910
     inputs:
       1: { name: "KAM1", device: "cam-1", type: "sdi", role: "Alttari PTZ camera" }
@@ -119,28 +119,28 @@ devices:
     - id: "cam-1"
       name: "Alttarikamera (Camera 1)"
       model: "AVer PTZ330"
-      ip: "192.168.1.21"
+      ip: "10.0.0.21"
       viscaPort: 52381
       httpPort: 80
       streaming:
         protocol: "rtmp-push"
-        pushUrl: "rtmp://192.168.1.14:1935/live/cam1"
-        rtspFallbackUri: "rtsp://192.168.1.21:554/live_st1"
+        pushUrl: "rtmp://10.0.0.14:1935/live/cam1"
+        rtspFallbackUri: "rtsp://10.0.0.21:554/live_st1"
     - id: "cam-2"
       name: "Puhujakamera (Camera 2)"
       model: "AVer PTZ330"
       mac: "00:18:1A:06:99:49"
-      ip: "192.168.1.22"
+      ip: "10.0.0.22"
       viscaPort: 52381
       httpPort: 80
       streaming:
         protocol: "rtmp-push"
-        pushUrl: "rtmp://192.168.1.14:1935/live/cam2"
-        rtspFallbackUri: "rtsp://192.168.1.22:554/live_st1"
+        pushUrl: "rtmp://10.0.0.14:1935/live/cam2"
+        rtspFallbackUri: "rtsp://10.0.0.22:554/live_st1"
     - id: "cam-3"
       name: "Jalustakamera / KAM3 (Tripod Camera)"
       model: "AVer PTZ330 (Tripod mount)"
-      ip: "192.168.1.23"
+      ip: "10.0.0.23"
       viscaPort: 52381
       httpPort: 80
       location: "Saarnatuolin puoleisen parven alla, etuseinässä"
@@ -172,7 +172,7 @@ devices:
     id: "matrox-monarch-hdx"
     model: "Matrox Monarch HDX (MHDX/I)"
     description: "Dual-channel H.264 broadcast streaming and recording appliance"
-    ip: "192.168.1.13"
+    ip: "10.0.0.13"
     httpPort: 80
     apiPath: "/Monarch/syncconnect/sdk.aspx"
     inputs:
@@ -190,8 +190,8 @@ devices:
     dsp:
       model: "BSS Soundweb London BLU-100"
       hiqnetNode: 1
-      primaryIp: "192.168.1.31"
-      secondaryIp: "192.168.1.42"
+      primaryIp: "10.0.0.31"
+      secondaryIp: "10.0.0.42"
       port: 1023
     expansion:
       danteBridge: { model: "BSS BLU-DAN (BLU-DA)", hiqnetNode: 2 }
@@ -199,7 +199,7 @@ devices:
         - { model: "BSS BLU-BIB #1", channels: 8, role: "Sanctuary wired speech microphones" }
         - { model: "BSS BLU-BIB #2", channels: 8, role: "Pulpit stage box inputs 1-8" }
         - { model: "BSS BLU-BIB #3", channels: 8, role: "Wireless microphone receiver inputs" }
-      outputExpander: { model: "BSS BLU-BOB2 #4", ip: "192.168.1.30", channels: 8 }
+      outputExpander: { model: "BSS BLU-BOB2 #4", ip: "10.0.0.30", channels: 8 }
       liveMixer: { model: "Allen & Heath SQ-5", connection: "Dante" }
       wirelessReceivers: { model: "3x JTS R-4 UHF Receivers", channels: 12 }
     channels:

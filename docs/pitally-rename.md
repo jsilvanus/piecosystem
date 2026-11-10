@@ -20,7 +20,7 @@ Old env var names are **not** read any more. A service still using them falls ba
 ## Pi-side steps (apply in the "Move Pi services to pnpm" thread, not yet done)
 
 1. Rename the repo on GitHub first (Settings → General → Repository name → `pitally`); GitHub redirects the old URL.
-2. On kirkonpi: `cd /home/pi/apps && mv pilight pitally && cd pitally && git remote set-url origin https://github.com/jsilvanus/pitally.git && git pull`.
+2. On the Pi: `cd /home/pi/apps && mv pilight pitally && cd pitally && git remote set-url origin https://github.com/jsilvanus/pitally.git && git pull`.
 3. Rename the env file (e.g. `pilight.env` → `pitally.env`) and rename every `PILIGHT_*` variable inside to `PITALLY_*`.
 4. Rename the systemd user unit: `systemctl --user disable --now pilight`, move `~/.config/systemd/user/pilight.service` to `pitally.service`, fix `WorkingDirectory`, `EnvironmentFile`, `ExecStart` (`dist/main.js` path), then `systemctl --user daemon-reload && systemctl --user enable --now pitally`.
 5. In the env files of pigateway, pirundown, picontrol, picontrol-mcp rename `PIGATEWAY_PILIGHT_API_URL`, `PIRUNDOWN_PILIGHT_URL`, `PILIGHT_URL`, `PILIGHT_API_KEY` as in the table, rebuild picontrol UI (`ui/dist` is committed, already updated), restart those units.

@@ -5,7 +5,7 @@
 | [`operator-pc/`](operator-pc) | Operator PC (Windows, Docker Desktop) | liturgos-auditor STT, LCYT fat fffleet worker (ffmpeg, DSK, perception), piperception detection worker (`operator-pc-detect`, CPU YOLOX), ollama, VersityGW (S3 backend of pistorage) |
 | [`assisting-pc/`](assisting-pc) | Assisting PC (gaming laptop 2) | LCYT fat fffleet worker (ffmpeg, DSK, perception) |
 
-The **fffleet orchestrator runs on the Pi** (kirkonpi, wired `192.168.1.78:5000`), not in these stacks; both workers register with it
+The **fffleet orchestrator runs on the Pi** (wired `10.0.0.78:5000`), not in these stacks; both workers register with it
 (`FFFLEET_ORCHESTRATOR_URL`). Each worker must advertise an address the Pi can reach (`FFFLEET_ADVERTISE_URL`, the PC's LAN IP) and share
 `FFFLEET_WORKER_TOKEN` with the orchestrator.
 

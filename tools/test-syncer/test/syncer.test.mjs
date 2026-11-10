@@ -78,8 +78,8 @@ describe('syncer CLI parser', () => {
   });
 
   it('parses RTMP streaming options with custom or default URL and loop', () => {
-    const custom = parseArgs(['node', 'syncer.mjs', '--rtmp', 'rtmp://192.168.1.14:1935/live/cam1', '--loop']);
-    assert.equal(custom.rtmp, 'rtmp://192.168.1.14:1935/live/cam1');
+    const custom = parseArgs(['node', 'syncer.mjs', '--rtmp', 'rtmp://10.0.0.14:1935/live/cam1', '--loop']);
+    assert.equal(custom.rtmp, 'rtmp://10.0.0.14:1935/live/cam1');
     assert.equal(custom.loop, true);
 
     const defaultRtmp = parseArgs(['node', 'syncer.mjs', '--stream']);

@@ -1,6 +1,6 @@
 # Pi Ecosystem Documentation Index
 
-This directory contains architectural specifications, deployment guides, interface contracts, and design plans for the **Pi Production Ecosystem (`piecosystem`)** at Riihimäen Keskuskirkko.
+This directory contains architectural specifications, deployment guides, interface contracts, and design plans for the **Pi Production Ecosystem (`piecosystem`)** at the venue.
 
 ---
 
@@ -24,7 +24,7 @@ This directory contains architectural specifications, deployment guides, interfa
 
 - 🚢 **[Deployment Plan](deployment-plan.md)**: Deployment topologies, systemd services, container strategies, and rollouts across the Pi, church workstations, and cloud relays.
 - 🖥️ **[Fleet Worker Roles & Workload Distribution](fleet-worker-roles.md)**: Specification of worker roles, GPU/DSK capabilities, and FFmpeg/MediaMTX stream and batch job assignments across nodes.
-- 📍 **[Site Profile Specification](site-profile-spec.md)**: Venue physical hardware profile schema, audio channel assignments, and device addressing for Riihimäen Keskuskirkko.
+- 📍 **[Site Profile Specification](site-profile-spec.md)**: Venue physical hardware profile schema, audio channel assignments, and device addressing for the venue.
 
 ---
 
