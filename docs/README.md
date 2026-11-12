@@ -35,3 +35,4 @@ This directory contains architectural specifications, deployment guides, interfa
 - 📝 **[LCYT Feature Parity](lcyt-feature-parity.md)**: Feature parity roadmap and verification for YouTube Live captioning and stream lifecycle.
 - 🏷️ **[pitally Rename](pitally-rename.md)**: Background notes on the tally service naming and domain scope.
 - 📂 **[Plans & RFCs](plans/)**: Additional planning documents and roadmaps.
+- 📷 **[Portable, User-Defined Camera Calibration](plans/portable-camera-calibration.md)**: Shared PiPerception/PiSpace plan for portable calibration rigs, user-supplied venue geometry, stereo reconstruction, PnP and mobile-camera deployments.
