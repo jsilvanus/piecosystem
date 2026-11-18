@@ -21,7 +21,7 @@ This document defines the network topology, listening ports, communication proto
 | **3107** | HTTP | `pitally` | Tally light controller API | REST API |
 | **3108** | HTTP | `pipoe` | PoE switch controller (PLANET switch via SNMP) | REST API |
 | **3109** | HTTP | `pinotify` | Notifications built on `notify-core` (skeleton, not installed on the Pi) | REST API |
-| **3200** | HTTP | `piprogram` | Hymns, slides, PPTX pipeline, three program feeds (PiPGM1-3) and PA audio control | REST API & SSE (`/api/v1/events`) |
+| **3200** | HTTP | `piprogram` | Hymns, slides, PPTX pipeline, three program feeds (PiPGM1-3), saved playlists and PA audio control. Reached by UIs through the `pigateway` proxy `/api/v1/pipgm/*`; on the internet relay only reads, playlist load, control and audio kill/stop are allowed (save, delete, generate, reorder, import are LAN only) | REST API & SSE (`/api/v1/events`) |
 | **3201** | HTTP | `pigraphics` | Broadcast graphics engine & live Fill/Key streaming | REST API & SSE (`/api/v1/graphics/events`) |
 | **3202** | HTTP | `piperception` | Real-time person detection & ByteTrack tracking | REST API, SSE & Web UI |
 | **3203** | HTTP | `pispace` | Spatial engine, 3D venue digital twin & solver | REST API & SSE (`/events`) |
@@ -81,6 +81,7 @@ graph LR
     PIGATEWAY -->|HTTP Commands| PICAM["picam (3300)"]
     PIGATEWAY -->|HTTP Commands| PISOUND["pisound (3300)"]
     PIGATEWAY -->|HTTP Commands| PISWITCH
+    PIGATEWAY -->|"HTTP proxy /api/v1/pipgm/* (playlists, control, library)"| PIPROGRAM
 
     PICAM -->|FreeD Telemetry Query / Ingest| PIGATEWAY
     CAMS["PTZ Cameras"] -->|FreeD UDP 40000| PIGATEWAY
