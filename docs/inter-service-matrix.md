@@ -81,6 +81,7 @@ graph LR
     PIGATEWAY -->|HTTP Commands| PICAM["picam (3300)"]
     PIGATEWAY -->|HTTP Commands| PISOUND["pisound (3300)"]
     PIGATEWAY -->|HTTP Commands| PISWITCH
+    PIGATEWAY -->|HTTP /api/v1/pipgm incl. playlists| PIPROGRAM
 
     PICAM -->|FreeD Telemetry Query / Ingest| PIGATEWAY
     CAMS["PTZ Cameras"] -->|FreeD UDP 40000| PIGATEWAY

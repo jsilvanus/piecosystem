@@ -187,6 +187,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
   - Generates web-based Stage Page confidence monitors for pastors, cantors, and musicians.
   - Canva asset ingestion and staging.
   - **`piswitch` Media Pool Integration**: Client (`PiSwitchClient`) and automated slide sync that pre-renders PNG stills, uploads to `piswitch`'s circular buffer slots, and advances ATEM Media Player 1 on slide progression (`POST .../sync-piswitch`).
+  - **Playlists**: saved playlists (`piprogram.playlist/1`), load/save/generate for a date, atomic reorder and a flattened step list. Reached through `pigateway` `/api/v1/pipgm/*`; the relay may read and load, everything that changes saved playlists is LAN only.
 
 ---
 
