@@ -115,6 +115,39 @@ function chromiumPath(env) {
   return env.PLAYWRIGHT_DSK_CHROMIUM || env.CHROMIUM_PATH || '/usr/bin/chromium';
 }
 
+const STATIC_WRITE_INTERVAL_MS = 1000;
+const STATIC_REFRESH_INTERVAL_MS = 5000;
+
+async function checkPageDirty(page) {
+  if (typeof page.evaluate !== 'function') return true;
+  try {
+    const dirty = await page.evaluate(() => {
+      if (!window.__piecoDirtyTracker) {
+        window.__piecoDirty = true;
+        const mark = () => { window.__piecoDirty = true; };
+        const root = document.documentElement || document.body;
+        if (root && typeof MutationObserver === 'function') {
+          const obs = new MutationObserver(mark);
+          obs.observe(root, { childList: true, subtree: true, attributes: true, characterData: true });
+        }
+        window.addEventListener('scroll', mark, { passive: true });
+        window.addEventListener('resize', mark, { passive: true });
+        window.__piecoDirtyTracker = true;
+      }
+      const hasRunningAnim = typeof document.getAnimations === 'function'
+        && document.getAnimations().some((a) => a.playState === 'running');
+      const hasPlayingVideo = Array.from(document.querySelectorAll('video')).some((v) => !v.paused && !v.ended);
+      const hasCanvas = document.querySelector('canvas') !== null;
+      const wasDirty = Boolean(window.__piecoDirty) || hasRunningAnim || hasPlayingVideo || hasCanvas;
+      window.__piecoDirty = false;
+      return wasDirty;
+    });
+    return dirty === undefined || dirty === null ? true : Boolean(dirty);
+  } catch {
+    return true;
+  }
+}
+
 export async function runPage(spec, rt, deps = {}) {
   const env = rt.env ?? process.env;
   const plan = readPlan(spec, env);
@@ -133,20 +166,68 @@ export async function runPage(spec, rt, deps = {}) {
     const context = await browser.newContext({ viewport: { width: plan.width, height: plan.height }, ...(plan.userAgent ? { userAgent: plan.userAgent } : {}) });
     const page = await context.newPage();
     await page.goto(plan.url, { waitUntil: 'domcontentloaded' });
-    ffmpeg = spawnImpl(env.FFMPEG_PATH || 'ffmpeg', buildEncodeArgs(plan), { stdio: ['pipe', 'ignore', 'pipe'] });
-    ffmpeg.stderr?.on('data', b => { stderrTail = (stderrTail + b.toString()).slice(-2000); });
-    const exited = new Promise(resolve => ffmpeg.once('exit', (code, signal) => resolve({ code, signal })));
-    ffmpeg.stdin.on('error', () => {}); // an ffmpeg that died shows up through `exited`
+
+    let activePlan = plan;
+    let ended = null;
+    let exited = null;
+    const startFfmpeg = (targetPlan) => {
+      stderrTail = '';
+      ended = null;
+      const proc = spawnImpl(env.FFMPEG_PATH || 'ffmpeg', buildEncodeArgs(targetPlan), { stdio: ['pipe', 'ignore', 'pipe'] });
+      proc.stderr?.on('data', b => { stderrTail = (stderrTail + b.toString()).slice(-2000); });
+      exited = new Promise(resolve => proc.once('exit', (code, signal) => resolve({ code, signal })));
+      exited.then(e => { ended = e; });
+      proc.stdin.on('error', () => {}); // an ffmpeg that died shows up through `exited`
+      return proc;
+    };
+
+    ffmpeg = startFfmpeg(activePlan);
 
     rt.setState?.('running');
     const interval = Math.floor(1000 / plan.fps);
-    let ended = null;
-    exited.then(e => { ended = e; });
-    while (!rt.signal.aborted && !ended) {
+    const screenshotOpts = plan.frames === 'png'
+      ? { type: 'png', omitBackground: plan.background !== null }
+      : { type: 'jpeg', quality: 90 };
+    let lastFrame = null;
+    let lastCaptureAt = 0;
+    let lastWriteAt = 0;
+    let framesWritten = 0;
+
+    while (!rt.signal.aborted) {
+      if (ended) {
+        if (activePlan.encoder === 'nvenc' && framesWritten <= 5 && !rt.signal.aborted) {
+          activePlan = { ...activePlan, encoder: 'x264' };
+          ffmpeg = startFfmpeg(activePlan);
+          framesWritten = 0;
+          if (lastFrame) {
+            if (!ffmpeg.stdin.write(lastFrame)) await Promise.race([new Promise(r => ffmpeg.stdin.once('drain', r)), exited]);
+            lastWriteAt = Date.now();
+            framesWritten += 1;
+          }
+          continue;
+        }
+        break;
+      }
+
       const t0 = Date.now();
-      const frame = await page.screenshot(plan.frames === 'png' ? { type: 'png', omitBackground: plan.background !== null } : { type: 'jpeg', quality: 90 });
-      if (rt.signal.aborted || ended) break;
-      if (!ffmpeg.stdin.write(frame)) await Promise.race([new Promise(r => ffmpeg.stdin.once('drain', r)), exited]);
+      const needsCapture = !lastFrame || (t0 - lastCaptureAt >= STATIC_REFRESH_INTERVAL_MS) || await checkPageDirty(page);
+      if (rt.signal.aborted || ended) continue;
+
+      let shouldWrite = false;
+      if (needsCapture) {
+        lastFrame = await page.screenshot(screenshotOpts);
+        lastCaptureAt = Date.now();
+        shouldWrite = true;
+      } else if (t0 - lastWriteAt >= STATIC_WRITE_INTERVAL_MS) {
+        shouldWrite = true;
+      }
+
+      if (rt.signal.aborted || ended) continue;
+      if (shouldWrite && lastFrame) {
+        if (!ffmpeg.stdin.write(lastFrame)) await Promise.race([new Promise(r => ffmpeg.stdin.once('drain', r)), exited]);
+        lastWriteAt = Date.now();
+        framesWritten += 1;
+      }
       const wait = interval - (Date.now() - t0);
       if (wait > 0) await new Promise(r => setTimeout(r, wait));
     }

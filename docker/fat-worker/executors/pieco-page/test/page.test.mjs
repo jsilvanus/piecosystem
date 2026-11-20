@@ -146,3 +146,89 @@ test('frames can be forced and bad colours are refused', () => {
   assert.throws(() => readPlan(spec({ background: 'green' }), {}), /hex colour/);
   assert.throws(() => readPlan(spec({ background: '#0f0' }), {}), /hex colour/);
 });
+
+test('static page skips redundant page.screenshot calls when DOM is not dirty', async () => {
+  const { calls, deps } = fakeDeps();
+  const origLaunch = deps.launch;
+  deps.launch = async (opts) => {
+    const browser = await origLaunch(opts);
+    const origNewContext = browser.newContext;
+    browser.newContext = async () => {
+      const ctx = await origNewContext();
+      const origNewPage = ctx.newPage;
+      ctx.newPage = async () => {
+        const page = await origNewPage();
+        page.evaluate = async () => false; // page is static after initial capture
+        return page;
+      };
+      return ctx;
+    };
+    return browser;
+  };
+
+  const ac = new AbortController();
+  const run = runPage(spec({ fps: 30 }), { env: {}, signal: ac.signal }, deps);
+  await new Promise(r => setTimeout(r, 150));
+  ac.abort();
+  await assert.rejects(run);
+  assert.equal(calls.frames, 1, 'only 1 initial screenshot should be taken for a static page within 150ms');
+  assert.equal(calls.written, 1, 'cached frame is written once initially and throttled while static');
+});
+
+test('nvenc falls back cleanly to libx264 if ffmpeg fails at startup', async () => {
+  const spawnArgsList = [];
+  let writtenOnSecond = 0;
+  let killedSecond = false;
+
+  const deps = {
+    executablePath: '/usr/bin/chromium',
+    launch: async () => ({
+      newContext: async () => ({
+        newPage: async () => ({
+          goto: async () => {},
+          evaluate: async () => true,
+          screenshot: async () => Buffer.from('png'),
+        }),
+      }),
+      close: async () => {},
+    }),
+    spawn: (_cmd, args) => {
+      spawnArgsList.push(args);
+      const attempt = spawnArgsList.length;
+      const ffmpeg = new EventEmitter();
+      ffmpeg.exitCode = null;
+      ffmpeg.stderr = new EventEmitter();
+      ffmpeg.stdin = Object.assign(new EventEmitter(), {
+        write: () => {
+          if (attempt === 1) {
+            ffmpeg.stderr.emit('data', Buffer.from('h264_nvenc: No capable devices found'));
+            ffmpeg.exitCode = 1;
+            setImmediate(() => ffmpeg.emit('exit', 1, null));
+          } else {
+            writtenOnSecond += 1;
+          }
+          return true;
+        },
+        end: () => {},
+      });
+      ffmpeg.kill = () => {
+        if (attempt === 2) killedSecond = true;
+        ffmpeg.exitCode = 0;
+        return true;
+      };
+      return ffmpeg;
+    },
+  };
+
+  const ac = new AbortController();
+  const run = runPage(spec({ encoder: 'nvenc', fps: 30 }), { env: {}, signal: ac.signal }, deps);
+  await new Promise(r => setTimeout(r, 120));
+  ac.abort();
+  await assert.rejects(run);
+
+  assert.equal(spawnArgsList.length, 2);
+  assert.ok(spawnArgsList[0].includes('h264_nvenc'));
+  assert.ok(spawnArgsList[1].includes('libx264'));
+  assert.ok(writtenOnSecond >= 2);
+  assert.ok(killedSecond);
+});
