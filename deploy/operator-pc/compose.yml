@@ -36,6 +36,8 @@ services:
       AUDITOR_STT_API_KEY: ${AUDITOR_STT_API_KEY:-}
       AUDITOR_STT_REGISTRY_DIR: /models/registry
       AUDITOR_STT_MAX_QUEUE: ${AUDITOR_STT_MAX_QUEUE:-8}
+      # Hosts the auditor may pull RTSP/SRT live streams from (comma-separated, wildcards ok). Set it in .env.
+      AUDITOR_STT_LIVE_SOURCE_HOSTS: ${AUDITOR_STT_LIVE_SOURCE_HOSTS:-}
     volumes:
       - auditor-stt-models:/models
       - auditor-stt-data:/data
