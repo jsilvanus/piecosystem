@@ -75,13 +75,15 @@ PIGATEWAY_OIDC_GROUP_RIGHTS=<group>=<module>:<level>[,<module>:<level>...];<grou
 | Preset | Expands to |
 |---|---|
 | `@viewer` | `*:read` |
-| `@operator` | `*:read` plus `operate` on the live modules (matrix, pivoice, piencoder, pitube, picam, piswitch) |
-| `@content` | `*:read` plus `piprogram:write` |
+| `@operator` | `*:read` plus `operate` on the live modules (matrix, pivoice, piencoder, pitube, picam, piswitch) and `canva:operate` |
+| `@content` | `*:read` plus `piprogram:write` and `canva:write` |
 | `@admin` | `*:admin` |
 
 The value is kept in the private `keskuskirkko` repo and set in the Pi env file. Renaming a group needs no code change. A group not listed gives nothing. A user whose groups give no right gets a "no access" page, not a session. A person with several groups gets the union.
 
 **Route rules** carry `module` and a required `level` (replacing the earlier single `minRole`). Defaults when a rule does not say: GET gives `read`; `setup: true` or a delete gives `admin`; other writes give `operate` for the live modules and `write` for piprogram content. The check is `listenerAllows(rule) && rightsAllow(rule, session.rights)`. The listener keeps its role as the cap and is independent of the person's rights: the relay never serves a `lanOnly` or `admin` route, whatever the rights say. **Presentation controls are not `lanOnly`:** the piprogram routes for go live and the live toggles, and the matrix routes that send a feed to the left or right projector, are `operate` routes that the relay serves **only to a Tunnus session** (a PIN session on the relay never gets `operate`). Without `operate` a person on the relay can add and publish content but cannot go live or route a projector. The matrix routes for the projector outputs only; routes for other outputs, and the matrix lock and setup routes, stay LAN only.
+
+**The Canva listener is its own module, `canva`.** `canva:write` covers pushing slides and saving playlists and action lists; `canva:operate` covers go live, playback controls and projector routing. Each `/api/v1/canva/*` route requires its own right, and pigateway then calls piprogram and pimatrix with its own keys. The rights are explicit: `piprogram:*` does not imply `canva:*`, and the other way round. (The Canva thread called these "content" and "operate"; "content" is the `write` level here, to keep one scheme.)
 
 **MCP tools** are tagged with the same `<module>:<level>`; `picontrol-mcp` already uses `<area>:read|write` with per-user deny rules, so its tags map directly (the new `operate` and `admin` levels are added). The gateway filters `tools/list` and refuses `tools/call` by the same check.
 
@@ -176,9 +178,9 @@ pinotify sends email and SMS through notify-core with a provider adapter (Brevo 
 
 No change to `PIGATEWAY_API_KEY`, the pimatrix, pitube and piprogram keys, the Canva Bearer key and its listener, or fffleet tokens. pigateway keeps adding its own key server side and the browser never sees it. Tunnus tokens are never accepted on machine routes, and machine keys are never accepted as a person.
 
-## 12. Future consumer: the Canva app
+## 12. The Canva app
 
-Juha plans Tunnus OIDC/OAuth sign-in for the Canva app too and will develop it separately. This plan only leaves room for it: the Canva-only listener keeps its Bearer key until then, and when the app moves to Tunnus it will be a separate Tunnus client (a public PKCE client, since it runs in the Canva sandbox), verified by the same shared verifier and group-to-rights map, with a right limited to pushing designs. Not built here.
+Juha develops the Canva app's own Tunnus OIDC/OAuth sign-in separately. This plan fixes what it plugs into: the Canva listener is its own module `canva` with `canva:write` and `canva:operate` (section 4), explicit rights that no `piprogram` right implies. The Canva-only listener keeps its Bearer key until the app signs in through Tunnus; after that the app is a separate Tunnus client (a public PKCE client, since it runs in the Canva sandbox), verified by the same shared verifier and group-to-rights map. Not built here.
 
 ## 13. Phased rollout
 
