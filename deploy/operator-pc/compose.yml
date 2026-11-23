@@ -3,6 +3,8 @@
 #   - fleet-worker  LCYT "fat" fffleet worker: ffmpeg + DSK (type:dsk) + perception (type:perception)
 #   - detect-worker piperception fffleet worker (type:perception-detect): reads a camera from MediaMTX,
 #                   runs YOLOX on the CPU and sends only detections back; the Pi detects locally when it is off
+#   - translate-worker PiVoice caption translation worker (type:translate, OPUS-MT on the CPU); models come
+#                   from the translate-models volume, filled once with the translate-models tool below
 #   - ollama        local LLM server, reachable only from this compose network and from localhost
 #   - versitygw     S3 gateway (VersityGW, posix backend) = the S3 backend of pistorage; versitygw-init creates its bucket
 # The fffleet orchestrator runs on the Pi (wired 10.0.0.78:5000), not here.
@@ -108,6 +110,50 @@ services:
     cap_drop: [ALL]
     restart: unless-stopped
 
+  # Caption translation for PiVoice (job type translate, plan pivoice docs/translations/plan.md section 7).
+  # Its own fffleet worker; CPU only like detect-worker (the GPU belongs to speech-to-text and Ollama).
+  # No weights in the image: models live in the translate-models volume, read-only here. At start it loads
+  # every model in models.json once and advertises translate:<src>-<tgt> for those that work, so a new model
+  # needs `docker compose restart translate-worker`. Memory capped because the PC has 8 GB.
+  translate-worker:
+    image: ghcr.io/jsilvanus/pivoice-translate-worker:${PIVOICE_TRANSLATE_VERSION:-latest}
+    ports:
+      - "${FFFLEET_TRANSLATE_WORKER_PORT:-5102}:5100"
+    environment:
+      PORT: "5100"
+      FFFLEET_WORKER_ID: ${FFFLEET_TRANSLATE_WORKER_ID:-operator-pc-translate}
+      FFFLEET_ADVERTISE_URL: ${FFFLEET_TRANSLATE_ADVERTISE_URL:?set FFFLEET_TRANSLATE_ADVERTISE_URL, e.g. http://10.0.0.50:5102}
+      FFFLEET_ORCHESTRATOR_URL: ${FFFLEET_ORCHESTRATOR_URL:-http://10.0.0.78:5000}
+      FFFLEET_WORKER_TOKEN: ${FFFLEET_WORKER_TOKEN:?set FFFLEET_WORKER_TOKEN}
+      # Small inline jobs (one batch of caption segments each); inference is serialised per model anyway.
+      FFFLEET_KINDS: batch
+      FFFLEET_SLOTS: ${FFFLEET_TRANSLATE_SLOTS:-default=2}
+      # The entrypoint adds translate:<src>-<tgt> for every model that passed its start-up check.
+      FFFLEET_CAPABILITIES: ${FFFLEET_TRANSLATE_CAPABILITIES:-host:operator-pc}
+      TRANSLATE_THREADS: ${TRANSLATE_THREADS:-2}
+      TRANSLATE_MAX_LOADED: ${TRANSLATE_MAX_LOADED:-3}
+    volumes:
+      - translate-models:/models:ro
+    mem_limit: ${TRANSLATE_WORKER_MEM_LIMIT:-2g}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    restart: unless-stopped
+
+  # One-off: fetch or update translation models into the translate-models volume (not a service).
+  #   docker compose --profile tools run --rm translate-models                       # fi-en (first rollout)
+  #   docker compose --profile tools run --rm translate-models --directions fi-en,fi-sv
+  # Directions without a published ONNX conversion need Python export (see pivoice fleet/translate/README.md).
+  translate-models:
+    image: ghcr.io/jsilvanus/pivoice-translate-worker:${PIVOICE_TRANSLATE_VERSION:-latest}
+    profiles: ["tools"]
+    entrypoint: ["node", "/app/fleet/translate/scripts/fetch-models.mjs", "--dir", "/models"]
+    command: []
+    user: root
+    volumes:
+      - translate-models:/models
+    security_opt: ["no-new-privileges:true"]
+    restart: "no"
+
   ollama:
     image: ollama/ollama:${OLLAMA_VERSION:-latest}
     volumes:
@@ -158,6 +204,7 @@ services:
         echo "could not create bucket $$BUCKET" >&2; exit 1
 
 volumes:
+  translate-models:
   versitygw-data:
   auditor-stt-models:
   auditor-stt-data:
