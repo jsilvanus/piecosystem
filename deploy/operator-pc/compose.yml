@@ -131,7 +131,8 @@ services:
       # The entrypoint adds translate:<src>-<tgt> for every model that passed its start-up check.
       FFFLEET_CAPABILITIES: ${FFFLEET_TRANSLATE_CAPABILITIES:-host:operator-pc}
       TRANSLATE_THREADS: ${TRANSLATE_THREADS:-2}
-      TRANSLATE_MAX_LOADED: ${TRANSLATE_MAX_LOADED:-3}
+      # At most two models in memory: about 870 MB RSS with two, and the PC has only a few hundred MB free (measured 2026-11-23).
+      TRANSLATE_MAX_LOADED: ${TRANSLATE_MAX_LOADED:-2}
     volumes:
       - translate-models:/models:ro
     mem_limit: ${TRANSLATE_WORKER_MEM_LIMIT:-2g}
