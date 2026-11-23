@@ -184,13 +184,15 @@ No change to `PIGATEWAY_API_KEY`, the pimatrix, pitube and piprogram keys, the C
 
 Juha develops the Canva app's own Tunnus OIDC/OAuth sign-in separately. This plan fixes what it plugs into: the Canva listener is its own module `canva` with `canva:write` and `canva:operate` (section 4), explicit rights that no `piprogram` right implies. The Canva-only listener keeps its Bearer key until the app signs in through Tunnus; after that the app is a separate Tunnus client (a public PKCE client, since it runs in the Canva sandbox), verified by the same shared verifier and group-to-rights map. Not built here.
 
-### Canva sign-in: one click, tokens per resource
+### Canva sign-in: one click, one client with a fixed audience list
 
-Decision (Juha): the Canva app asks the person for **one sign-in click only**, covering both the Pi gateway and Sissi. The app signs in at one Tunnus (one login, one set of groups, a first-party client, so no consent screen) and then obtains the access tokens it needs **silently**, one per resource (RFC 8707 resource indicator per token request): either with the refresh token the first login returned, or with a second authorization request using `prompt=none` against the live Tunnus session. The person never sees a second prompt. A token for Sissi is then never valid at the Pi and the other way round, so a leaked token reaches one side only.
+Decision (Juha): the Canva app asks the person for **one sign-in click only**, covering both the Pi gateway and Sissi.
 
-Fallback if Tunnus cannot issue a second resource's token silently: one access token carrying both audiences. That is also one click, but a leaked token then works on both sides, so it is the second choice.
+Recommended design (from the Canva thread): **one Tunnus client for Canva, configured with a fixed audience list** (the Pi gateway and Sissi), so its access token carries `aud` as an array. Each service accepts the token only if **its own name is in `aud`**, and checks rights from the `groups` claim with its own mapping (rights come only from groups, never from the audience). The Canva plugin sends **no `resource` parameter**: Canva's query parameters take one value per key, so it cannot ask for two resources. This needs Tunnus to support a per-client audience list or a default audience, which is likely a small Tunnus change (it is separate from the multi-resource work the MCP gateway needs).
 
-For Tunnus (Juha's side): the Canva client needs `refresh_token` in its `grant_types` and `offline_access` with `prompt=consent` on the first request (see Tunnus's client notes), and Tunnus must accept both resource URIs (the Pi gateway's and Sissi's). Two Tunnus providers is not worth it: it would split the groups and need two clicks.
+Accepted trade-off: a token issued to the Canva client can be presented to either service. That is bounded by the groups: a token never grants more than the person's own `pigateway` and `sissi` rights, the Canva listener only serves `canva:*` routes, and Sissi only serves `sissi:*`.
+
+Alternative, if the audience list is not wanted: one login and a separate access token per resource obtained silently (a refresh token, or `prompt=none` against the live Tunnus session). It keeps audiences apart, but needs Tunnus to accept a resource per request and more client code. Two Tunnus providers is not an option: it would split the groups and need two clicks.
 
 ## 13. Phased rollout
 
