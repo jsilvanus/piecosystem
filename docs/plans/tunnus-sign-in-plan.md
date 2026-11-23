@@ -70,7 +70,7 @@ Tunnus groups are the only source of rights. The parish names its groups by its 
 PIGATEWAY_OIDC_GROUP_RIGHTS=<group>=<module>:<level>[,<module>:<level>...];<group>=...
 ```
 
-`*` stands for every module (`*:read`). To keep the private value short there are **presets**, defined in code with generic names, that expand to a set of rights and can be used in the same value (`<group>=@operator`):
+`*` stands for every **Pi** module (`*:read`); the Sissi module is never included in it (see below). To keep the private value short there are **presets**, defined in code with generic names, that expand to a set of rights and can be used in the same value (`<group>=@operator`):
 
 | Preset | Expands to |
 |---|---|
@@ -82,6 +82,8 @@ PIGATEWAY_OIDC_GROUP_RIGHTS=<group>=<module>:<level>[,<module>:<level>...];<grou
 The value is kept in the private `keskuskirkko` repo and set in the Pi env file. Renaming a group needs no code change. A group not listed gives nothing. A user whose groups give no right gets a "no access" page, not a session. A person with several groups gets the union.
 
 **Route rules** carry `module` and a required `level` (replacing the earlier single `minRole`). Defaults when a rule does not say: GET gives `read`; `setup: true` or a delete gives `admin`; other writes give `operate` for the live modules and `write` for piprogram content. The check is `listenerAllows(rule) && rightsAllow(rule, session.rights)`. The listener keeps its role as the cap and is independent of the person's rights: the relay never serves a `lanOnly` or `admin` route, whatever the rights say. **Presentation controls are not `lanOnly`:** the piprogram routes for go live and the live toggles, and the matrix routes that send a feed to the left or right projector, are `operate` routes that the relay serves **only to a Tunnus session** (a PIN session on the relay never gets `operate`). Without `operate` a person on the relay can add and publish content but cannot go live or route a projector. The matrix routes for the projector outputs only; routes for other outputs, and the matrix lock and setup routes, stay LAN only.
+
+**Sissi (signage) is a separate module with its own rights, not part of Pi operate.** `sissi:write` (publish and edit signage content) and `sissi:operate` (live signage actions) are explicit. The wildcard `*` means the **Pi modules only**, so `*:read`, `*:admin` and the `@operator`, `@content` and `@admin` presets never grant a `sissi` right; a group has to name `sissi:...` itself. The same holds the other way: Pi rights do not follow from Sissi rights. Sissi runs on the server, not on the Pi, and is its own Tunnus client in phase 7. The Canva app's Sissi target is checked against `sissi:*`, not `canva:*` (the Canva listener only covers pushes to the Pi).
 
 **The Canva listener is its own module, `canva`.** `canva:write` covers pushing slides and saving playlists and action lists; `canva:operate` covers go live, playback controls and projector routing. Each `/api/v1/canva/*` route requires its own right, and pigateway then calls piprogram and pimatrix with its own keys. The rights are explicit: `piprogram:*` does not imply `canva:*`, and the other way round. (The Canva thread called these "content" and "operate"; "content" is the `write` level here, to keep one scheme.)
 
