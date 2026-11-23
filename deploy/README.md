@@ -2,7 +2,7 @@
 
 | Stack | Host | Runs |
 |---|---|---|
-| [`operator-pc/`](operator-pc) | Operator PC (Windows, Docker Desktop) | liturgos-auditor STT, LCYT fat fffleet worker (ffmpeg, DSK, perception), piperception detection worker (`operator-pc-detect`, CPU YOLOX), ollama, VersityGW (S3 backend of pistorage) |
+| [`operator-pc/`](operator-pc) | Operator PC (Windows, Docker Desktop) | liturgos-auditor STT, LCYT fat fffleet worker (ffmpeg, DSK, perception), piperception detection worker (`operator-pc-detect`, CPU YOLOX), PiVoice translation worker (`operator-pc-translate`, CPU OPUS-MT), ollama, VersityGW (S3 backend of pistorage) |
 | [`assisting-pc/`](assisting-pc) | Assisting PC (gaming laptop 2) | LCYT fat fffleet worker (ffmpeg, DSK, perception) |
 
 The **fffleet orchestrator runs on the Pi** (wired `10.0.0.78:5000`), not in these stacks; both workers register with it
