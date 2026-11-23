@@ -28,7 +28,7 @@ Status: plan only, nothing implemented. First written 2026-11-23, revised the sa
 | AMX link, FreeD, MediaMTX | Network trust | Machines |
 | web-radio-relay admin, LCYT, saarnavideo, Sissi | Own keys or shared secret | Mixed |
 
-`pigateway/docs/picontrol-ui.md` already says the auth is pluggable (`UiAuthAdapter`) and that an OIDC adapter can replace the PIN. `picontrol-mcp` has a good permission model (areas with read/write levels, deny rules) that the role table below reuses.
+`pigateway/docs/picontrol-ui.md` already says the auth is pluggable (`UiAuthAdapter`) and that an OIDC adapter can replace the PIN. `picontrol-mcp` has a good permission model (areas with read/write levels, deny rules) that the rights table below reuses.
 
 ## 3. Shape of the integration
 
@@ -36,7 +36,7 @@ pigateway is **the Tunnus connector of the Pi**. The capabilities are needed by 
 
 | Capability | Where it lives |
 |---|---|
-| Sign-in of people (OIDC code flow, sessions, roles) | pigateway UI listeners; picontrol shows the login, the person, and controls by role |
+| Sign-in of people (OIDC code flow, sessions, rights) | pigateway UI listeners; picontrol shows the login, the person, and controls by right |
 | Verification of Tunnus tokens for other services | pigateway (a shared verifier module and an internal endpoint, see section 8) |
 | MCP front door for AI clients | pigateway (section 9) |
 | Mail and SMS relay for notifications | pinotify calls Tunnus directly with its own relay token (section 10) |
@@ -47,35 +47,47 @@ Principles:
 1. **One place holds the Tunnus client credentials for people and AI: pigateway.** Apps behind it never see user tokens or the Tunnus client secret.
 2. **Machines keep keys.** Service-to-service calls, AMX, MediaMTX, fffleet and the Canva Bearer key stay as they are. OIDC would only add a dependency to a daemon.
 3. **The Pi works without the internet or without Tunnus.** Every Pi app keeps working with no login at the device level, and the LAN UI keeps a break-glass path (section 7).
-4. **Least privilege, two caps.** What a person may do is the intersection of (a) the cap of the listener they came through and (b) their role from groups. Adding content works from outside through the relay; destructive and setup actions are LAN only. No group lifts the relay above that.
+4. **Least privilege, two caps.** What a person may do is the intersection of (a) the cap of the listener they came through and (b) their rights from groups. Adding content works from outside through the relay; destructive and setup actions are LAN only. No group lifts the relay above that.
 5. **Data minimisation.** pigateway keeps `sub` and display name in the session and logs `sub`, never the email address. Group membership in a church context can hint at religious activity, so it is not copied to other systems.
 6. **Public repo hygiene.** Only env var names and placeholders in the `pi*` repos and `piecosystem`.
 
-## 4. Roles and groups: mapping lives in an env var
+## 4. Module-level rights: mapping lives in an env var
 
-Tunnus groups are the only source of roles. The parish names its groups by its own convention, one group per app and role. **The names are not in any public repo.** pigateway reads the mapping from the environment:
+Rights are **per module and level**, written `<module>:<level>`. Modules are the ones the gateway already knows (`matrix`, `pivoice`, `piencoder`, `pitube`, `picam`, `piswitch`, `piprogram`, `pinotify`, ...). Four levels:
+
+| Level | Meaning | Examples |
+|---|---|---|
+| `read` | See status and events; no changes | Matrix state, encoder status, playlists |
+| `write` | Change content or stored configuration, not the live show | piprogram: add items, use-at, prepare, playlist order and save, generate and replace |
+| `operate` | Do live actions during a service | Matrix routing, pivoice/encoder/pitube start and stop, camera moves and preset recall, ATEM program and preview |
+| `admin` | Setup and destructive actions | Setup routes, deleting items and playlists, feed config, audio arm and play, TTS, pinotify contacts and provider |
+
+The levels are **not a single ladder**. `admin` includes the other three. Every level includes `read`. But `write` and `operate` are independent: a person who edits playlists need not move cameras, and an operator need not rewrite content. A right is granted explicitly, so `piprogram:write` never gives `piprogram:operate`.
+
+Tunnus groups are the only source of rights. The parish names its groups by its own convention, one group per app and role. **The names are not in any public repo.** pigateway reads the mapping from the environment:
 
 ```
-PIGATEWAY_OIDC_GROUP_ROLES=<group>=<role>[+<role>];<group>=<role>;...
+PIGATEWAY_OIDC_GROUP_RIGHTS=<group>=<module>:<level>[,<module>:<level>...];<group>=...
 ```
 
-The value is kept in the private `keskuskirkko` repo and set in the Pi env file, like the other site settings. Renaming a group needs no code change. A group not listed gives nothing. A user whose groups map to no role gets a "no access" page, not a session.
+`*` stands for every module (`*:read`). To keep the private value short there are **presets**, defined in code with generic names, that expand to a set of rights and can be used in the same value (`<group>=@operator`):
 
-Roles (generic names, in code and docs):
-
-| Role | May do (within the listener cap) |
+| Preset | Expands to |
 |---|---|
-| `viewer` | Read status and the event stream; no changes |
-| `operator` | Operate during a service: matrix routing, pivoice/encoder/pitube start and stop, camera moves and preset recall, ATEM program and preview (LAN only, as today) |
-| `content` | piprogram content: add items, use-at, prepare, playlist order and save, generate and replace. No delete |
-| `setup` | Setup routes, deleting items and playlists, feed config, audio arm and play, TTS. LAN only in all cases |
-| `notify-admin` | Manage pinotify contacts and provider settings (replaces pinotify's "anyone with the admin token") |
+| `@viewer` | `*:read` |
+| `@operator` | `*:read` plus `operate` on the live modules (matrix, pivoice, piencoder, pitube, picam, piswitch) |
+| `@content` | `*:read` plus `piprogram:write` |
+| `@admin` | `*:admin` |
 
-A person can hold several roles; the effective set is the union. Roles map onto fine-grained permissions of the form `<area>:read|write` (the scheme `picontrol-mcp` already uses), so the UI listeners and the MCP front door use one table.
+The value is kept in the private `keskuskirkko` repo and set in the Pi env file. Renaming a group needs no code change. A group not listed gives nothing. A user whose groups give no right gets a "no access" page, not a session. A person with several groups gets the union.
 
-Implementation in `ui-listener.ts`: route rules carry `module`, `setup?`, `lanOnly?` today. Add `minRole` (default derived: `setup: true` implies `setup`; GETs `viewer`; other writes `operator`; piprogram content writes `content`). The check becomes `listenerAllows(rule) && rolesAllow(rule, session.roles)`. The listener role stays as the cap; the new `roles` field is separate.
+**Route rules** carry `module` and a required `level` (replacing the earlier single `minRole`). Defaults when a rule does not say: GET gives `read`; `setup: true` or a delete gives `admin`; other writes give `operate` for the live modules and `write` for piprogram content. The check is `listenerAllows(rule) && rightsAllow(rule, session.rights)`. The listener keeps its role as the cap and is independent of the person's rights: the relay never serves a `lanOnly` or `admin` route, whatever the rights say.
 
-PIN and trusted-IP sessions get a fixed configurable role set (`PIGATEWAY_UI_PIN_ROLES`, default = what the LAN has today, so nothing changes for the operator PC).
+**MCP tools** are tagged with the same `<module>:<level>`; `picontrol-mcp` already uses `<area>:read|write` with per-user deny rules, so its tags map directly (the new `operate` and `admin` levels are added). The gateway filters `tools/list` and refuses `tools/call` by the same check.
+
+**Sessions and PIN:** the session carries `rights` (not roles). PIN and trusted-IP sessions get a fixed configurable set (`PIGATEWAY_UI_PIN_RIGHTS`, default = what the LAN has today, so nothing changes for the operator PC). `GET /ui/api/session` returns `{ name, rights, listener }` and picontrol hides controls the person lacks.
+
+**pinotify:** managing contacts and the provider is `pinotify:admin`; sending stays a machine key.
 
 ### Environment variables (names follow the parish's deploy template)
 
@@ -86,7 +98,7 @@ The deploy template for the parish's server apps uses `AUTH_MODE`, `OIDC_ISSUER`
 | `PIGATEWAY_AUTH_MODE` | `pin` (today, default), `both`, `oidc` |
 | `PIGATEWAY_OIDC_ISSUER` | Tunnus issuer URL |
 | `PIGATEWAY_OIDC_CLIENT_ID`, `PIGATEWAY_OIDC_CLIENT_SECRET` | The LAN-listener client; a second pair for the relay listener |
-| `PIGATEWAY_OIDC_GROUP_ROLES` | The mapping above |
+| `PIGATEWAY_OIDC_GROUP_RIGHTS` | The group-to-rights mapping above |
 | `PIGATEWAY_OIDC_SESSION_MAX_HOURS` | Absolute session cap |
 | `PIGATEWAY_MCP_RESOURCE_URI` | The resource URI that MCP access tokens must carry as `aud` |
 
@@ -100,8 +112,8 @@ pigateway is a confidential OIDC client (backend for the frontend), not a browse
 2. `GET /ui/api/oidc/login` on the listener builds the authorize request: PKCE (S256), `state`, `nonce`, `scope=openid profile email groups`, kept in a short-lived signed cookie.
 3. The browser goes to Tunnus and signs in with an email code.
 4. Tunnus redirects to `<listener-origin>/ui/api/oidc/callback`. pigateway exchanges the code server side and verifies the ID token: signature from cached JWKS, `iss`, `aud`, `exp`, `nonce`, `email_verified`; it reads `sub`, `name`, `groups`.
-5. pigateway maps groups to roles and creates its own session (same cookie as today, 24 h sliding, plus an absolute cap), then redirects back to the UI.
-6. `GET /ui/api/session` returns `{ name, roles, listener }` so picontrol can hide controls the person may not use. Hiding is cosmetic; the server enforces.
+5. pigateway maps groups to rights and creates its own session (same cookie as today, 24 h sliding, plus an absolute cap), then redirects back to the UI.
+6. `GET /ui/api/session` returns `{ name, rights, listener }` so picontrol can hide controls the person may not use. Hiding is cosmetic; the server enforces.
 7. Logout: the lock button ends the pigateway session; an optional "sign out everywhere" goes through Tunnus RP-initiated logout.
 
 Two Tunnus clients (LAN and relay listener) with their own secrets, callback URIs and `backchannel_logout_uri`, so a leaked relay secret does not touch the LAN and each can be revoked alone. Refresh tokens are **not** used: pigateway's session is the session; group changes apply at the next sign-in, or at once with back-channel logout.
@@ -122,7 +134,7 @@ Two Tunnus clients (LAN and relay listener) with their own secrets, callback URI
 | Tunnus down, someone wants to sign in on the relay | Not possible. Acceptable: with no internet the relay is not reachable either. The relay drops its PIN in phase 4. |
 | pigateway restarts while Tunnus is down | Sessions are in memory, so LAN users use the PIN. Optional later: persist sessions in a small local file (hashed ids). |
 | Discovery fetch fails at start | pigateway still starts; OIDC login answers 503 and the UI shows the PIN form on the LAN. Discovery retries with back-off. No boot dependency on Tunnus. |
-| `groups` claim missing or empty | No session on the relay; PIN offered on the LAN. Never a default role. |
+| `groups` claim missing or empty | No session on the relay; PIN offered on the LAN. Never a default right. |
 | User disabled in Tunnus | The session lasts until it expires (24 h idle, absolute cap) unless back-channel logout is in place (phase 4). |
 | MCP client, Tunnus unreachable | Tokens already issued verify against the cached JWKS until they expire; new sign-ins fail. Local stdio MCP use on the operator PC is not affected. |
 | Mail or SMS relay unreachable | pinotify keeps its cooldown and logging, reports the failure to its caller, and may fall back to a direct provider if one is configured (section 10). |
@@ -131,7 +143,7 @@ The operator PC rule stands: the operator PC always has direct LAN access withou
 
 ## 8. Other Pi services that need to know who is calling
 
-Most Pi apps never need a user identity; pigateway authenticates and they trust it by key. For the few that do (pinotify's contact admin UI, picontrol-mcp's audit), pigateway offers one internal route, `POST /api/v1/identity/verify` (service key required): it takes a Tunnus access or ID token and returns `{ sub, name, roles }` or 401. It uses the same verifier, the same group-to-role map and the same cached JWKS, so an app does not need its own OIDC code, secret or env mapping. An app that is itself exposed to a browser or AI client and cannot sit behind the gateway may use the shared verifier module directly.
+Most Pi apps never need a user identity; pigateway authenticates and they trust it by key. For the few that do (pinotify's contact admin UI, picontrol-mcp's audit), pigateway offers one internal route, `POST /api/v1/identity/verify` (service key required): it takes a Tunnus access or ID token and returns `{ sub, name, rights }` or 401. It uses the same verifier, the same group-to-rights map and the same cached JWKS, so an app does not need its own OIDC code, secret or env mapping. An app that is itself exposed to a browser or AI client and cannot sit behind the gateway may use the shared verifier module directly.
 
 ## 9. MCP servers: one front door through pigateway to Tunnus
 
@@ -139,8 +151,8 @@ Today each MCP server has its own users file, passwords and OAuth (`picontrol-mc
 
 - **A new MCP listener on pigateway** (an extra listener on a 301x port, loopback-bound like the relay, reached from outside through the same kind of tunnel and proxy path as the relay) serves `/mcp/<server>` for each registered Pi MCP server (`picontrol-mcp` first, then the others).
 - **The gateway is the OAuth resource server**, Tunnus the authorization server. It answers an unauthenticated call with `401` and `WWW-Authenticate` pointing at `/.well-known/oauth-protected-resource` (RFC 9728), which names Tunnus as authorization server and `PIGATEWAY_MCP_RESOURCE_URI` as the resource. The AI client signs in at Tunnus (resource indicator, RFC 8707) and then calls the gateway with the Tunnus JWT.
-- **Validation at the gateway only:** signature, `iss`, `aud` equal to the gateway's resource URI, `exp`, groups to roles with the same map as the UI.
-- **Per-tool permissions:** each upstream tool is tagged with an `<area>:read|write` permission (the scheme `picontrol-mcp` already has). The gateway filters `tools/list` by the caller's roles and refuses a `tools/call` that the roles do not allow. The listener cap applies: tools that are LAN-only or setup stay out of reach on the public MCP path.
+- **Validation at the gateway only:** signature, `iss`, `aud` equal to the gateway's resource URI, `exp`, groups to rights with the same map as the UI.
+- **Per-tool rights:** each upstream tool is tagged with `<module>:<level>` (section 4). The gateway filters `tools/list` by the caller's rights and refuses a `tools/call` that they do not allow. The listener cap applies: tools that are LAN-only or setup stay out of reach on the public MCP path.
 - **Upstream MCP servers become internal:** bound to loopback, authenticated by a service key held by pigateway, with their own user stores and OAuth switched off (`AUTH_MODE=token` with only the gateway's key). They are never exposed publicly any more. `stdio` use on the operator PC is unchanged.
 - **Revocation:** back-channel logout from Tunnus drops the MCP sessions for that `sub` the same way as UI sessions.
 - **Audit:** the gateway logs `sub`, tool name and outcome, never arguments that carry secrets (the upstream already masks them).
@@ -156,7 +168,7 @@ pinotify sends email and SMS through notify-core with a provider adapter (Brevo 
 - **SMS (proposed contract for the Tunnus developer to confirm):** `POST <issuer>/api/sms` with the same bearer scheme and a body such as `{ "to": ["<number in E.164>"], "text": "...", "sender": "..." }`, answering the same codes, audited as `sms_relay.sent` with the recipient count only. Tunnus decides the SMS provider; pinotify does not care which.
 - **A relay token per client, scoped to one channel** (mail or SMS) would be better than the single `MAIL_RELAY_TOKEN` it has now: a leaked pinotify token then cannot be used by another app, and revoking it affects only pinotify. Suggested for the Tunnus side.
 - **Where the token lives:** pinotify's own env (`PINOTIFY_TUNNUS_RELAY_URL`, `PINOTIFY_TUNNUS_RELAY_TOKEN`), not pigateway. This keeps the rule that every Pi app works without pigateway. pigateway is not in the mail path.
-- **Who may manage contacts:** pinotify's "anyone with the admin token" becomes the `notify-admin` role: picontrol shows the contacts UI, pigateway passes the verified role through, pinotify keeps its admin token only as a service credential for the gateway.
+- **Who may manage contacts:** pinotify's "anyone with the admin token" becomes the `pinotify:admin` right: picontrol shows the contacts UI, pigateway passes the verified rights through, pinotify keeps its admin token only as a service credential for the gateway.
 - **Personal data:** addresses and numbers go to Tunnus's relay only at send time; Tunnus audits counts, not recipients, and its processors are listed in its own privacy notice.
 - **Offline:** with no internet, the relay is unreachable. pinotify reports the failure to the caller (a candle alarm cannot wait). A direct provider as backup stays possible in notify-core, but is optional and off by default.
 
@@ -166,7 +178,7 @@ No change to `PIGATEWAY_API_KEY`, the pimatrix, pitube and piprogram keys, the C
 
 ## 12. Future consumer: the Canva app
 
-Juha plans Tunnus OIDC/OAuth sign-in for the Canva app too and will develop it separately. This plan only leaves room for it: the Canva-only listener keeps its Bearer key until then, and when the app moves to Tunnus it will be a separate Tunnus client (a public PKCE client, since it runs in the Canva sandbox), verified by the same shared verifier and group-to-role map, with a role limited to pushing designs. Not built here.
+Juha plans Tunnus OIDC/OAuth sign-in for the Canva app too and will develop it separately. This plan only leaves room for it: the Canva-only listener keeps its Bearer key until then, and when the app moves to Tunnus it will be a separate Tunnus client (a public PKCE client, since it runs in the Canva sandbox), verified by the same shared verifier and group-to-rights map, with a right limited to pushing designs. Not built here.
 
 ## 13. Phased rollout
 
@@ -177,12 +189,12 @@ Juha plans Tunnus OIDC/OAuth sign-in for the Canva app too and will develop it s
 - Tunnus developer: SMS relay and per-client relay tokens; accept a second resource indicator for the gateway.
 
 **Phase 1: pigateway adapter behind a flag, PIN still the default.**
-- `OidcUiAuth` implementing `UiAuthAdapter`, `PIGATEWAY_OIDC_*` env, `roles` on the session, `minRole` on route rules, `PIGATEWAY_UI_PIN_ROLES`.
+- `OidcUiAuth` implementing `UiAuthAdapter`, `PIGATEWAY_OIDC_*` env, `rights` on the session, `module` and `level` on route rules, `PIGATEWAY_UI_PIN_RIGHTS`.
 - The shared verifier module with the JWKS file cache.
 - Tests with a fake OIDC provider (a local Node HTTP server issuing signed tokens): good login, wrong nonce, expired, wrong `aud`, missing groups, JWKS rotation, discovery down. Unit tests only.
 - Both PIN and Tunnus accepted on LAN. Relay unchanged.
 
-**Phase 2: picontrol UI.** Login button, `GET /ui/api/session`, controls hidden by role, the person's name, sign-out. OpenAPI updated in pigateway.
+**Phase 2: picontrol UI.** Login button, `GET /ui/api/session`, controls hidden by right, the person's name, sign-out. OpenAPI updated in pigateway.
 
 **Phase 3: relay on Tunnus.** Enable OIDC on the relay listener, PIN kept as fallback for one release. Test from outside the church network with real accounts, and confirm that `lanOnly` and `setup` routes answer 403 for every group. A Pi deploy needs Juha's go in the Pi session, from `main` only.
 
@@ -198,7 +210,7 @@ Deploys follow the existing rule: from `main` only, Pi changes need Juha's go in
 
 ## 14. Open questions for Juha
 
-1. Is four plus one roles the right size, or a smaller start (`operator` and `content`)? The group names are the parish's own and not needed here.
+1. Are the four levels (`read`, `write`, `operate`, `admin`, with `write` and `operate` independent) and the four presets the right size? The group names are the parish's own and not needed here.
 2. On the LAN, keep the shared PIN for everyone until phase 4? Recommendation: accept both, PIN stays as break-glass.
 3. Where does the relay callback live: the relay path on the server (proxied to the relay listener) or the Pi's own domain? The relay cookie is `SameSite=None; Secure` because page and API sit on different sites; the callback must set it on the API origin. One check against the real proxy routing before phase 1 is final.
 4. Absolute session cap. Recommendation: 7 days, 24 h idle as today.
