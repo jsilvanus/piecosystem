@@ -184,9 +184,13 @@ No change to `PIGATEWAY_API_KEY`, the pimatrix, pitube and piprogram keys, the C
 
 Juha develops the Canva app's own Tunnus OIDC/OAuth sign-in separately. This plan fixes what it plugs into: the Canva listener is its own module `canva` with `canva:write` and `canva:operate` (section 4), explicit rights that no `piprogram` right implies. The Canva-only listener keeps its Bearer key until the app signs in through Tunnus; after that the app is a separate Tunnus client (a public PKCE client, since it runs in the Canva sandbox), verified by the same shared verifier and group-to-rights map. Not built here.
 
-### Open: one Tunnus login, one token or two audiences
+### Canva sign-in: one click, tokens per resource
 
-The Canva app signs in at one Tunnus (one login, one set of groups). It then needs tokens for two resources: the Pi gateway and Sissi. Recommendation: **one Tunnus provider, one login, a separate access token per resource** (RFC 8707 resource indicator per token request), so a token for Sissi is never valid at the Pi and the other way round. A single token with both audiences is possible but widens what a leaked token can do. This needs Tunnus to accept both resource URIs (already needed for the MCP gateway). Two Tunnus providers is not worth it: it would split the groups.
+Decision (Juha): the Canva app asks the person for **one sign-in click only**, covering both the Pi gateway and Sissi. The app signs in at one Tunnus (one login, one set of groups, a first-party client, so no consent screen) and then obtains the access tokens it needs **silently**, one per resource (RFC 8707 resource indicator per token request): either with the refresh token the first login returned, or with a second authorization request using `prompt=none` against the live Tunnus session. The person never sees a second prompt. A token for Sissi is then never valid at the Pi and the other way round, so a leaked token reaches one side only.
+
+Fallback if Tunnus cannot issue a second resource's token silently: one access token carrying both audiences. That is also one click, but a leaked token then works on both sides, so it is the second choice.
+
+For Tunnus (Juha's side): the Canva client needs `refresh_token` in its `grant_types` and `offline_access` with `prompt=consent` on the first request (see Tunnus's client notes), and Tunnus must accept both resource URIs (the Pi gateway's and Sissi's). Two Tunnus providers is not worth it: it would split the groups and need two clicks.
 
 ## 13. Phased rollout
 
