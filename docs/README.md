@@ -34,6 +34,6 @@ This directory contains architectural specifications, deployment guides, interfa
 - 🧩 **[piagent Architecture Plan](piagent-architecture-plan.md)**: Autonomous agent plane using LangGraph / AI SDK with human preemption.
 - 📝 **[LCYT Feature Parity](lcyt-feature-parity.md)**: Feature parity roadmap and verification for YouTube Live captioning and stream lifecycle.
 - 🏷️ **[pitally Rename](pitally-rename.md)**: Background notes on the tally service naming and domain scope.
-- 🔐 **[Tunnus sign-in plan](plans/tunnus-sign-in-plan.md)**: Replacing the shared PIN with the parish's Tunnus OpenID Connect login, groups to roles, offline LAN fallback, phased rollout.
+- 🔐 **[Tunnus integration plan](plans/tunnus-sign-in-plan.md)**: Tunnus OIDC login for picontrol, groups from env to roles, MCP front door through pigateway, mail and SMS relay for pinotify, offline LAN fallback, phased rollout.
 - 📂 **[Plans & RFCs](plans/)**: Additional planning documents and roadmaps.
 - 📷 **[Portable, User-Defined Camera Calibration](plans/portable-camera-calibration.md)**: Shared PiPerception/PiSpace plan for portable calibration rigs, user-supplied venue geometry, stereo reconstruction, PnP and mobile-camera deployments.
