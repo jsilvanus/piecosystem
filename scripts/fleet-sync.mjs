@@ -23,7 +23,7 @@ export const CANONICAL_REPOS = [
   // Layer 2: Media Pipeline & Real-Time Composition
   'piprogram', 'pigraphics', 'pivoice', 'piperception', 'picomposer',
   // Layer 3: Orchestration, State & Workflow
-  'pigateway', 'pirundown', 'pispace', 'piembed',
+  'pigateway', 'pirundown', 'pispace', 'piembed', 'pitimer',
   // Storage & Edge Delivery (Layer 4)
   'pistorage', 'pitube', 'pinotify',
   // +1 Control, Agentic & UI Planes

@@ -253,13 +253,19 @@ export function buildEcosystem({ root, manualPath = DEFAULT_MANUAL }) {
 
   const byName = new Map();
   for (const entry of entries) {
-    const first = byName.get(entry.service);
-    if (first) {
-      errors.push(`service "${entry.service}" is defined twice (${first.origin} and ${entry.origin})`);
-    } else {
+    const existing = byName.get(entry.service);
+    if (!existing) {
       byName.set(entry.service, entry);
+    } else if (entry.dir === entry.service) {
+      warnings.push(`service "${entry.service}" also found in ${existing.dir}; ${entry.dir} takes precedence`);
+      byName.set(entry.service, entry);
+    } else if (existing.dir === existing.service) {
+      warnings.push(`service "${entry.service}" also found in ${entry.dir}; ${existing.dir} takes precedence`);
+    } else {
+      errors.push(`service "${entry.service}" is defined twice (${existing.origin} and ${entry.origin})`);
     }
   }
+  entries.splice(0, entries.length, ...byName.values());
 
   for (const entry of entries) {
     if (!existsSync(join(root, entry.dir))) {

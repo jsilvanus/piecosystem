@@ -28,6 +28,7 @@ This catalog details all active projects within the Raspberry Pi production ecos
 | [`pirundown`](file:///d:/pirundown) | Event orchestration | Layer 3: Orchestration | Deterministic service rundown engine | Node 22+, Fastify, TS | `3400` |
 | [`pirundown-designer`](file:///d:/pirundown-designer) | Event orchestration / Authoring | +1 Control Plane & Staging | Visual authoring & cue-sheet designer for Rundown v2 YAML | Node 22+, React, Vite, Fastify | `3610` |
 | [`pidirector`](file:///d:/pidirector) | Event orchestration / Directing | Layer 3 & +1 AI Director | Local AI stream director & co-pilot (Ollama, MCP auth, Rundown v2) | Node 24, Fastify, TS, Ollama | `3401` |
+| [`pitimer`](file:///d:/pi-apps/pitimer) | Event orchestration | Layer 3: Action Runner & Schedules | Deterministic scheduled action runner, pre-flight verifications & lead warnings | Node 22+, Fastify, TS | `3403` |
 | [`pisound`](file:///d:/pisound) | Hardware connections | Layer 1: Southbound HW | BSS Soundweb London DSP audio router | Node 22+, Fastify, TS | `3105` (Soundweb: `1023`) |
 | [`pispace`](file:///d:/pispace) | Event orchestration | Layer 3: Spatial Context | 3D venue digital twin & FreeD raycaster | Node 22+, Fastify, TS | `3203` |
 | [`piswitch`](file:///d:/piswitch) | Hardware connections | Layer 1 & 2: HW & Mixer | Video switcher microservice (ATEM & soft) | Node 22+, Fastify, TS | `3103` (ATEM: `9910`) |

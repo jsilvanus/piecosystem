@@ -30,6 +30,7 @@ This document defines the network topology, listening ports, communication proto
 | **3301** | HTTP | `piagent` | Centralized Agent Infrastructure Plane (LangGraph, AI SDK, MCP) | REST API & SSE (`/api/v1/agent/events`) |
 | **3400** | HTTP | `pirundown` | Service rundown engine API | REST API & SSE |
 | **3401** | HTTP | `pidirector` | Local AI Stream Director engine | REST API & SSE (`/api/v1/director/stream`) |
+| **3403** | HTTP | `pitimer` | Deterministic action runner, pre-flight monitor & lead warnings | REST API & SSE (`/api/v1/timers/events`) |
 | **3500** | HTTP | `pitube` | YouTube lifecycle & caption coordinator | REST API |
 | **3600** | HTTP | `picontrol-mcp` | MCP Server for AI agents (`pi://`) | Streamable HTTP |
 | **3610** | HTTP | `pirundown-designer` | Visual authoring & cue-sheet designer for Rundown v2 YAML | Web UI & REST API |
